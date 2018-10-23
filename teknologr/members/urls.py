@@ -14,4 +14,5 @@ urlpatterns = [
     url(r'^functionaries/(\d+)/$', views.functionary),
     url(r'^decorations/(\d+)/$', views.decoration),
     url(r'^ajax_select/', include(ajax_select_urls)),
+    url(r'^groups/(?P<group_id>\d+)/(?P<subgroup_id>\d+)/download', views.download_group_members)
 ]

@@ -1,6 +1,8 @@
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import user_passes_test
+from django.http import HttpResponse
+import csv
 
 from members.models import *
 from members.forms import *
@@ -196,3 +198,18 @@ def decoration(request, decoration_id):
 
     set_side_context(context, 'decorations', decoration.id)
     return render(request, 'decoration.html', context)
+
+def download_group_members(request, group_id, subgroup_id):
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="somefilename.csv"'
+
+    writer = csv.writer(response)
+
+    # find correct group and subgroup
+    grouptype = get_object_or_404(GroupType, id=group_id)
+    subgroup = grouptype.group_set.get(id=subgroup_id)
+    for membership in subgroup.groupmembership_set.all():
+        writer.writerow([membership.member.email])
+
+    return response

@@ -65,6 +65,11 @@
       <li>
         <button class="btn btn-success" data-toggle="modal" data-target="#groupMembershipModal">Lägg till ny</button>
       </li>
+      <li>
+        <a href="/admin/groups/{{grouptype.id}}/{{group.id}}/download">
+          <button class="btn btn-default">Email dump</button>
+        </a>
+      </li>
     </ul>
 
     {% include "modals/groupmembership.html" with modalname="groupMembershipModal" title="Lägg till medlem i grupp" groupmembershipform=groupmembershipform only %}
