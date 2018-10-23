@@ -37,5 +37,8 @@ $(document).ready(function() {
 			});
 		}
 	});
-
+	$('#copy2clipboard').click(function(){
+		$("textarea").select();
+    document.execCommand('copy');
+	});
 });

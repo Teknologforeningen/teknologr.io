@@ -154,6 +154,7 @@ def group(request, grouptype_id, group_id=None):
         context['groupform'] = GroupForm(instance=group)
         context['groupmembershipform'] = GroupMembershipForm(initial={"group": group_id})
         context['groupmembers'] = GroupMembership.objects.filter(group=group)
+        context['emails'] = "\n".join([ membership.member.email for membership in context['groupmembers'] ])
 
     set_side_context(context, 'groups', grouptype.id)
     return render(request, 'group.html', context)

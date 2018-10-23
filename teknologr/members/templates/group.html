@@ -59,11 +59,14 @@
   <div class="col-md-5">
   {% if group %}
     <h3> {{ group.begin_date }} - {{ group.end_date }} <span class="glyphicon glyphicon-edit text-info" role="button" data-toggle="modal" data-target="#editGroupModal"></span></h3>
-    {% include "modals/group.html" with modalname="editGroupModal" title="Editera grupp" form=groupform groupid=group.id only %}
+    {% include "modals/group.html" with modalname="editGroupModal" title="Editera grupp" form=groupform groupid=group.id only %}  
     <ul class="list-inline">
       <li><h4>Medlemmar i gruppen</h4></li>
       <li>
         <button class="btn btn-success" data-toggle="modal" data-target="#groupMembershipModal">Lägg till ny</button>
+      </li>
+      <li>
+        <button class="btn btn-default" id="copy2clipboard" title="Copy to clipboard"><span class="glyphicon glyphicon-copy"></span></button>
       </li>
     </ul>
 
@@ -79,6 +82,7 @@
       </td></tr>
       {% endfor %}
     </table>
+    <textarea id="members_list" style="opacity: 0;width: 0;">{{ emails }}</textarea>
   {% endif %}
   </div>
 </div>
