@@ -402,7 +402,7 @@ def htkDump(request, member_id=None):
 
 # CSV-render class
 class ModulenRenderer(csv_renderer.CSVRenderer):
-    header = ['name', 'street_address', 'postal_code', 'city', 'country']
+    header = ['firstname', 'lastname', 'street_address', 'postal_code', 'city', 'country']
 
 
 # List of addresses whom to post modulen to
@@ -421,7 +421,8 @@ def modulenDump(request):
     recipients = [x for x in recipients if x.isValidMember()]
 
     content = [{
-        'name': recipient._get_full_name(),
+        'firstname': recipient.given_names,
+        'lastname': recipient.surname,
         'street_address': recipient.street_address,
         'postal_code': recipient.postal_code,
         'city': recipient.city,
