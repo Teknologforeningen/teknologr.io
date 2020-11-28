@@ -113,3 +113,8 @@ thead.no-border th {
 #save-remove-buttons {
   margin-top: 20px;
 }
+
+#save-remove-buttons > div {
+  display: flex;
+  justify-content: space-between;
+}
