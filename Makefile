@@ -7,6 +7,9 @@ bin/python:
 migrate: bin/python
 	bin/python teknologr/manage.py migrate
 
+checkmigrations: bin/python
+	bin/python teknologr/manage.py makemigrations --check --dry-run
+
 serve: bin/python
 	bin/python teknologr/manage.py runserver 8888
 
