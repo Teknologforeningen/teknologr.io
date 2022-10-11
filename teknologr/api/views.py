@@ -380,6 +380,7 @@ def htkDump(request, member_id=None):
 
         return {
             "id": member.id,
+            "graduated": member.graduated_year if member.graduated else member.graduated,
             "name": member.full_name,
             "functionaries": func_list,
             "groups": group_list,
