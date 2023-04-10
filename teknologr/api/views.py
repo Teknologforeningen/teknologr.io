@@ -176,16 +176,17 @@ class LDAPAccountView(APIView):
         with LDAPAccountManager() as lm:
             try:
                 lm.add_account(member, username, password)
-                if mailToUser:
-                    status = mailNewPassword(member, password)
-                    if not status:
-                        return Response("Password changed, failed to send mail", status=500)
             except LDAPError as e:
                 return Response(str(e), status=400)
 
         # Store account details
         member.username = username
         member.save()
+
+        if mailToUser:
+            status = mailNewPassword(member, password)
+            if not status:
+                return Response("Password created, failed to send mail", status=500)
 
         # TODO: Send mail to user to notify about new account?
 
