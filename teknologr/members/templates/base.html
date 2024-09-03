@@ -75,7 +75,7 @@
       </div>
 
       <!-- Modal box must be outside of sidebar because of sidebar position:fixed style -->
-      {% if side.new_button %}
+      {% if side.active and side.new_button %}
         {% include "modals/new.html" with modalname="new-mgtftd-modal" title="Lägg till "|add:side.sname form=side.form active=side.active only %}
       {% endif %}
       {% if side.applicant_tool_icons %}

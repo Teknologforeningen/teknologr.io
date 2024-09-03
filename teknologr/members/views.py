@@ -12,7 +12,7 @@ from getenv import env
 from locale import strxfrm
 
 
-def set_side_context(context, category, active_obj=None):
+def set_side_context(context, category=None, active_obj=None):
     side = {}
     side['active'] = category
     side['active_obj'] = active_obj.id if active_obj else None

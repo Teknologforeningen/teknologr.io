@@ -6,6 +6,7 @@
   <li class="nav-item"><a class="nav-link {% if side.active == 'applicants' %}active{% endif %}" href="{% url 'admin:empty' 'applicants' %}">Ansökande</a></li>
 </ul>
 
+{% if side.active %}
 <ul class="list-inline side-item">
   {% if side.new_button %}
     <li class="list-inline-item">
@@ -47,3 +48,4 @@
     <span class="text-muted">Inga objekt hittades</span>
   {% endfor %}
 </div>
+{% endif %}

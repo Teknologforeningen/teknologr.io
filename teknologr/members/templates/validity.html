@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block main %}
+<div class="container-fluid">
+  <div class="row mb-2">
+    <div class="col-12">
+      <button id="test-all" class="btn btn-success">Granska alla</button>
+    </div>
+  </div>
+  <h1 class="page-header">Granska validitet</h1>
+</div>
+
+
+<div class="container-fluid">
+  <table class="table table-sm table-striped">
+    <thead>
+      <tr>
+        <th>Test</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for test in tests %}
+      <tr>
+        <td style="vertical-align: middle;" data-toggle="collapse" data-target="#{{ test.id }}-results">
+          {{ test.title }}
+          <div class="float-right">
+            <b id="{{ test.id }}-icon" class="fa fa-spinner fa-spin" style="margin-left: 5px; display: none;"></b>
+            <button id="{{ test.id }}" class="btn btn-success test p-1">Granska</button>
+          </div>
+          <div id="{{ test.id }}-results" class="collapse">
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+
+{% block scripts %}
+  {{ block.super }}
+  <script src="{% static 'js/validity.js' %}"></script>
+{% endblock %}

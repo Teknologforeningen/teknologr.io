@@ -1,6 +1,7 @@
 from django.conf.urls import url, include
 from django.views.generic import RedirectView
 from . import views
+from . import views_validity
 
 
 urlpatterns = [
@@ -15,4 +16,6 @@ urlpatterns = [
     url(r'^decorations/(\d+)/$', views.decoration, name='decoration'),
     url(r'^decorationownerships/(\d+)/form/$', views.decoration_ownership_form),
     url(r'^applicants/(\d+)/$', views.applicant, name='applicant'),
+    url(r'^validity/$', views_validity.base, name='empty'),
+    url(r'^validity/([\w_]+)/$', views_validity.test, name='empty'),
 ]

@@ -224,8 +224,9 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAdminUser',
     ),
     'DEFAULT_RENDERER_CLASSES': (
+        # Remove forms in production
+        'rest_framework.renderers.BrowsableAPIRenderer' if DEBUG else 'api.utils.BrowsableAPIRendererWithoutForms',
         'rest_framework.renderers.JSONRenderer',
-        'api.utils.BrowsableAPIRendererWithoutForms',
         'rest_framework_csv.renderers.CSVRenderer',
     ),
     'DEFAULT_PAGINATION_CLASS': 'api.utils.Pagination',
