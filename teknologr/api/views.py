@@ -803,6 +803,7 @@ def dump_reg_emails(request):
         'preferred_name': applicant.preferred_name,
         'email': applicant.email,
         'language': applicant.mother_tongue,
+        'application_time': applicant.created_at,
     } for applicant in applicants]
 
     return Response(content, status=200)
