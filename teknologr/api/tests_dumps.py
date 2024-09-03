@@ -119,7 +119,7 @@ class Arsk(BaseClass, DumpsTestCases):
         'country': 'Finland',
         'associations': 'Hedersmedlem,Funkkis',
     }]
-
+today = datetime.today().strftime('%Y-%m-%d')
 class RegEmails(BaseClass, DumpsTestCases):
     path = f'/api/dump-regemails/'
     response = [{
@@ -128,6 +128,7 @@ class RegEmails(BaseClass, DumpsTestCases):
         'preferred_name': 'Svatta',
         'email': 'svatta@svatta.fi',
         'language': 'Svenska',
+        'created_at': f'{today}',
     }]
 
 class Studentbladet(BaseClass, DumpsTestCases):
