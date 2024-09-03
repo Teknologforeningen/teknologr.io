@@ -128,7 +128,7 @@ class RegEmails(BaseClass, DumpsTestCases):
         'preferred_name': 'Svatta',
         'email': 'svatta@svatta.fi',
         'language': 'Svenska',
-        'application_time': f'{today}',
+        'created_at': f'{today}',
     }]
 
 class Studentbladet(BaseClass, DumpsTestCases):
