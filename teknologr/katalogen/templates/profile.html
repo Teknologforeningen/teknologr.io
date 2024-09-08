@@ -21,13 +21,7 @@
           </tr>
           <tr>
             <th>Telefonnummer</th>
-            <td class="text-right">
-            {% if person.mobile_phone %}
-              {{person.mobile_phone}}
-            {% else %}
-              {{person.phone}}
-            {% endif %}
-            </td>
+            <td class="text-right">{{person.phone}}</td>
           </tr>
           <tr>
             <th>E-postadress</th>
