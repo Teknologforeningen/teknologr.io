@@ -1,0 +1,63 @@
+
+<div class="col-12 col-lg-7">
+  <table class="table table-striped table-borderless">
+    <tbody>
+      {% if show_all %}
+      <tr>
+        <th>Tilltalsnamn</th>
+        <td class="text-right">{{person.preferred_name}}</td>
+      </tr>
+      <tr>
+        <th>Telefonnummer</th>
+        <td class="text-right">{{person.phone}}</td>
+      </tr>
+      <tr>
+        <th>E-postadress</th>
+        <td class="text-right">{{person.email}}</td>
+      </tr>
+      <tr>
+        <th>Hemadress</th>
+        <td class="text-right">
+          {{person.street_address}}<br/>
+          {{person.postal_code}} {{person.city}}<br/>
+          {{person.country.name}}
+        </td>
+      </tr>
+      <tr>
+        <th>Studieprogram</th>
+        <td class="text-right">{{person.degree_programme}}</td>
+      </tr>
+      <tr>
+        <th>Phuxår</th>
+        <td class="text-right">
+          {{ person.phux_year|default_if_none:'' }}
+        </td>
+      </tr>
+      <tr>
+        <th>Färdigbliven</th>
+        <td class="text-right">
+        {% if person.graduated %}
+          {% if person.graduated_year %}
+              {{person.graduated_year}}
+          {% else %}
+              Ja
+          {% endif %}
+        {% else %}
+          Nej
+        {% endif %}
+        </td>
+      </tr>
+      {% endif %}
+      <tr>
+        <th>Medlemskapstyp</th>
+        <td class="text-right">
+        {% if person.current_member_type %}
+          {{ person.current_member_type }}
+        {% else %}
+          Ej medlem
+        {% endif %}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
