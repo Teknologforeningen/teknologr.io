@@ -39,6 +39,8 @@ class BaseClass(APITestCase):
             email='svatta@svatta.fi',
             mother_tongue='Svenska',
             birth_date='1999-01-01',
+            degree_programme='Teknolog',
+            enrolment_year=2010,
         )
 
     def login_user(self):
@@ -129,6 +131,8 @@ class RegEmails(BaseClass, DumpsTestCases):
         'email': 'svatta@svatta.fi',
         'language': 'Svenska',
         'created_at': f'{today}',
+        'degree_programme': 'Teknolog',
+        'enrolment_year': '2010',
     }]
 
 class Studentbladet(BaseClass, DumpsTestCases):
