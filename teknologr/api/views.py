@@ -804,6 +804,8 @@ def dump_reg_emails(request):
         'email': applicant.email,
         'language': applicant.mother_tongue,
         'created_at': applicant.created_at.strftime('%Y-%m-%d'),
+        'degree_programme': applicant.degree_programme,
+        'enrolment_year': str(applicant.enrolment_year),
     } for applicant in applicants]
 
     return Response(content, status=200)
