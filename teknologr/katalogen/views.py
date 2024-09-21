@@ -65,10 +65,13 @@ def profile(request, member_id):
         ft_durations = MultiDuration.combine_per_key(ft_durations)
         gt_durations = MultiDuration.combine_per_key(gt_durations)
 
+    own_profile = person.username == request.user.username
+
     return render(request, 'profile.html', {
         **_get_base_context(request),
         # XXX: Could use MemberSerializerPartial to remove any unwanted fields for real instead of just not showing them
-        'show_all': person.username == request.user.username or person.showContactInformation(),
+        'own_profile': own_profile,
+        'show_all': own_profile or person.showContactInformation(),
         'person': person,
         'combined': combine,
         'functionary_type_durations': ft_durations,

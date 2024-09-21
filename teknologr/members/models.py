@@ -238,6 +238,18 @@ class Member(SuperClass):
         return ", ".join([s for s in address_parts if s])
 
     @property
+    def subscribed_to_modulen_text(self):
+        return "Ja" if self.subscribed_to_modulen else "Nej"
+
+    @property
+    def allow_studentbladet_text(self):
+        return "Ja" if self.allow_studentbladet else "Nej"
+
+    @property
+    def allow_publish_info_text(self):
+        return "Ja" if self.allow_publish_info else "Nej"
+
+    @property
     def n_decorations(self):
         if hasattr(self, 'count_decoration_ownerships'):
             return self.count_decoration_ownerships

@@ -48,6 +48,52 @@
         </td>
       </tr>
       {% endif %}
+
+      {% if own_profile %}
+      <tr>
+        <th>Födelsedatum</th>
+        <td class="text-right">
+          {{ person.birth_date|default:'' }}
+        </td>
+      </tr>
+      <tr>
+        <th>Studienummer</th>
+        <td class="text-right">
+          {{ person.student_id|default:'' }}
+        </td>
+      </tr>
+      <tr>
+        <th>Användarnamn</th>
+        <td class="text-right">
+          <span class="monospace">{{ person.username|default:'' }}</span>
+        </td>
+      </tr>
+      <tr>
+        <th>BILL-konto</th>
+        <td class="text-right">
+          <span class="monospace">{{ person.bill_code|default:'' }}</span>
+        </td>
+      </tr>
+      <tr>
+        <th>Prenumerera på Modulen</th>
+        <td class="text-right">
+          {{person.subscribed_to_modulen_text}}
+        </td>
+      </tr>
+      <tr>
+        <th>Prenumerera på Studentbladet</th>
+        <td class="text-right">
+          {{ person.allow_studentbladet_text }}
+        </td>
+      </tr>
+      <tr>
+        <th>Visa kontaktinformation</th>
+        <td class="text-right">
+          {{ person.allow_publish_info_text }}
+        </td>
+      </tr>
+      {% endif %}
+
       <tr>
         <th>Medlemskapstyp</th>
         <td class="text-right">
