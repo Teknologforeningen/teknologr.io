@@ -1,14 +1,23 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.db.models.functions import TruncYear
 from members.models import *
 from members.utils import *
+from katalogen.forms import EditProfileForm
 from katalogen.utils import *
 from django.db.models import Q, Count
 from functools import reduce
 from operator import and_
 from collections import defaultdict
+from ldap import LDAPError
 
+def own_profile_or_403(request, member):
+    '''
+    Function for checking if the logged in user is a certain Member.
+    '''
+    if request.user.username != member.username:
+        raise PermissionDenied()
 
 def _get_base_context(request):
     return {
@@ -79,6 +88,47 @@ def profile(request, member_id):
         'decoration_ownerships': person.decoration_ownerships_by_date,
     })
 
+@login_required
+def profile_info(request, member_id):
+    """
+    Only render the member information section, not the decorations etc., so no need to prefetch the extra info.
+    """
+
+    member = get_object_or_404(Member, id=member_id)
+    own_profile = member.username == request.user.username
+
+    return render(request, 'profile_information.html', {
+        'own_profile': own_profile,
+        'show_all': own_profile or member.showContactInformation(),
+        'person': member,
+    })
+
+@login_required
+def profile_edit(request, member_id):
+    """
+    Update the member information. This can only be done by the user himself. Returns only the HTML for the member information, not the decorations etc. This makes it possible for HTMX to swap only part of the page when saving the info.
+    """
+
+    member = Member.objects.get_prefetched_or_404(member_id)
+    own_profile_or_403(request, member)
+
+    if request.method == 'POST':
+        form = EditProfileForm(request.POST, instance=member)
+        if form.is_valid():
+            try:
+                form.save()
+                form = None
+            except LDAPError:
+                form.add_error('email', 'E-postadressen kunde tyvärr inte uppdateras, vänligen kontakta en administrator')
+    else:
+        form = EditProfileForm(instance=member)
+
+    return render(request, 'profile_information.html', {
+        'form': form,
+        'own_profile': True,
+        'show_all': True,
+        'person': member,
+    })
 
 @login_required
 def startswith(request, letter):

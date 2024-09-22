@@ -7,6 +7,8 @@ urlpatterns = [
     url(r'^([A-ZÅÄÖ])/$', views.startswith, name='startswith'),
     url(r'^members/$', views.home),
     url(r'^members/(\d+)/$', views.profile, name='profile'),
+    url(r'^members/(\d+)/info$', views.profile_info, name='profile_info'),
+    url(r'^members/(\d+)/edit$', views.profile_edit, name='profile_edit'),
     url(r'^person/(\d+)/$', views.profile),
     url(r'^profile/$', views.myprofile, name='myprofile'),
     url(r'^decorations/$', views.decorations, name='decorations'),

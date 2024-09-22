@@ -19,6 +19,10 @@
   font-weight: bold;
 }
 
+#member-information button {
+  margin-bottom: 20px;
+}
+
 .monospace {
   font-family: monospace;
 }

@@ -235,7 +235,15 @@ class Member(SuperClass):
             country = str(self.country.name)
         city = f'{self.postal_code} {self.city}'.strip()
         address_parts = [self.street_address, city, country]
-        return ", ".join([s for s in address_parts if s])
+        address = ", ".join([s for s in address_parts if s])
+        # Do not show only country
+        return address if address != country else ''
+
+    @property
+    def graduated_text(self):
+        if self.graduated_year:
+            return str(self.graduated_year)
+        return "Ja" if self.graduated else "Nej"
 
     @property
     def subscribed_to_modulen_text(self):
