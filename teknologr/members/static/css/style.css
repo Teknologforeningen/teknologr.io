@@ -104,6 +104,12 @@ tr.active {
   background-color: rgb(242, 242, 242);
 }
 
+.errorlist {
+  padding: 10px;
+  list-style-type: none;
+  font-weight: bold;
+}
+
 .monospace {
   font-family: monospace;
 }

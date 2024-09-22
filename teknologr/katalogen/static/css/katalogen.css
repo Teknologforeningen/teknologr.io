@@ -13,6 +13,12 @@
     font-size: 130%;
 }
 
+.errorlist {
+  padding: 10px;
+  list-style-type: none;
+  font-weight: bold;
+}
+
 .monospace {
   font-family: monospace;
 }
