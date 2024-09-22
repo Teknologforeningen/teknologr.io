@@ -125,36 +125,6 @@
         <div class="form-group">
           <div class="form-check">
             <div class="row align-items-center">
-              {{ form.allow_publish_info.errors }}
-              <label class="form-check-label pl-2" for="{{ form.allow_publish_info.id_for_label }}">
-                {{ form.allow_publish_info }}
-                Jag tillåter att mina personuppgifter syns åt inloggade medlemmar på <a href="https://katalogen.tf.fi">Katalogen</a>
-                <a
-                  class="a-tooltip"
-                  href="javascript:;"
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  title="Katalogen är namnet på Teknologföreningens medlemsregister. Kolla länken längst ner på sidan för en registerbeskrivning."
-                >
-                  <i class="fa fa-question-circle" aria-hidden="true"></i>
-                </a>
-                <a
-                  class="a-info"
-                  href="javascript:;"
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  title="Personuppgifterna som visas är följande: fullständigt namn, hemadress, telefonnummer och e-postadress"
-                >
-                  <i class="fa fa-info-circle" aria-hidden="true"></i>
-                </a>
-              </label>
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <div class="form-check">
-            <div class="row align-items-center">
               {{ form.allow_studentbladet.errors }}
               <label class="form-check-label pl-2" for="{{ form.allow_studentbladet.id_for_label }}">
                 {{ form.allow_studentbladet }}
@@ -176,6 +146,36 @@
                   data-toggle="tooltip"
                   data-placement="top"
                   title="Uppgifter som utlämnas till Studentbladets redaktion är följande: fullständigt namn och hemadress"
+                >
+                  <i class="fa fa-info-circle" aria-hidden="true"></i>
+                </a>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-check">
+            <div class="row align-items-center">
+              {{ form.allow_publish_info.errors }}
+              <label class="form-check-label pl-2" for="{{ form.allow_publish_info.id_for_label }}">
+                {{ form.allow_publish_info }}
+                Jag tillåter att mina personuppgifter syns åt inloggade medlemmar på <a href="https://katalogen.tf.fi">Katalogen</a>
+                <a
+                  class="a-tooltip"
+                  href="javascript:;"
+                  data-toggle="tooltip"
+                  data-placement="top"
+                  title="Katalogen är namnet på Teknologföreningens medlemsregister. Kolla länken längst ner på sidan för en registerbeskrivning."
+                >
+                  <i class="fa fa-question-circle" aria-hidden="true"></i>
+                </a>
+                <a
+                  class="a-info"
+                  href="javascript:;"
+                  data-toggle="tooltip"
+                  data-placement="top"
+                  title="Personuppgifterna som visas är följande: fullständigt namn, hemadress, telefonnummer och e-postadress"
                 >
                   <i class="fa fa-info-circle" aria-hidden="true"></i>
                 </a>
