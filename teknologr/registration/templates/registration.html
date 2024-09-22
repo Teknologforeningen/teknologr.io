@@ -98,14 +98,13 @@
               {{ form.subscribed_to_modulen.errors }}
               <label class="form-check-label pl-2" for="{{ form.subscribed_to_modulen.id_for_label }}">
                 {{ form.subscribed_to_modulen }}
-                Jag vill få Teknologföreningens medlemstidning Modulen hemskickad<br />
-                och tillåter att mina uppgifter utlämnas till Modulens redaktion
+                Jag vill prenumerera få Teknologföreningens medlemstidning Modulen och tillåter att mina uppgifter utlämnas till Modulens redaktion
                 <a
                   class="a-tooltip"
                   href="javascript:;"
                   data-toggle="tooltip"
                   data-placement="top"
-                  title="Medlemstidningen Modulen skrivs av TFs medlemmar och skickas gratis åt alla medlemmar, dock endast till dem som bor utanför Otnäs."
+                  title="Medlemstidningen Modulen skrivs av TF:s medlemmar och skickas gratis åt alla medlemmar, dock endast till de som bor utanför Otnäs."
                 >
                   <i class="fa fa-question-circle" aria-hidden="true"></i>
                 </a>
@@ -114,7 +113,7 @@
                   href="javascript:;"
                   data-toggle="tooltip"
                   data-placement="top"
-                  title="Uppgifter som utlämnas till Modulens redaktion är följande: förnamn, efternamn, hemadress, postnummer, stad och land."
+                  title="Uppgifter som utlämnas till Modulens redaktion är följande: fullständigt namn och hemadress"
                 >
                   <i class="fa fa-info-circle" aria-hidden="true"></i>
                 </a>
@@ -129,15 +128,24 @@
               {{ form.allow_publish_info.errors }}
               <label class="form-check-label pl-2" for="{{ form.allow_publish_info.id_for_label }}">
                 {{ form.allow_publish_info }}
-                Jag tillåter att mina uppgifter utlämnas till Katalogen
+                Jag tillåter att mina personuppgifter syns åt inloggade medlemmar på <a href="https://katalogen.tf.fi">Katalogen</a>
                 <a
                   class="a-tooltip"
                   href="javascript:;"
                   data-toggle="tooltip"
                   data-placement="top"
-                  title="Katalogen är namnet för Teknologföreningens medlemsregister. Kolla länken längst ner på sidan för en registerbeskrivning."
+                  title="Katalogen är namnet på Teknologföreningens medlemsregister. Kolla länken längst ner på sidan för en registerbeskrivning."
                 >
                   <i class="fa fa-question-circle" aria-hidden="true"></i>
+                </a>
+                <a
+                  class="a-info"
+                  href="javascript:;"
+                  data-toggle="tooltip"
+                  data-placement="top"
+                  title="Personuppgifterna som visas är följande: fullständigt namn, hemadress, telefonnummer och e-postadress"
+                >
+                  <i class="fa fa-info-circle" aria-hidden="true"></i>
                 </a>
               </label>
             </div>
@@ -150,8 +158,7 @@
               {{ form.allow_studentbladet.errors }}
               <label class="form-check-label pl-2" for="{{ form.allow_studentbladet.id_for_label }}">
                 {{ form.allow_studentbladet }}
-                Jag vill få <a href="https://stbl.fi">Studentbladet</a> hemskickad och tillåter att<br />
-                mina uppgifter utlämnas till Studentbladets redaktion
+                Jag vill prenumerera på <a href="https://stbl.fi">Studentbladet</a> och tillåter att mina uppgifter utlämnas till Studentbladets redaktion
                 <a
                   class="a-tooltip"
                   href="https://www.stbl.fi/"
@@ -168,7 +175,7 @@
                   href="javascript:;"
                   data-toggle="tooltip"
                   data-placement="top"
-                  title="Uppgifter som utlämnas till Studentbladets redaktion är följande: förnamn, efternamn, hemadress, postnummer, stad och land."
+                  title="Uppgifter som utlämnas till Studentbladets redaktion är följande: fullständigt namn och hemadress"
                 >
                   <i class="fa fa-info-circle" aria-hidden="true"></i>
                 </a>
