@@ -1,5 +1,6 @@
 from members.models import *
 from members.utils import *
+from members.validators import CommonValidators
 from registration.models import Applicant
 from django.forms import ModelForm, DateField, CharField, ChoiceField, Textarea
 from django.forms.utils import ErrorList
@@ -23,7 +24,7 @@ class BSModelForm(ModelForm):
                 field.widget.attrs['class'] = 'form-control'
 
 
-class MemberForm(BSModelForm):
+class MemberForm(BSModelForm, CommonValidators):
     class Meta:
         model = Member
         fields = '__all__'
@@ -38,6 +39,10 @@ class MemberForm(BSModelForm):
         kwargs.setdefault('auto_id', 'mform_%s')
 
         super(MemberForm, self).__init__(*args, **kwargs)
+
+    def clean(self):
+        BSModelForm.clean(self)
+        CommonValidators.clean(self)
 
 
 class GroupTypeForm(BSModelForm):
