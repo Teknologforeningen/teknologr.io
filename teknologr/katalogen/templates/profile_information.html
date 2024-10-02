@@ -75,9 +75,10 @@
         <th>
           Färdigbliven
           {{ form.graduated.errors }}
+          {{ form.graduated_year.errors }}
         </th>
         <td class="text-right">
-          {% firstof form.graduated person.graduated_text %}
+          {% firstof form.graduated_year person.graduated_text %}
         </td>
       </tr>
       {% endif %}

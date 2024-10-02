@@ -85,7 +85,7 @@ class CommonValidators:
             self.cleaned_data['graduated'] = True
 
         # Some validation of various years, for the sake of minimizing mistakes
-        birth_date = self.cleaned_data.get('birth_date')
+        birth_date = self.cleaned_data.get('birth_date') or (self.instance.birth_date if self.instance else None)
         birth_year = birth_date.year if birth_date else None
         this_year = datetime.now().year
 
@@ -99,4 +99,4 @@ class CommonValidators:
             self.add_error('enrolment_year', f'Inskrivningsåret kan inte vara i framtiden eller för snabbt efter födelseåret')
 
         if not in_range(graduated_year, enrolment_year or minimum, this_year):
-            self.add_error('graduated_year', 'Utexamineringsåret kan inte vara i framtiden eller före inskrivningsåret')
+            self.add_error('graduated_year', 'Utexamineringsåret kan inte vara i framtiden eller före födelseåret/inskrivningsåret')
