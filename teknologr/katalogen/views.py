@@ -50,7 +50,7 @@ def search(request):
 @login_required
 def profile(request, member_id):
     """
-    View the public profile of a user. All details will be shown if the user allows it, or if this is the user's own profile.
+    View the public profile of a member. All details will be shown if the user allows it, or if this is the user's own profile.
 
     URL query parameters available:
      - combine=<0/1>: Whether or not to combine the same Functionaries and GroupMemberships into a single row. The ordering will switch to lexicographical instead of reversed date as well.
