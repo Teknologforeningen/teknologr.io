@@ -192,7 +192,7 @@ class MemberTest(TestCase):
         # Wappen kom, phuxen är inte mera phux!
         ph.end_date = date(2012, 4, 30)
         ph.save()
-        self.assertEquals('Phux: 2012-09-01 - 2012-04-30', str(ph))
+        self.assertEquals('Phux: 2012-09-01 – 2012-04-30', str(ph))
         self.assertFalse(member.shouldBeStalm())
 
         # Our person became JuniorStÄlM :O
@@ -203,7 +203,7 @@ class MemberTest(TestCase):
         # Our person is now finished with his/her studies
         om.end_date = date(2019, 4, 30)
         om.save()
-        self.assertEquals('Ordinarie Medlem: 2012-09-27 - 2019-04-30', str(om))
+        self.assertEquals('Ordinarie Medlem: 2012-09-27 – 2019-04-30', str(om))
 
         # member type should be nothing ('') now
         self.assertEquals('', member.current_member_type)
@@ -336,16 +336,16 @@ class GroupTest(TestCase):
         )
 
     def test_str(self):
-        self.assertEqual('Group Type: 2023-01-01 - 2023-06-14', str(self.group1))
-        self.assertEqual('Group Type: 2023-06-14 - 2023-12-31', str(self.group2))
-        self.assertEqual('Group Type: 2023-01-01 - 2023-12-31', str(self.group3))
-        self.assertEqual('Group Type: 2022-01-01 - 2024-12-31', str(self.group4))
+        self.assertEqual('Group Type: 2023-01-01 – 2023-06-14', str(self.group1))
+        self.assertEqual('Group Type: 2023-06-14 – 2023-12-31', str(self.group2))
+        self.assertEqual('Group Type: 2023-01-01 – 2023-12-31', str(self.group3))
+        self.assertEqual('Group Type: 2022-01-01 – 2024-12-31', str(self.group4))
 
     def test_duration(self):
-        self.assertEqual('1 januari - 14 juni 2023', str(self.group1.duration))
-        self.assertEqual('14 juni - 31 december 2023', str(self.group2.duration))
+        self.assertEqual('1 januari – 14 juni 2023', str(self.group1.duration))
+        self.assertEqual('14 juni – 31 december 2023', str(self.group2.duration))
         self.assertEqual('2023', str(self.group3.duration))
-        self.assertEqual('2022-2024', str(self.group4.duration))
+        self.assertEqual('2022–2024', str(self.group4.duration))
 
 class GroupOrderTest(BaseTest):
     def setUp(self):
@@ -440,16 +440,16 @@ class FunctionaryTest(BaseTest):
         )
 
     def test_str(self):
-        self.assertEqual('Functionary Type: 2023-01-01 - 2023-06-14, Foo B Tester', str(self.functionary1))
-        self.assertEqual('Functionary Type: 2023-06-14 - 2023-12-31, Foo B Tester', str(self.functionary2))
-        self.assertEqual('Functionary Type: 2023-01-01 - 2023-12-31, Foo B Tester', str(self.functionary3))
-        self.assertEqual('Functionary Type: 2022-01-01 - 2024-12-31, Foo B Tester', str(self.functionary4))
+        self.assertEqual('Functionary Type: 2023-01-01 – 2023-06-14, Foo B Tester', str(self.functionary1))
+        self.assertEqual('Functionary Type: 2023-06-14 – 2023-12-31, Foo B Tester', str(self.functionary2))
+        self.assertEqual('Functionary Type: 2023-01-01 – 2023-12-31, Foo B Tester', str(self.functionary3))
+        self.assertEqual('Functionary Type: 2022-01-01 – 2024-12-31, Foo B Tester', str(self.functionary4))
 
     def test_duration(self):
-        self.assertEqual('1 januari - 14 juni 2023', str(self.functionary1.duration))
-        self.assertEqual('14 juni - 31 december 2023', str(self.functionary2.duration))
+        self.assertEqual('1 januari – 14 juni 2023', str(self.functionary1.duration))
+        self.assertEqual('14 juni – 31 december 2023', str(self.functionary2.duration))
         self.assertEqual('2023', str(self.functionary3.duration))
-        self.assertEqual('2022-2024', str(self.functionary4.duration))
+        self.assertEqual('2022–2024', str(self.functionary4.duration))
 
 class FunctionaryOrderTest(BaseTest):
     def setUp(self):
@@ -541,7 +541,7 @@ class MemberTypeTest(BaseTest):
         )
 
     def test_str(self):
-        self.assertEqual('Ordinarie Medlem: 2023-01-01 - 2023-06-14', str(self.member_type1))
+        self.assertEqual('Ordinarie Medlem: 2023-01-01 – 2023-06-14', str(self.member_type1))
         self.assertEqual('Ordinarie Medlem: 2023-06-14 ->', str(self.member_type2))
 
 

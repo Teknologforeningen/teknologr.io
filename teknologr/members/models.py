@@ -772,8 +772,8 @@ class MemberType(SuperClass):
     type = models.CharField(max_length=2, choices=TYPES, default="PH")
 
     def __str__(self):
-        s = f'{self.get_type_display()}: {self.begin_date} –'
-        s += f' {self.end_date}' if self.end_date else '>'
+        s = f'{self.get_type_display()}: {self.begin_date} '
+        s += f'– {self.end_date}' if self.end_date else '->'
         return s
 
     @classmethod
