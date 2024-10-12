@@ -246,6 +246,30 @@ class Member(SuperClass):
         return "Ja" if self.graduated else "Nej"
 
     @property
+    def studytime_text(self):
+        if self.graduated_year:
+            return f"{self.enrolment_year or ''}–{self.graduated_year}"
+        if self.graduated:
+            return f"{self.enrolment_year or ''}–?"
+        if self.enrolment_year:
+            return f"{self.enrolment_year}–"
+        return ""
+
+    @property
+    def omembertime_text(self):
+        for t in self.member_types.all():
+            if t.type == "OM":
+                return f"{t.begin_date.year if t.begin_date else '?'}–{t.end_date.year if t.end_date else ''}"
+        return ""
+
+    @property
+    def smembertime_text(self):
+        for t in self.member_types.all():
+            if t.type == "ST":
+                return f"{t.begin_date.year if t.begin_date else '?'}–{t.end_date.year if t.end_date else ''}"
+        return ""
+
+    @property
     def subscribed_to_modulen_text(self):
         return "Ja" if self.subscribed_to_modulen else "Nej"
 

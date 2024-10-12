@@ -34,3 +34,10 @@
 .order-by {
     cursor: pointer;
 }
+
+/* .text-right comes from Bootstrap, and is used (at least) on the member profile pages. This addition makes sure that the text in a table cell can be replaced with an input field (not checkbox) without the row changing size. */
+.text-right:has(input):has(.form-control) {
+  vertical-align: middle !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}

@@ -123,6 +123,8 @@ def profile_edit(request, member_id):
     else:
         form = EditProfileForm(instance=member)
 
+    # XXX: Due to the "public name" in the header depends on whether or contact information is shared, it might happen that the header need to be updated if the user changes his settings... This does not happen currently.
+
     return render(request, 'profile_information.html', {
         'form': form,
         'own_profile': True,
