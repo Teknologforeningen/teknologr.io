@@ -529,7 +529,7 @@ class Group(SuperClass):
     end_date = models.DateField()
 
     def __str__(self):
-        return f'{self.grouptype}: {self.begin_date} - {self.end_date}'
+        return f'{self.grouptype}: {self.begin_date} – {self.end_date}'
 
     @property
     def n_members(self):
@@ -652,7 +652,7 @@ class Functionary(SuperClass):
         unique_together = (("member", "functionarytype", "begin_date", "end_date"),)
 
     def __str__(self):
-        return f'{self.functionarytype}: {self.begin_date} - {self.end_date}, {self.member}'
+        return f'{self.functionarytype}: {self.begin_date} – {self.end_date}, {self.member}'
 
     @property
     def duration(self):
@@ -773,7 +773,7 @@ class MemberType(SuperClass):
     type = models.CharField(max_length=2, choices=TYPES, default="PH")
 
     def __str__(self):
-        s = f'{self.get_type_display()}: {self.begin_date} -'
+        s = f'{self.get_type_display()}: {self.begin_date} –'
         s += f' {self.end_date}' if self.end_date else '>'
         return s
 
