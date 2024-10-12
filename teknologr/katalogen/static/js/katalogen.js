@@ -95,7 +95,7 @@ $(document).ready(() => {
     /**
      * Make the searchbox into a filter too, filtering all table rows on the page.
      */
-    $("#searchbox").on("input", event => {
+    $("#searchboxfilter").on("input", event => {
         const queries = event.target.value.toLowerCase().split(" ").filter(s => s);
         $("tbody tr").each((_, e) => {
             const str = e.children[0].textContent.toLowerCase();

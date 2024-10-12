@@ -2,9 +2,9 @@
 
 {% block content %}
 {% if home %}
-{% include "searchbar.html" with search=1 placeholder="Sök personer" %}
+{% include "searchbar.html" with search=1 alphabet=1 placeholder="Sök personer" %}
 {% else %}
-{% include "searchbar.html" with search=1 placeholder="Filtrera eller sök personer" %}
+{% include "searchbar.html" with search=1 filter=1 alphabet=1 placeholder="Filtrera eller sök personer" %}
 {% endif %}
 <div class="row">
   {% if home %}
