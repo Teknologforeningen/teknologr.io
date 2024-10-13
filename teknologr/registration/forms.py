@@ -2,6 +2,8 @@ from django import forms
 from django.utils.translation import gettext as _
 from registration.models import Applicant
 from registration.labels import MEMBERSHIP_FORM_LABELS
+from members.forms import BSModelForm
+from members.validators import CommonValidators
 from members.programmes import DEGREE_PROGRAMME_CHOICES
 from datetime import datetime
 from members.models import Member
@@ -20,7 +22,7 @@ class DateInput(forms.DateInput):
     input_type = 'date'
 
 
-class RegistrationForm(forms.ModelForm):
+class RegistrationForm(BSModelForm, CommonValidators):
     class Meta:
         model = Applicant
         fields = '__all__'
@@ -39,6 +41,7 @@ class RegistrationForm(forms.ModelForm):
         self.fields['username'].required = False
         # Specify required fields
         self.fields['country'].required = True
+        # XXX: Why is address required in this form?
 
     def _set_attributes(self):
         for fname, f in self.fields.items():
@@ -61,18 +64,11 @@ class RegistrationForm(forms.ModelForm):
             widget=forms.widgets.TextInput(attrs={'placeholder': degree_programme_label}))
 
     def clean(self):
-        cleaned_data = super().clean()
-
-        preferred_name = cleaned_data.get('preferred_name')
-        if preferred_name and (' ' in preferred_name or preferred_name not in cleaned_data.get('given_names')):
-            self.add_error('preferred_name', 'Tilltalsnamnet måste vara ett av förnamnen')
-
-        enrolment_year = cleaned_data.get('enrolment_year')
-        if enrolment_year and enrolment_year > datetime.now().year:
-            self.add_error('enrolment_year', 'Inskrivningsåret kan inte vara i framtiden')
+        forms.ModelForm.clean(self)
+        CommonValidators.clean(self)
 
         # Check if the username is taken if one was provided in the application
-        username = cleaned_data.get('username')
+        username = self.cleaned_data.get('username')
         if username:
             if Member.objects.filter(username=username).exists():
                 self.add_error('username', 'Användarnamnet är inte ledigt')

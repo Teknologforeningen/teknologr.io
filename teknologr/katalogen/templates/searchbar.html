@@ -4,19 +4,28 @@
       {% if search %}
       <form id="searchform" action="{% url 'katalogen:search' %}" method="get" accept-charset="utf-8">
         <div class="input-group" id="adv-search">
-          <input type="text" id="searchbox" class="form-control" placeholder="{{ placeholder }}"" name="q" autofocus/>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="{{ placeholder }}"
+            name="q"
+            autofocus
+            {% if filter %}
+            id="searchboxfilter"
+            {% endif %}
+          />
           <div class="input-group-append">
             <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i></button>
           </div>
         </div>
       </form>
-      {% else %}
-      <input type="text" id="searchbox" class="form-control" placeholder="{{ placeholder }}"" autofocus/>
+      {% elif filter %}
+      <input type="text" id="searchboxfilter" class="form-control" placeholder="{{ placeholder }}" autofocus/>
       {% endif %}
     </div>
   </div>
 </div>
-{% if search %}
+{% if alphabet %}
 <div class="row">
   <div class="alphabet text-center col-12">
     {% for letter in abc %}

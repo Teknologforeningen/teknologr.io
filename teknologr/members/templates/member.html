@@ -48,74 +48,85 @@
           <div class="row form-group">
             <div class="col-md-5">
               <label for="{{form.given_names.id_for_label}}">Förnamn</label>
-              {%if form.given_names.errors %}<div class="alert alert-danger">{{form.given_names.errors}}</div>{%endif%}
               {{form.given_names}}
+              {{form.given_names.errors}}
             </div>
+
             <div class="col-md-3">
               <label for="{{form.preferred_name.id_for_label}}">Tilltalsnamn</label>
-              {%if form.preferred_name.errors %}<div class="alert alert-danger">{{form.preferred_name.errors}}</div>{%endif%}
               {{form.preferred_name}}
+              {{form.preferred_name.errors}}
             </div>
+
             <div class="col-md-4">
               <label for="{{form.surname.id_for_label}}">Efternamn</label>
-              {%if form.surname.errors %}<div class="alert alert-danger">{{form.surname.errors}}</div>{%endif%}
               {{form.surname}}
+              {{form.surname.errors}}
             </div>
           </div>
+
           <div class="row form-group">
             <div class="col-md-5">
               <label for="{{form.street_address.id_for_label}}">Gatuadress</label>
-              {%if form.street_address.errors %}<div class="alert alert-danger">{{form.street_address.errors}}</div>{%endif%}
               {{form.street_address}}
+              {{form.street_address.errors}}
             </div>
+
             <div class="col-md-2">
               <label for="{{form.postal_code.id_for_label}}">Postnummer</label>
-              {%if form.postal_code.errors %}<div class="alert alert-danger">{{form.postal_code.errors}}</div>{%endif%}
               {{form.postal_code}}
+              {{form.postal_code.errors}}
             </div>
+
             <div class="col-md-2">
               <label for="{{form.city.id_for_label}}">Postanstalt</label>
-              {%if form.city.errors %}<div class="alert alert-danger">{{form.city.errors}}</div>{%endif%}
               {{form.city}}
+              {{form.city.errors}}
             </div>
+
             <div class="col-md-3">
               <label for="{{form.country.id_for_label}}">Land</label>
-              {%if form.country.errors %}<div class="alert alert-danger">{{form.country.errors}}</div>{%endif%}
               {{form.country}}
+              {{form.country.errors}}
             </div>
           </div>
+
           <div class="row form-group">
             <div class="col-md-3">
-              <label for="{{form.mobile_phone.id_for_label}}">Telefonnummer</label>
-              {%if form.phone.errors %}<div class="alert alert-danger">{{form.phone.errors}}</div>{%endif%}
+              <label for="{{form.phone.id_for_label}}">Telefonnummer</label>
               {{form.phone}}
+              {{form.phone.errors}}
             </div>
+
             <div class="col-md-5">
               <label for="{{form.email.id_for_label}}">E-postadress</label>
-              {%if form.email.errors %}<div class="alert alert-danger">{{form.email.errors}}</div>{%endif%}
               {{form.email}}
+              {{form.email.errors}}
             </div>
+
             <div class="col-md-4">
               <label for="{{form.birth_date.id_for_label}}">Födelsedatum</label>
-              {%if form.birth_date.errors %}<div class="alert alert-danger">{{form.birth_date.errors}}</div>{%endif%}
               {{form.birth_date}}
+              {{form.birth_date.errors}}
             </div>
           </div>
+
           <div class="row form-group">
             <div class="col-md-3">
               <label for="{{form.student_id.id_for_label}}">Studienummer</label>
-              {%if form.student_id.errors %}<div class="alert alert-danger">{{form.student_id.errors}}</div>{%endif%}
               {{form.student_id}}
+              {{form.student_id.errors}}
             </div>
+
             <div class="col-md-3">
               <label for="{{form.enrolment_year.id_for_label}}">Inskrivningsår vid Aalto</label>
-              {%if form.enrolment_year.errors %}<div class="alert alert-danger">{{form.enrolment_year.errors}}</div>{%endif%}
               {{form.enrolment_year}}
+              {{form.enrolment_year.errors}}
             </div>
+
             <div class="col-md-6">
               <label for="{{form.degree_programme.id_for_label}}">Studieinriktning</label>
               <a href="https://wiki.teknologforeningen.fi/itwiki/index.php/Medlemsregister#Studieprogramslistan" target="_blank" class="glyphicon glyphicon-info-sign text-info" data-toggle="tooltip" data-original-title="Välj alltid om möjligt ett alternativ från listan. Om listan behöver ändras, klicka på denna ikon för att se instruktioner till det."></a>
-              {%if form.degree_programme.errors %}<div class="alert alert-danger">{{form.degree_programme.errors}}</div>{%endif%}
               <select id="{{form.degree_programme.auto_id}}" autocomplete="off" class="form-control es-input" name="{{form.degree_programme.html_name}}">
                 {% for option in programmes %}
                 <option{% if option == form.degree_programme.value %} selected {% endif %}>{{option}}</option>
@@ -124,52 +135,61 @@
                 <option selected>{{form.degree_programme.value}}</option>
                 {% endif %}
               </select>
+              {{form.degree_programme.errors}}
             </div>
           </div>
+
           <div class="row form-group">
             <div class="col-md-2 form-check">
               <label class="form-check-label" for="{{form.graduated.id_for_label}}">
-                {%if form.graduated.errors %}<div class="alert alert-danger">{{form.graduated.errors}}</div>{%endif%}
                 {{form.graduated}} Utexaminerad
               </label>
+              {{form.graduated.errors}}
             </div>
+
             <div class="col-md-2">
               <label for="{{form.graduated_year.id_for_label}}">År Utexaminerad</label>
-              {%if form.graduated_year.errors %}<div class="alert alert-danger">{{form.graduated_year.errors}}</div>{%endif%}
               {{form.graduated_year}}
+              {{form.graduated_year.errors}}
             </div>
+
             <div class="col-md-2 form-check">
               <label class="form-check-label" for="{{form.subscribed_to_modulen.id_for_label}}">
-                {%if form.subscribed_to_modulen.errors %}<div class="alert alert-danger">{{form.subscribed_to_modulen.errors}}</div>{%endif%}
-                {{form.subscribed_to_modulen}} Vill ha modulen hemskickad
+                {{form.subscribed_to_modulen}} Prenumerera på Modulen
               </label>
+              {{form.subscribed_to_modulen.errors}}
             </div>
-            <div class="col-md-2 form-check">
-              <label class="form-check-label" for="{{form.allow_publish_info.id_for_label}}">
-                {%if form.allow_publish_info.errors %}<div class="alert alert-danger">{{form.allow_publish_info.errors}}</div>{%endif%}
-                {{form.allow_publish_info}} Tillåter utlämning av uppgifter
-              </label>
-            </div>
+
             <div class="col-md-2 form-check">
               <label class="form-check-label" for="{{form.allow_studentbladet.id_for_label}}">
-                {%if form.allow_studentbladet.errors %}<div class="alert alert-danger">{{form.allow_studentbladet.errors}}</div>{%endif%}
-                {{form.allow_studentbladet}} Vill ha Studentbladet hemskickad
+                {{form.allow_studentbladet}} Prenumerera på Studentbladet
               </label>
+              {{form.allow_studentbladet.errors}}
             </div>
+
+            <div class="col-md-2 form-check">
+              <label class="form-check-label" for="{{form.allow_publish_info.id_for_label}}">
+                {{form.allow_publish_info}} Tillåter utlämning av uppgifter
+              </label>
+              {{form.allow_publish_info.errors}}
+            </div>
+
             <div class="col-md-2 form-check">
               <label class="form-check-label" for="{{form.dead.id_for_label}}">
-                {%if form.dead.errors %}<div class="alert alert-danger">{{form.dead.errors}}</div>{%endif%}
                 {{form.dead}} Avliden
               </label>
+              {{form.dead.errors}}
             </div>
           </div>
+
           <div class="row">
             <div class ="col-md-12">
               <label for="{{ form.comment.id_for_label }}">Kommentar</label>
-              {% if form.comment.errors %}<div class="alert alert-danger">{{ form.comment.errors }}</div>{%endif%}
               {{ form.comment }}
+              {{ form.comment.errors }}
             </div>
           </div>
+
           <div class="row mt-4">
             <div class="col-md-12">
               <button type="submit" class="btn btn-success">Spara</button>

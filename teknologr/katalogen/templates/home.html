@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="{% static 'css/katalogen.css' %}">
   </head>
 
-  <body>
+  <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
     <nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top">
       <a class="navbar-brand" href="{% url 'katalogen:home' %}">Katalogen</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,6 +69,9 @@
     <!-- jQuery and Bootstrap JS files, needed for collapsible navbar -->
     <script src="{% static 'assets/js/jquery-3.3.1.min.js' %}"></script>
     <script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+
+    <!-- HTMX -->
+    <script src="{% static 'assets/js/htmx-2.0.2.min.js' %}"></script>
 
     <!-- Our own JS files -->
     <script src="{% static 'js/katalogen.js' %}"></script>

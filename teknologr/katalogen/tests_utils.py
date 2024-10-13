@@ -15,18 +15,18 @@ class DurationTests(TestCase):
         self.assertEqual('1 januari 1998', Duration(self.d1, self.d1).to_string())
 
     def test_same_month(self):
-        self.assertEqual('1-30 januari 1998', Duration(self.d1, self.d2).to_string())
+        self.assertEqual('1–30 januari 1998', Duration(self.d1, self.d2).to_string())
 
     def test_same_year(self):
-        self.assertEqual('30 januari - 31 december 1998', Duration(self.d2, self.d3).to_string())
+        self.assertEqual('30 januari – 31 december 1998', Duration(self.d2, self.d3).to_string())
 
     def test_whole_years(self):
         self.assertEqual('1998', Duration(self.d1, self.d3).to_string())
-        self.assertEqual('1998-2000', Duration(self.d1, self.d4).to_string())
+        self.assertEqual('1998–2000', Duration(self.d1, self.d4).to_string())
 
     def test_no_simplification(self):
-        self.assertEqual('1 januari 1998 - 7 juli 2001', Duration(self.d1, self.d5).to_string())
-        self.assertEqual('7 juli 2001 - 31 december 2002', Duration(self.d5, self.d6).to_string())
+        self.assertEqual('1 januari 1998 – 7 juli 2001', Duration(self.d1, self.d5).to_string())
+        self.assertEqual('7 juli 2001 – 31 december 2002', Duration(self.d5, self.d6).to_string())
 
 class MultiDurationTests(TestCase):
     def test_not_overlapping(self):
@@ -75,6 +75,6 @@ class MultiDurationTests(TestCase):
         result = [(r[0], r[1].to_string()) for r in result]
         self.assertEqual([
             (9, '2000'),
-            (1, '1-31 januari 2000, 1 mars - 31 juli 2000, 1-30 september 2000'),
+            (1, '1–31 januari 2000, 1 mars – 31 juli 2000, 1–30 september 2000'),
             (8, '2000'),
         ], result)

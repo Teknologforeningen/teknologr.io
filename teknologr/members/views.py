@@ -6,10 +6,11 @@ from members.forms import *
 from members.programmes import DEGREE_PROGRAMME_CHOICES
 from registration.models import Applicant
 from registration.forms import RegistrationForm
-from api.ldap import LDAPAccountManager
+from api.ldap import LDAPAccountManager, LDAPError_to_string
 from api.bill import BILLAccountManager
 from getenv import env
 from locale import strxfrm
+from ldap import LDAPError
 
 
 def set_side_context(context, category, active_obj=None):
@@ -76,8 +77,6 @@ def member(request, member_id):
     if request.method == 'POST':
         form = MemberForm(request.POST, instance=member)
         if form.is_valid():
-            from ldap import LDAPError
-            from api.ldap import LDAPError_to_string
             try:
                 form.save()
             except LDAPError as e:

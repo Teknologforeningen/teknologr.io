@@ -102,3 +102,9 @@ img#tf-logo {
 #more-info:after {
    content: attr(toggle-icon);
 }
+
+.errorlist {
+    padding: 10px;
+    list-style-type: none;
+    font-weight: bold;
+}
