@@ -1,0 +1,24 @@
+networks:
+  backend:
+
+
+services:
+  server:
+    build: .
+    ports:
+      - "8888:8888"
+    depends_on:
+      - db
+    security_opt:
+      - seccomp:unconfined
+    networks:
+      - backend
+    volumes:
+      - ./:/app
+  db:
+    image: "postgres"
+    networks:
+      - backend
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    privileged: true
