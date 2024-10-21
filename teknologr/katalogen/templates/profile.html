@@ -32,9 +32,23 @@
             </td>
           </tr>
           <tr>
+            <th>LDAP-grupper</th>
+            <td class="text-right">
+              <span class="monospace">{{ person.get_ldap_groups|join:', ' }}</span>
+            </td>
+          </tr>
+          <tr>
             <th>BILL-konto</th>
             <td class="text-right">
               <span class="monospace">{{ person.bill_code|default:'' }}</span>
+            </td>
+          </tr>
+          <tr>
+            <th>BILL-saldo</th>
+            <td class="text-right">
+              {% if bill_balance %}
+                {{ bill_balance }} €
+              {% endif %}
             </td>
           </tr>
         </tbody>

@@ -10,6 +10,9 @@ from operator import attrgetter
 from datetime import date
 from katalogen.utils import *
 from members.utils import *
+from api.bill import BILLAccountManager
+from api.ldap import LDAPAccountManager
+from ldap import LDAPError
 
 
 class SuperClass(models.Model):
@@ -298,6 +301,26 @@ class Member(SuperClass):
             return self.count_group_memberships
         return self.group_memberships.count()
 
+    def get_ldap_groups(self):
+        if not self.username:
+            return []
+
+        try:
+            with LDAPAccountManager() as lm:
+                return lm.get_user_groups(self.username)
+        except:
+            return []
+
+    def get_bill_balance(self):
+        if not self.bill_code:
+            return None
+
+        bm = BILLAccountManager()
+        try:
+            return bm.get_account_by_code(self.bill_code)['balance']
+        except:
+            return None
+
     def save(self, *args, **kwargs):
         if not self.username:
             self.username = None
@@ -307,8 +330,6 @@ class Member(SuperClass):
         # Sync email to LDAP if changed
         error = None
         if self.username and self.email != self._original_email:
-            from api.ldap import LDAPAccountManager
-            from ldap import LDAPError
             try:
                 with LDAPAccountManager() as lm:
                     # Skip syncing email to LDAP if the LDAP account does not exist

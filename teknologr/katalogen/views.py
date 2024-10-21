@@ -75,6 +75,9 @@ def profile(request, member_id):
         gt_durations = MultiDuration.combine_per_key(gt_durations)
 
     own_profile = person.username == request.user.username
+    bill_balance = None
+    if own_profile:
+        bill_balance = person.get_bill_balance()
 
     return render(request, 'profile.html', {
         **_get_base_context(request),
@@ -82,6 +85,7 @@ def profile(request, member_id):
         'own_profile': own_profile,
         'show_all': own_profile or person.showContactInformation(),
         'person': person,
+        'bill_balance': bill_balance,
         'combined': combine,
         'functionary_type_durations': ft_durations,
         'group_type_durations': gt_durations,
