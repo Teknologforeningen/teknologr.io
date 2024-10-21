@@ -123,7 +123,7 @@ def profile_edit(request, member_id):
                 form.save()
                 form = None
             except LDAPError:
-                form.add_error('email', 'E-postadressen kunde tyvärr inte uppdateras, vänligen kontakta en administrator')
+                form.add_error('email', 'E-postadressen kunde tyvärr inte uppdateras, vänligen kontakta en administratör')
     else:
         form = EditProfileForm(instance=member)
 
