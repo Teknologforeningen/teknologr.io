@@ -150,42 +150,6 @@
       </tr>
     </tbody>
   </table>
-
-  <h5>Övrig privat information</h5>
-  <table class="table table-striped table-borderless">
-    <tbody>
-      <tr>
-        <th>
-          Födelsedatum
-          {{ form.birth_date.errors }}
-        </th>
-        <td class="text-right">
-          {% firstof form.birth_date person.birth_date %}
-        </td>
-      </tr>
-      <tr>
-        <th>
-          Studienummer
-          {{ form.student_id.errors }}
-        </th>
-        <td class="text-right">
-          {% firstof form.student_id person.student_id %}
-        </td>
-      </tr>
-      <tr>
-        <th>Användarnamn</th>
-        <td class="text-right">
-          <span class="monospace">{{ person.username|default:'' }}</span>
-        </td>
-      </tr>
-      <tr>
-        <th>BILL-konto</th>
-        <td class="text-right">
-          <span class="monospace">{{ person.bill_code|default:'' }}</span>
-        </td>
-      </tr>
-    </tbody>
-  </table>
   {% endif %}
 
   {% if form %}

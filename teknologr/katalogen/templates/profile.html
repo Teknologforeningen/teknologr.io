@@ -13,6 +13,34 @@
   <div class="row">
     {% include 'profile_information.html' %}
     <div class="col-12 col-lg-5">
+      {% if own_profile %}
+      <h5>Övrig privat information</h5>
+      <table class="table table-striped table-borderless">
+        <tbody>
+          <tr>
+            <th>Födelsedatum</th>
+            <td class="text-right">{{ person.birth_date|default:'' }}</td>
+          </tr>
+          <tr>
+            <th>Studienummer</th>
+            <td class="text-right">{{ person.student_id|default:'' }}</td>
+          </tr>
+          <tr>
+            <th>LDAP-användarnamn</th>
+            <td class="text-right">
+              <span class="monospace">{{ person.username|default:'' }}</span>
+            </td>
+          </tr>
+          <tr>
+            <th>BILL-konto</th>
+            <td class="text-right">
+              <span class="monospace">{{ person.bill_code|default:'' }}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      {% endif %}
+
       {% if decoration_ownerships %}
       <h3>Betygelser</h3>
       <table class="table table-striped table-borderless table-sm">
