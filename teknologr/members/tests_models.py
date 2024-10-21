@@ -179,13 +179,13 @@ class MemberTest(TestCase):
         ph.save()
         # A 'Phux' is not a real member type and should return ''
         self.assertEquals('', member.current_member_type)
-        self.assertFalse(member.isValidMember())
+        self.assertFalse(member.is_valid_member())
 
         # Make our person a 'real member'
         om = MemberType(member=member, type='OM', begin_date=date(2012, 9, 27))
         om.save()
         self.assertEquals('Ordinarie Medlem', member.current_member_type)
-        self.assertTrue(member.isValidMember())
+        self.assertTrue(member.is_valid_member())
 
         self.assertEquals('Ordinarie Medlem: 2012-09-27 ->', str(om))
 
@@ -193,12 +193,12 @@ class MemberTest(TestCase):
         ph.end_date = date(2012, 4, 30)
         ph.save()
         self.assertEquals('Phux: 2012-09-01 – 2012-04-30', str(ph))
-        self.assertFalse(member.shouldBeStalm())
+        self.assertFalse(member.should_be_stalm())
 
         # Our person became JuniorStÄlM :O
         js = MemberType(member=member, type='JS', begin_date=date(2017, 10, 15))
         js.save()
-        self.assertFalse(member.shouldBeStalm())
+        self.assertFalse(member.should_be_stalm())
 
         # Our person is now finished with his/her studies
         om.end_date = date(2019, 4, 30)
@@ -208,7 +208,7 @@ class MemberTest(TestCase):
         # member type should be nothing ('') now
         self.assertEquals('', member.current_member_type)
         # and person should become StÄlM now
-        self.assertTrue(member.shouldBeStalm())
+        self.assertTrue(member.should_be_stalm())
 
         fg = MemberType(member=member, type='FG', begin_date=date(2019, 5, 1))
         fg.save()
@@ -216,7 +216,7 @@ class MemberTest(TestCase):
         st = MemberType(member=member, type='ST', begin_date=date(2019, 5, 16))
         st.save()
         self.assertEquals('StÄlM', member.current_member_type)
-        self.assertFalse(member.shouldBeStalm())
+        self.assertFalse(member.should_be_stalm())
 
 
 class MemberOrderTest(BaseTest):

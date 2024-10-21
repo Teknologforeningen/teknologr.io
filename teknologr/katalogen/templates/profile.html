@@ -5,9 +5,9 @@
 <div class="container-fluid">
   <h1 class="page-header">
     {% if is_staff %}
-      <a class="admin-link" href="{% url 'admin:member' person.id %}">{{ person.public_full_name }}</a>
+      <a class="admin-link" href="{% url 'admin:member' member.id %}">{{ member.public_full_name }}</a>
     {% else %}
-      {{ person.public_full_name }}
+      {{ member.public_full_name }}
     {% endif %}
   </h1>
   <div class="row">
@@ -19,28 +19,28 @@
         <tbody>
           <tr>
             <th>Födelsedatum</th>
-            <td class="text-right">{{ person.birth_date|default:'' }}</td>
+            <td class="text-right">{{ member.birth_date|default:'' }}</td>
           </tr>
           <tr>
             <th>Studienummer</th>
-            <td class="text-right">{{ person.student_id|default:'' }}</td>
+            <td class="text-right">{{ member.student_id|default:'' }}</td>
           </tr>
           <tr>
             <th>LDAP-användarnamn</th>
             <td class="text-right">
-              <span class="monospace">{{ person.username|default:'' }}</span>
+              <span class="monospace">{{ member.username|default:'' }}</span>
             </td>
           </tr>
           <tr>
             <th>LDAP-grupper</th>
             <td class="text-right">
-              <span class="monospace">{{ person.get_ldap_groups|join:', ' }}</span>
+              <span class="monospace">{{ member.get_ldap_groups|join:', ' }}</span>
             </td>
           </tr>
           <tr>
             <th>BILL-konto</th>
             <td class="text-right">
-              <span class="monospace">{{ person.bill_code|default:'' }}</span>
+              <span class="monospace">{{ member.bill_code|default:'' }}</span>
             </td>
           </tr>
           <tr>

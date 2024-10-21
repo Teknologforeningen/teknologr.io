@@ -680,7 +680,7 @@ def dump_modulen(request):
     if connection.vendor == 'postgresql':
         recipients = recipients.distinct('street_address', 'city')
 
-    recipients = [x for x in recipients if x.isValidMember()]
+    recipients = [x for x in recipients if x.is_valid_member()]
 
     content = [{
         'given_names': recipient.given_names,
@@ -813,7 +813,7 @@ def dump_reg_emails(request):
 @api_view(['GET'])
 def dump_studentbladet(request):
     recipients = Member.objects.exclude(dead=True).filter(allow_studentbladet=True)
-    recipients = [m for m in recipients if m.isValidMember()]
+    recipients = [m for m in recipients if m.is_valid_member()]
 
     content = [{
         'name': recipient.full_name,

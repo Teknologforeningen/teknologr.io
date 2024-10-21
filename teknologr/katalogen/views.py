@@ -43,7 +43,7 @@ def search(request):
 
     return render(request, 'browse.html', {
         **_get_base_context(request),
-        'persons': result,
+        'members': result,
     })
 
 
@@ -55,9 +55,9 @@ def profile(request, member_id):
     URL query parameters available:
      - combine=<0/1>: Whether or not to combine the same Functionaries and GroupMemberships into a single row. The ordering will switch to lexicographical instead of reversed date as well.
     """
-    person = Member.objects.get_prefetched_or_404(member_id)
-    functionaries = list(person.functionaries.all())
-    group_memberships = list(person.group_memberships.all())
+    member = Member.objects.get_prefetched_or_404(member_id)
+    functionaries = list(member.functionaries.all())
+    group_memberships = list(member.group_memberships.all())
 
     combine = request.GET.get('combine', '0') != '0'
 
@@ -74,22 +74,22 @@ def profile(request, member_id):
         ft_durations = MultiDuration.combine_per_key(ft_durations)
         gt_durations = MultiDuration.combine_per_key(gt_durations)
 
-    own_profile = person.username == request.user.username
+    own_profile = member.username == request.user.username
     bill_balance = None
     if own_profile:
-        bill_balance = person.get_bill_balance()
+        bill_balance = member.get_bill_balance()
 
     return render(request, 'profile.html', {
         **_get_base_context(request),
         # XXX: Could use MemberSerializerPartial to remove any unwanted fields for real instead of just not showing them
         'own_profile': own_profile,
-        'show_all': own_profile or person.showContactInformation(),
-        'person': person,
+        'show_contact_info': own_profile or member.show_contact_info(),
+        'member': member,
         'bill_balance': bill_balance,
         'combined': combine,
         'functionary_type_durations': ft_durations,
         'group_type_durations': gt_durations,
-        'decoration_ownerships': person.decoration_ownerships_by_date,
+        'decoration_ownerships': member.decoration_ownerships_by_date,
     })
 
 @login_required
@@ -103,8 +103,8 @@ def profile_info(request, member_id):
 
     return render(request, 'profile_information.html', {
         'own_profile': own_profile,
-        'show_all': own_profile or member.showContactInformation(),
-        'person': member,
+        'show_contact_info': own_profile or member.show_contact_info(),
+        'member': member,
     })
 
 @login_required
@@ -132,8 +132,8 @@ def profile_edit(request, member_id):
     return render(request, 'profile_information.html', {
         'form': form,
         'own_profile': True,
-        'show_all': True,
-        'person': member,
+        'show_contact_info': True,
+        'member': member,
     })
 
 @login_required
@@ -149,14 +149,14 @@ def startswith(request, letter):
 
     return render(request, 'browse.html', {
         **_get_base_context(request),
-        'persons': members,
+        'members': members,
     })
 
 
 @login_required
 def myprofile(request):
-    person = get_object_or_404(Member, username=request.user.username)
-    return redirect('katalogen:profile', person.id)
+    member = get_object_or_404(Member, username=request.user.username)
+    return redirect('katalogen:profile', member.id)
 
 
 @login_required
