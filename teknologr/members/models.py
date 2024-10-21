@@ -351,13 +351,13 @@ class Member(SuperClass):
         if (len(types)) == 0:
             return None
 
-        ordinarie = next((x for x in types if x.type == "OM"), None)
-        if ordinarie and not ordinarie.end_date:
-            return ordinarie
-
         stalm = next((x for x in types if x.type == "ST"), None)
         if stalm and not stalm.end_date:
             return stalm
+
+        ordinarie = next((x for x in types if x.type == "OM"), None)
+        if ordinarie and not ordinarie.end_date:
+            return ordinarie
 
         return None
 
