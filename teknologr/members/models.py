@@ -207,7 +207,7 @@ class Member(SuperClass):
 
     @property
     def public_full_name(self):
-        if self.show_contact_info():
+        if self.show_full_name():
             return self.full_name
         return f'{self.get_given_names_with_initials()} {self.surname}'
 
@@ -217,7 +217,7 @@ class Member(SuperClass):
 
     @property
     def public_full_name_for_sorting(self):
-        if self.show_contact_info():
+        if self.show_full_name():
             return self.full_name_for_sorting
         return f'{self.get_surname_without_prefixes()}, {self.get_given_names_with_initials()}'
 
@@ -375,6 +375,9 @@ class Member(SuperClass):
         # XXX: Do we need to take into account multiple Phux MemberTypes?
         member_type_phux = next((x for x in types if x.type == "PH"), None)
         return member_type_phux.begin_date.year if member_type_phux else None
+
+    def show_full_name(self):
+        return self.allow_publish_info or self.dead
 
     def show_contact_info(self):
         return self.allow_publish_info and not self.dead
