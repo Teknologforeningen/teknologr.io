@@ -33,7 +33,8 @@
       <!-- Applicant contact information -->
       <div id="contact" class="row">
         {% bootstrap_field form.phone form_group_class="form-group col-md-6" placeholder=False required_css_class="required" bound_css_class="" %}
-        {% bootstrap_field form.email form_group_class="form-group col-md-6" placeholder=False required_css_class="required" bound_css_class="" %}
+        {% bootstrap_field form.email form_group_class="form-group col-md-6" placeholder=False required_css_class="required" bound_css_class="" addon_after='<a class="a-tooltip" href="javascript:;" data-toggle="tooltip" data-placement="top" title="Ange helst en annan e-postadress än den du fått från universitetet, för den kommer att föråldras när du utexamineras."><i class="fa fa-question-circle" aria-hidden="true"></i></a>' %}
+
       </div>
 
       <!-- Applicant metadata -->
