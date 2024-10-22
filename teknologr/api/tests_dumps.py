@@ -3,9 +3,9 @@ from members.models import *
 from registration.models import *
 from rest_framework import status
 from rest_framework.test import APITestCase
-from datetime import datetime
+from django.utils import timezone
 
-today = datetime.today().strftime('%Y-%m-%d')
+today = timezone.now().date().strftime('%Y-%m-%d')
 
 class BaseClass(APITestCase):
     def setUp(self):
@@ -121,7 +121,7 @@ class Arsk(BaseClass, DumpsTestCases):
         'country': 'Finland',
         'associations': 'Hedersmedlem,Funkkis',
     }]
-today = datetime.today().strftime('%Y-%m-%d')
+
 class RegEmails(BaseClass, DumpsTestCases):
     path = f'/api/dump-regemails/'
     response = [{

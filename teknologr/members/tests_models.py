@@ -70,7 +70,7 @@ class MemberTest(TestCase):
             preferred_name='Baz',
             surname='von der Tester',
             street_address='Otsvängen 22',
-            allow_publish_info=True,
+            allow_publish_info=False,
             dead=True,
         )
 
@@ -123,12 +123,12 @@ class MemberTest(TestCase):
     def test_public_full_name(self):
         self.assertEqual(self.member1.public_full_name, 'Foo B B Tester')
         self.assertEqual(self.member2.public_full_name, 'Foo Bar Baz Tester')
-        self.assertEqual(self.member3.public_full_name, 'F-B Biz-Baz von der Tester')
+        self.assertEqual(self.member3.public_full_name, 'Foo-Bar Biz-Baz von der Tester')
 
     def test_public_full_name_for_sorting(self):
         self.assertEqual(self.member1.public_full_name_for_sorting, 'Tester, Foo B B')
         self.assertEqual(self.member2.public_full_name_for_sorting, 'Tester, Foo Bar Baz')
-        self.assertEqual(self.member3.public_full_name_for_sorting, 'Tester, F-B Biz-Baz')
+        self.assertEqual(self.member3.public_full_name_for_sorting, 'Tester, Foo-Bar Biz-Baz')
 
     def test_name(self):
         self.assertFalse(hasattr(self.member1, 'name'))
@@ -156,7 +156,7 @@ class MemberTest(TestCase):
     def test_str(self):
         self.assertEqual('Foo B B Tester', str(self.member1))
         self.assertEqual('Foo Bar Baz Tester', str(self.member2))
-        self.assertEqual('F-B Biz-Baz von der Tester', str(self.member3))
+        self.assertEqual('Foo-Bar Biz-Baz von der Tester', str(self.member3))
 
     def test_search_by_name(self):
         Member.objects.create(given_names='Bar Foo', surname='von Test', allow_publish_info=False)
@@ -179,36 +179,36 @@ class MemberTest(TestCase):
         ph.save()
         # A 'Phux' is not a real member type and should return ''
         self.assertEquals('', member.current_member_type)
-        self.assertFalse(member.isValidMember())
+        self.assertFalse(member.is_valid_member())
 
         # Make our person a 'real member'
         om = MemberType(member=member, type='OM', begin_date=date(2012, 9, 27))
         om.save()
         self.assertEquals('Ordinarie Medlem', member.current_member_type)
-        self.assertTrue(member.isValidMember())
+        self.assertTrue(member.is_valid_member())
 
         self.assertEquals('Ordinarie Medlem: 2012-09-27 ->', str(om))
 
         # Wappen kom, phuxen är inte mera phux!
         ph.end_date = date(2012, 4, 30)
         ph.save()
-        self.assertEquals('Phux: 2012-09-01 - 2012-04-30', str(ph))
-        self.assertFalse(member.shouldBeStalm())
+        self.assertEquals('Phux: 2012-09-01 – 2012-04-30', str(ph))
+        self.assertFalse(member.should_be_stalm())
 
         # Our person became JuniorStÄlM :O
         js = MemberType(member=member, type='JS', begin_date=date(2017, 10, 15))
         js.save()
-        self.assertFalse(member.shouldBeStalm())
+        self.assertFalse(member.should_be_stalm())
 
         # Our person is now finished with his/her studies
         om.end_date = date(2019, 4, 30)
         om.save()
-        self.assertEquals('Ordinarie Medlem: 2012-09-27 - 2019-04-30', str(om))
+        self.assertEquals('Ordinarie Medlem: 2012-09-27 – 2019-04-30', str(om))
 
         # member type should be nothing ('') now
         self.assertEquals('', member.current_member_type)
         # and person should become StÄlM now
-        self.assertTrue(member.shouldBeStalm())
+        self.assertTrue(member.should_be_stalm())
 
         fg = MemberType(member=member, type='FG', begin_date=date(2019, 5, 1))
         fg.save()
@@ -216,7 +216,7 @@ class MemberTest(TestCase):
         st = MemberType(member=member, type='ST', begin_date=date(2019, 5, 16))
         st.save()
         self.assertEquals('StÄlM', member.current_member_type)
-        self.assertFalse(member.shouldBeStalm())
+        self.assertFalse(member.should_be_stalm())
 
 
 class MemberOrderTest(BaseTest):
@@ -336,16 +336,16 @@ class GroupTest(TestCase):
         )
 
     def test_str(self):
-        self.assertEqual('Group Type: 2023-01-01 - 2023-06-14', str(self.group1))
-        self.assertEqual('Group Type: 2023-06-14 - 2023-12-31', str(self.group2))
-        self.assertEqual('Group Type: 2023-01-01 - 2023-12-31', str(self.group3))
-        self.assertEqual('Group Type: 2022-01-01 - 2024-12-31', str(self.group4))
+        self.assertEqual('Group Type: 2023-01-01 – 2023-06-14', str(self.group1))
+        self.assertEqual('Group Type: 2023-06-14 – 2023-12-31', str(self.group2))
+        self.assertEqual('Group Type: 2023-01-01 – 2023-12-31', str(self.group3))
+        self.assertEqual('Group Type: 2022-01-01 – 2024-12-31', str(self.group4))
 
     def test_duration(self):
-        self.assertEqual('1 januari - 14 juni 2023', str(self.group1.duration))
-        self.assertEqual('14 juni - 31 december 2023', str(self.group2.duration))
+        self.assertEqual('1 januari – 14 juni 2023', str(self.group1.duration))
+        self.assertEqual('14 juni – 31 december 2023', str(self.group2.duration))
         self.assertEqual('2023', str(self.group3.duration))
-        self.assertEqual('2022-2024', str(self.group4.duration))
+        self.assertEqual('2022–2024', str(self.group4.duration))
 
 class GroupOrderTest(BaseTest):
     def setUp(self):
@@ -440,16 +440,16 @@ class FunctionaryTest(BaseTest):
         )
 
     def test_str(self):
-        self.assertEqual('Functionary Type: 2023-01-01 - 2023-06-14, Foo B Tester', str(self.functionary1))
-        self.assertEqual('Functionary Type: 2023-06-14 - 2023-12-31, Foo B Tester', str(self.functionary2))
-        self.assertEqual('Functionary Type: 2023-01-01 - 2023-12-31, Foo B Tester', str(self.functionary3))
-        self.assertEqual('Functionary Type: 2022-01-01 - 2024-12-31, Foo B Tester', str(self.functionary4))
+        self.assertEqual('Functionary Type: 2023-01-01 – 2023-06-14, Foo B Tester', str(self.functionary1))
+        self.assertEqual('Functionary Type: 2023-06-14 – 2023-12-31, Foo B Tester', str(self.functionary2))
+        self.assertEqual('Functionary Type: 2023-01-01 – 2023-12-31, Foo B Tester', str(self.functionary3))
+        self.assertEqual('Functionary Type: 2022-01-01 – 2024-12-31, Foo B Tester', str(self.functionary4))
 
     def test_duration(self):
-        self.assertEqual('1 januari - 14 juni 2023', str(self.functionary1.duration))
-        self.assertEqual('14 juni - 31 december 2023', str(self.functionary2.duration))
+        self.assertEqual('1 januari – 14 juni 2023', str(self.functionary1.duration))
+        self.assertEqual('14 juni – 31 december 2023', str(self.functionary2.duration))
         self.assertEqual('2023', str(self.functionary3.duration))
-        self.assertEqual('2022-2024', str(self.functionary4.duration))
+        self.assertEqual('2022–2024', str(self.functionary4.duration))
 
 class FunctionaryOrderTest(BaseTest):
     def setUp(self):
@@ -541,7 +541,7 @@ class MemberTypeTest(BaseTest):
         )
 
     def test_str(self):
-        self.assertEqual('Ordinarie Medlem: 2023-01-01 - 2023-06-14', str(self.member_type1))
+        self.assertEqual('Ordinarie Medlem: 2023-01-01 – 2023-06-14', str(self.member_type1))
         self.assertEqual('Ordinarie Medlem: 2023-06-14 ->', str(self.member_type2))
 
 

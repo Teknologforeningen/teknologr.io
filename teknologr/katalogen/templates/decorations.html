@@ -1,7 +1,7 @@
 {% extends "home.html" %}
 
 {% block content %}
-{% include "searchbar.html" with placeholder="Filtrera betygelser" %}
+{% include "searchbar.html" with filter=1 placeholder="Filtrera betygelser" %}
 <div class="row">
   <div class="col-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2">
     {% if decorations %}

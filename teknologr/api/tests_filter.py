@@ -73,19 +73,19 @@ class MemberFilterSingleNameTest(BaseAPITest, TestCases):
 
         # Should be found by all
         Member.objects.create(
-            # In preferred name, even if hidden and dead
+            # In preferred name, even if hidden and alive
             given_names='Sverker Svakar',
             preferred_name='Svakar',
             surname='von Teknolog',
             allow_publish_info=False,
-            dead=True,
+            dead=False,
         )
         Member.objects.create(
-            # In surname, even if hidden and dead
+            # In surname, even if hidden and alive
             given_names='Sverker',
             surname='von Svakar',
             allow_publish_info=False,
-            dead=True,
+            dead=False,
         )
         Member.objects.create(
             # In given names for public Member
@@ -93,6 +93,13 @@ class MemberFilterSingleNameTest(BaseAPITest, TestCases):
             surname='von Teknolog',
             allow_publish_info=True,
             dead=False,
+        )
+        Member.objects.create(
+            # In given names but dead
+            given_names='Sverker Svakar',
+            surname='von Teknolog',
+            allow_publish_info=False,
+            dead=True,
         )
 
         # Should only be found by staff
@@ -102,13 +109,6 @@ class MemberFilterSingleNameTest(BaseAPITest, TestCases):
             surname='von Teknolog',
             allow_publish_info=False,
             dead=False,
-        )
-        Member.objects.create(
-            # In given names but dead
-            given_names='Sverker Svakar',
-            surname='von Teknolog',
-            allow_publish_info=True,
-            dead=True,
         )
 
 

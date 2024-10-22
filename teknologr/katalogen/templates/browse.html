@@ -2,9 +2,9 @@
 
 {% block content %}
 {% if home %}
-{% include "searchbar.html" with search=1 placeholder="Sök personer" %}
+{% include "searchbar.html" with search=1 alphabet=1 placeholder="Sök personer" %}
 {% else %}
-{% include "searchbar.html" with search=1 placeholder="Filtrera eller sök personer" %}
+{% include "searchbar.html" with search=1 filter=1 alphabet=1 placeholder="Filtrera eller sök personer" %}
 {% endif %}
 <div class="row">
   {% if home %}
@@ -14,7 +14,7 @@
         Bläddra i Teknologföreningens medlemsregister.
       </p>
       <p class="lead">
-        Du kan söka efter personer med sökfältet ovan, eller se din egen profil via menyn. Personuppgifter (utöver namn) kan endast ses för personer som tillåtit utgivning av dessa, men man kan alltid se sina egena personuppgifter. Namn, medlemskapstyp, betygelser, poster och grupper kan däremot ses för alla personer i registret.
+        Du kan söka efter personer med sökfältet ovan, eller se din egen profil via menyn. Kontaktuppgifter kan endast ses för personer som tillåtit utgivning av dessa, men man kan alltid se alla sina egna uppgifter. Du kan även uppdatera dina egna uppgifter via din profil.
       </p>
       <p class="lead">
         Via menyn kan du även se alla betygelser, poster och grupper. Årsspecifika sammanfattningar hittas också via menyn.
@@ -22,7 +22,7 @@
     </div>
   {% else %}
     <div class="col-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2">
-      {% if persons %}
+      {% if members %}
         <table class="table table-sm table-striped">
           <thead>
             <tr>
@@ -32,12 +32,12 @@
             </tr>
           </thead>
           <tbody>
-            {% for person in persons %}
+            {% for member in members %}
               <tr>
-                <td><a href="{% url 'katalogen:profile' person.id %}">{{ person.public_full_name }}</a></td>
-                {% if person.showContactInformation %}
-                  <td><a href="tel:{{ person.phone }}">{{ person.phone }}</a></td>
-                  <td><a href="mailto:{{ person.email }}">{{ person.email }}</a></td>
+                <td><a href="{% url 'katalogen:profile' member.id %}">{{ member.public_full_name }}</a></td>
+                {% if member.show_contact_info %}
+                  <td><a href="tel:{{ member.phone }}">{{ member.phone }}</a></td>
+                  <td><a href="mailto:{{ member.email }}">{{ member.email }}</a></td>
                 {% else %}
                   <td></td>
                   <td></td>

@@ -1,0 +1,174 @@
+
+<div
+  id="member-information"
+  class="col-12 col-lg-7"
+  hx-target="#member-information"
+  hx-swap="outerHTML transition:true"
+>
+  <table class="table table-striped table-borderless">
+    <tbody>
+      {% if member.dead %}
+      <tr>
+        <th>Födelseår</th>
+        <td class="text-right">
+          {{ member.birth_date.year }}
+        </td>
+      </tr>
+      {% endif %}
+      <tr>
+        <th>Studietid</th>
+        <td class="text-right">
+          {{ member.studytime_text }}
+        </td>
+      </tr>
+      <tr>
+        <th>
+          Studieprogram
+          {{ form.degree_programme.errors }}
+        </th>
+        <td class="text-right">
+          {% firstof form.degree_programme member.degree_programme %}
+        </td>
+      </tr>
+      <tr>
+        <th>Ordinarie medlem</th>
+        <td class="text-right">
+          {{ member.omembertime_text }}
+        </td>
+      </tr>
+      <tr>
+        <th>Ständig äldre medlem</th>
+        <td class="text-right">
+          {{ member.smembertime_text }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  {% if show_contact_info %}
+  <h5>Kontaktinformation</h5>
+  <table class="table table-striped table-borderless">
+    <tbody>
+      <tr>
+        <th>
+          Fullständigt namn
+        </th>
+        <td class="text-right">
+          {% firstof member.full_name %}
+        </td>
+      </tr>
+      <tr>
+        <th>
+          Telefonnummer
+          {{ form.phone.errors }}
+        </th>
+        <td class="text-right">
+          {% firstof form.phone member.phone %}
+        </td>
+      </tr>
+      <tr>
+        <th>
+          E-postadress
+          {{ form.email.errors }}
+        </th>
+        <td class="text-right">
+          {% firstof form.email member.email %}
+        </td>
+      </tr>
+      <tr>
+        <th>
+          Hemadress
+          {{ form.street_address.errors }}
+          {{ form.postal_code.errors }}
+          {{ form.city.errors }}
+          {{ form.country.errors }}
+        </th>
+        {% if form %}
+        <td class="text-left">
+          Gatuadress {% firstof form.street_address member.street_address %}
+          Postnummer {% firstof form.postal_code member.postal_code %}
+          Postanstalt {% firstof form.city member.city %}
+          Land {% firstof form.country member.country %}
+        </td>
+        {% else %}
+        <td class="text-right">
+          {{ member.full_address }}
+        </td>
+        {% endif %}
+      </tr>
+    </tbody>
+  </table>
+  {% endif %}
+
+  {% if own_profile %}
+  <h5>Personliga inställningar</h5>
+  <table class="table table-striped table-borderless">
+    <tbody>
+      <tr>
+        <th>
+          Tilltalsnamn
+          {{ form.preferred_name.errors }}
+        </th>
+        <td class="text-right">
+          {% firstof form.preferred_name member.preferred_name %}
+        </td>
+      </tr>
+      <tr>
+        <th>
+          Utexamineringsår
+          {{ form.graduated.errors }}
+          {{ form.graduated_year.errors }}
+        </th>
+        <td class="text-right">
+          {% firstof form.graduated_year member.graduated_year %}
+        </td>
+      </tr>
+      <tr>
+        <th>
+          Prenumerera på Modulen
+          {{ form.subscribed_to_modulen.errors }}
+        </th>
+        <td class="text-right">
+          {% firstof form.subscribed_to_modulen member.subscribed_to_modulen_text %}
+        </td>
+      </tr>
+      <tr>
+        <th>
+          Prenumerera på Studentbladet
+          {{ form.allow_studentbladet.errors }}
+        </th>
+        <td class="text-right">
+          {% firstof form.allow_studentbladet member.allow_studentbladet_text %}
+        </td>
+      </tr>
+      <tr>
+        <th>
+          Tillåt visning av kontaktinformation
+          {{ form.allow_publish_info.errors }}
+        </th>
+        <td class="text-right">
+          {% firstof form.allow_publish_info member.allow_publish_info_text %}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  {% endif %}
+
+  {% if form %}
+  <button
+    class="btn btn-success"
+    hx-post={% url "katalogen:profile_edit" member.id %}
+    hx-include="#member-information"
+  >Spara</button>
+  <button
+    class="btn btn-primary"
+    hx-get={% url "katalogen:profile_info" member.id %}
+  >Ångra</button>
+  {% elif own_profile %}
+  <button
+    class="btn btn-primary"
+    hx-get={% url "katalogen:profile_edit" member.id %}
+  >Editera</button>
+  {% endif %}
+
+</div>

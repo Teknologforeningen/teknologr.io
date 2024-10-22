@@ -1,22 +1,43 @@
 .navbar {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 .searchbar {
-    padding: 20px;
-    padding-top: 0px;
+  padding: 20px;
+  padding-top: 0px;
 }
 
 .alphabet {
-    padding: 20px;
-    padding-top: 0px;
-    font-size: 130%;
+  padding: 20px;
+  padding-top: 0px;
+  font-size: 130%;
+}
+
+.errorlist {
+  padding: 10px;
+  list-style-type: none;
+  font-weight: bold;
+}
+
+#member-information button {
+  margin-bottom: 20px;
+}
+
+.monospace {
+  font-family: monospace;
 }
 
 .admin-link {
-    color: black;
+  color: black;
 }
 
 .order-by {
-    cursor: pointer;
+  cursor: pointer;
+}
+
+/* .text-right comes from Bootstrap, and is used (at least) on the member profile pages. This addition makes sure that the text in a table cell can be replaced with an input field (not checkbox) without the row changing size. */
+.text-right:has(input):has(.form-control) {
+  vertical-align: middle !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
 }

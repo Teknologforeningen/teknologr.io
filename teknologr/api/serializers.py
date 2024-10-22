@@ -53,7 +53,7 @@ class MemberSerializer(BaseSerializer):
     def to_representation(self, instance):
         data = super().to_representation(instance)
 
-        hide = not self.is_staff and not instance.showContactInformation()
+        hide = not self.is_staff and not instance.show_contact_info()
         if hide:
             for field in Member.HIDABLE_FIELDS:
                 data.pop(field)

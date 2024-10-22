@@ -5,81 +5,56 @@
 <div class="container-fluid">
   <h1 class="page-header">
     {% if is_staff %}
-      <a class="admin-link" href="{% url 'admin:member' person.id %}">{{ person.public_full_name }}</a>
+      <a class="admin-link" href="{% url 'admin:member' member.id %}">{{ member.public_full_name }}</a>
     {% else %}
-      {{ person.public_full_name }}
+      {{ member.public_full_name }}
     {% endif %}
   </h1>
   <div class="row">
-    <div class="col-12 col-lg-7">
+    {% include 'profile_information.html' %}
+    <div class="col-12 col-lg-5">
+      {% if own_profile %}
+      <h5>Övrig privat information</h5>
       <table class="table table-striped table-borderless">
         <tbody>
-          {% if show_all %}
           <tr>
-            <th>Tilltalsnamn</th>
-            <td class="text-right">{{person.preferred_name}}</td>
+            <th>Födelsedatum</th>
+            <td class="text-right">{{ member.birth_date|default:'' }}</td>
           </tr>
           <tr>
-            <th>Telefonnummer</th>
+            <th>Studienummer</th>
+            <td class="text-right">{{ member.student_id|default:'' }}</td>
+          </tr>
+          <tr>
+            <th>LDAP-användarnamn</th>
             <td class="text-right">
-            {% if person.mobile_phone %}
-              {{person.mobile_phone}}
-            {% else %}
-              {{person.phone}}
-            {% endif %}
+              <span class="monospace">{{ member.username|default:'' }}</span>
             </td>
           </tr>
           <tr>
-            <th>E-postadress</th>
-            <td class="text-right">{{person.email}}</td>
-          </tr>
-          <tr>
-            <th>Hemadress</th>
+            <th>LDAP-grupper</th>
             <td class="text-right">
-              {{person.street_address}}<br/>
-              {{person.postal_code}} {{person.city}}<br/>
-              {{person.country.name}}
+              <span class="monospace">{{ member.get_ldap_groups|join:', ' }}</span>
             </td>
           </tr>
           <tr>
-            <th>Studieprogram</th>
-            <td class="text-right">{{person.degree_programme}}</td>
-          </tr>
-          <tr>
-            <th>Phuxår</th>
+            <th>BILL-konto</th>
             <td class="text-right">
-              {{ person.phux_year|default_if_none:'' }}
+              <span class="monospace">{{ member.bill_code|default:'' }}</span>
             </td>
           </tr>
           <tr>
-            <th>Färdigbliven</th>
+            <th>BILL-saldo</th>
             <td class="text-right">
-            {% if person.graduated %}
-              {% if person.graduated_year %}
-                  {{person.graduated_year}}
-              {% else %}
-                  Ja
+              {% if bill_balance %}
+                {{ bill_balance }} €
               {% endif %}
-            {% else %}
-              Nej
-            {% endif %}
-            </td>
-          </tr>
-          {% endif %}
-          <tr>
-            <th>Medlemskapstyp</th>
-            <td class="text-right">
-            {% if person.current_member_type %}
-              {{ person.current_member_type }}
-            {% else %}
-              Ej medlem
-            {% endif %}
             </td>
           </tr>
         </tbody>
       </table>
-    </div>
-    <div class="col-12 col-lg-5">
+      {% endif %}
+
       {% if decoration_ownerships %}
       <h3>Betygelser</h3>
       <table class="table table-striped table-borderless table-sm">

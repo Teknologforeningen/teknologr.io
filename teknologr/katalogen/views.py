@@ -1,14 +1,23 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.db.models.functions import TruncYear
 from members.models import *
 from members.utils import *
+from katalogen.forms import EditProfileForm
 from katalogen.utils import *
 from django.db.models import Q, Count
 from functools import reduce
 from operator import and_
 from collections import defaultdict
+from ldap import LDAPError
 
+def own_profile_or_403(request, member):
+    '''
+    Function for checking if the logged in user is a certain Member.
+    '''
+    if request.user.username != member.username:
+        raise PermissionDenied()
 
 def _get_base_context(request):
     return {
@@ -34,21 +43,21 @@ def search(request):
 
     return render(request, 'browse.html', {
         **_get_base_context(request),
-        'persons': result,
+        'members': result,
     })
 
 
 @login_required
 def profile(request, member_id):
     """
-    View the public profile of a user. All details will be shown if the user allows it, or if this is the user's own profile.
+    View the public profile of a member. All details will be shown if the user allows it, or if this is the user's own profile.
 
     URL query parameters available:
      - combine=<0/1>: Whether or not to combine the same Functionaries and GroupMemberships into a single row. The ordering will switch to lexicographical instead of reversed date as well.
     """
-    person = Member.objects.get_prefetched_or_404(member_id)
-    functionaries = list(person.functionaries.all())
-    group_memberships = list(person.group_memberships.all())
+    member = Member.objects.get_prefetched_or_404(member_id)
+    functionaries = list(member.functionaries.all())
+    group_memberships = list(member.group_memberships.all())
 
     combine = request.GET.get('combine', '0') != '0'
 
@@ -65,17 +74,67 @@ def profile(request, member_id):
         ft_durations = MultiDuration.combine_per_key(ft_durations)
         gt_durations = MultiDuration.combine_per_key(gt_durations)
 
+    own_profile = member.username == request.user.username
+    bill_balance = None
+    if own_profile:
+        bill_balance = member.get_bill_balance()
+
     return render(request, 'profile.html', {
         **_get_base_context(request),
         # XXX: Could use MemberSerializerPartial to remove any unwanted fields for real instead of just not showing them
-        'show_all': person.username == request.user.username or person.showContactInformation(),
-        'person': person,
+        'own_profile': own_profile,
+        'show_contact_info': own_profile or member.show_contact_info(),
+        'member': member,
+        'bill_balance': bill_balance,
         'combined': combine,
         'functionary_type_durations': ft_durations,
         'group_type_durations': gt_durations,
-        'decoration_ownerships': person.decoration_ownerships_by_date,
+        'decoration_ownerships': member.decoration_ownerships_by_date,
     })
 
+@login_required
+def profile_info(request, member_id):
+    """
+    Only render the member information section, not the decorations etc., so no need to prefetch the extra info.
+    """
+
+    member = get_object_or_404(Member, id=member_id)
+    own_profile = member.username == request.user.username
+
+    return render(request, 'profile_information.html', {
+        'own_profile': own_profile,
+        'show_contact_info': own_profile or member.show_contact_info(),
+        'member': member,
+    })
+
+@login_required
+def profile_edit(request, member_id):
+    """
+    Update the member information. This can only be done by the user himself. Returns only the HTML for the member information, not the decorations etc. This makes it possible for HTMX to swap only part of the page when saving the info.
+    """
+
+    member = Member.objects.get_prefetched_or_404(member_id)
+    own_profile_or_403(request, member)
+
+    if request.method == 'POST':
+        form = EditProfileForm(request.POST, instance=member)
+        if form.is_valid():
+            try:
+                form.save()
+                form = None
+            except LDAPError:
+                form.add_error('email', 'E-postadressen kunde tyvärr inte uppdateras, vänligen kontakta en administratör')
+    else:
+        form = EditProfileForm(instance=member)
+
+    # XXX: Due to the "public name" in the header depends on whether or contact information is shared, it might happen that the header need to be updated if the user changes his settings... This does not happen currently.
+
+    return render(request, 'profile_information.html', {
+        'form': form,
+        'own_profile': True,
+        'show_contact_info': True,
+        'member': member,
+    })
 
 @login_required
 def startswith(request, letter):
@@ -90,14 +149,14 @@ def startswith(request, letter):
 
     return render(request, 'browse.html', {
         **_get_base_context(request),
-        'persons': members,
+        'members': members,
     })
 
 
 @login_required
 def myprofile(request):
-    person = get_object_or_404(Member, username=request.user.username)
-    return redirect('katalogen:profile', person.id)
+    member = get_object_or_404(Member, username=request.user.username)
+    return redirect('katalogen:profile', member.id)
 
 
 @login_required

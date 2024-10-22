@@ -33,7 +33,8 @@
       <!-- Applicant contact information -->
       <div id="contact" class="row">
         {% bootstrap_field form.phone form_group_class="form-group col-md-6" placeholder=False required_css_class="required" bound_css_class="" %}
-        {% bootstrap_field form.email form_group_class="form-group col-md-6" placeholder=False required_css_class="required" bound_css_class="" %}
+        {% bootstrap_field form.email form_group_class="form-group col-md-6" placeholder=False required_css_class="required" bound_css_class="" addon_after='<a class="a-tooltip" href="javascript:;" data-toggle="tooltip" data-placement="top" title="Ange helst en annan e-postadress än den du fått från universitetet, för den kommer att föråldras när du utexamineras."><i class="fa fa-question-circle" aria-hidden="true"></i></a>' %}
+
       </div>
 
       <!-- Applicant metadata -->
@@ -95,17 +96,16 @@
         <div class="form-group">
           <div class="form-check">
             <div class="row align-items-center">
-              {% if form.subscribed_to_modulen.errors %}<div class="alert alert-danger">{{ form.subscribed_to_modulen.errors }}</div>{% endif %}
-              <input id="{{ form.subscribed_to_modulen.id_for_label }}" class="form-check-input" type="checkbox" name="{{ form.subscribed_to_modulen.name }}" autocomplete="off">
+              {{ form.subscribed_to_modulen.errors }}
               <label class="form-check-label pl-2" for="{{ form.subscribed_to_modulen.id_for_label }}">
-                Jag vill få Teknologföreningens medlemstidning Modulen hemskickad<br />
-                och tillåter att mina uppgifter utlämnas till Modulens redaktion
+                {{ form.subscribed_to_modulen }}
+                Jag vill prenumerera få Teknologföreningens medlemstidning Modulen och tillåter att mina uppgifter utlämnas till Modulens redaktion
                 <a
                   class="a-tooltip"
                   href="javascript:;"
                   data-toggle="tooltip"
                   data-placement="top"
-                  title="Medlemstidningen Modulen skrivs av TFs medlemmar och skickas gratis åt alla medlemmar, dock endast till dem som bor utanför Otnäs."
+                  title="Medlemstidningen Modulen skrivs av TF:s medlemmar och skickas gratis åt alla medlemmar, dock endast till de som bor utanför Otnäs."
                 >
                   <i class="fa fa-question-circle" aria-hidden="true"></i>
                 </a>
@@ -114,7 +114,7 @@
                   href="javascript:;"
                   data-toggle="tooltip"
                   data-placement="top"
-                  title="Uppgifter som utlämnas till Modulens redaktion är följande: förnamn, efternamn, hemadress, postnummer, stad och land."
+                  title="Uppgifter som utlämnas till Modulens redaktion är följande: fullständigt namn och hemadress"
                 >
                   <i class="fa fa-info-circle" aria-hidden="true"></i>
                 </a>
@@ -126,32 +126,10 @@
         <div class="form-group">
           <div class="form-check">
             <div class="row align-items-center">
-              {% if form.allow_publish_info.errors %}<div class="alert alert-danger">{{ form.allow_publish_info.errors }}</div>{% endif %}
-              <input id="{{ form.allow_publish_info.id_for_label }}" class="form-check-input" type="checkbox" name="{{ form.allow_publish_info.name }}" autocomplete="off">
-              <label class="form-check-label pl-2" for="{{ form.allow_publish_info.id_for_label }}">
-                Jag tillåter att mina uppgifter utlämnas till Katalogen
-                <a
-                  class="a-tooltip"
-                  href="javascript:;"
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  title="Katalogen är namnet för Teknologföreningens medlemsregister. Kolla länken längst ner på sidan för en registerbeskrivning."
-                >
-                  <i class="fa fa-question-circle" aria-hidden="true"></i>
-                </a>
-              </label>
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <div class="form-check">
-            <div class="row align-items-center">
-              {% if form.allow_studentbladet.errors %}<div class="alert alert-danger">{{ form.allow_studentbladet }}</div>{% endif %}
-              <input id="{{ form.allow_studentbladet.id_for_label }}" class="form-check-input" type="checkbox" name="{{ form.allow_studentbladet.name }}" autocomplete="off">
+              {{ form.allow_studentbladet.errors }}
               <label class="form-check-label pl-2" for="{{ form.allow_studentbladet.id_for_label }}">
-                Jag vill få <a href="https://stbl.fi">Studentbladet</a> hemskickad och tillåter att<br />
-                mina uppgifter utlämnas till Studentbladets redaktion
+                {{ form.allow_studentbladet }}
+                Jag vill prenumerera på <a href="https://stbl.fi">Studentbladet</a> och tillåter att mina uppgifter utlämnas till Studentbladets redaktion
                 <a
                   class="a-tooltip"
                   href="https://www.stbl.fi/"
@@ -168,7 +146,37 @@
                   href="javascript:;"
                   data-toggle="tooltip"
                   data-placement="top"
-                  title="Uppgifter som utlämnas till Studentbladets redaktion är följande: förnamn, efternamn, hemadress, postnummer, stad och land."
+                  title="Uppgifter som utlämnas till Studentbladets redaktion är följande: fullständigt namn och hemadress"
+                >
+                  <i class="fa fa-info-circle" aria-hidden="true"></i>
+                </a>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-check">
+            <div class="row align-items-center">
+              {{ form.allow_publish_info.errors }}
+              <label class="form-check-label pl-2" for="{{ form.allow_publish_info.id_for_label }}">
+                {{ form.allow_publish_info }}
+                Jag tillåter att mina kontaktuppgifter visas åt inloggade medlemmar på <a href="https://katalogen.tf.fi">Katalogen</a>
+                <a
+                  class="a-tooltip"
+                  href="javascript:;"
+                  data-toggle="tooltip"
+                  data-placement="top"
+                  title="Katalogen är namnet på Teknologföreningens medlemsregister. Kolla länken längst ner på sidan för en registerbeskrivning."
+                >
+                  <i class="fa fa-question-circle" aria-hidden="true"></i>
+                </a>
+                <a
+                  class="a-info"
+                  href="javascript:;"
+                  data-toggle="tooltip"
+                  data-placement="top"
+                  title="Kontaktuppgifterna som visas är följande: fullständigt namn, hemadress, telefonnummer och e-postadress"
                 >
                   <i class="fa fa-info-circle" aria-hidden="true"></i>
                 </a>

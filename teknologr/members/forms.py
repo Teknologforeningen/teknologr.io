@@ -1,20 +1,30 @@
 from members.models import *
 from members.utils import *
+from members.validators import CommonValidators
 from registration.models import Applicant
 from django.forms import ModelForm, DateField, CharField, ChoiceField, Textarea
+from django.forms.utils import ErrorList
 from django.forms.widgets import CheckboxInput, DateInput, TextInput, PasswordInput
 from ajax_select.fields import AutoCompleteSelectMultipleField
 from django.contrib.auth.forms import AuthenticationForm
 
+class CustomErrorList(ErrorList):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.error_class = 'errorlist alert alert-danger'
 
 class BSModelForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(BSModelForm, self).__init__(*args, **kwargs)
+        self.error_class = CustomErrorList
         for field in self.fields.values():
-            field.widget.attrs['class'] = 'form-control'
+            if type(field.widget) is CheckboxInput:
+                field.widget.attrs['class'] = 'form-check-input'
+            else:
+                field.widget.attrs['class'] = 'form-control'
 
 
-class MemberForm(ModelForm):
+class MemberForm(BSModelForm, CommonValidators):
     class Meta:
         model = Member
         fields = '__all__'
@@ -29,11 +39,10 @@ class MemberForm(ModelForm):
         kwargs.setdefault('auto_id', 'mform_%s')
 
         super(MemberForm, self).__init__(*args, **kwargs)
-        for field in self.fields.values():
-            if type(field.widget) is CheckboxInput:
-                field.widget.attrs['class'] = 'form-check-input'
-            else:
-                field.widget.attrs['class'] = 'form-control'
+
+    def clean(self):
+        BSModelForm.clean(self)
+        CommonValidators.clean(self)
 
 
 class GroupTypeForm(BSModelForm):

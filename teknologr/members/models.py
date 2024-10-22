@@ -10,6 +10,9 @@ from operator import attrgetter
 from datetime import date
 from katalogen.utils import *
 from members.utils import *
+from api.bill import BILLAccountManager
+from api.ldap import LDAPAccountManager
+from ldap import LDAPError
 
 
 class SuperClass(models.Model):
@@ -71,7 +74,7 @@ class MemberManager(models.Manager):
 
         # Need to remove hidden Members that were matched on a non-preferred given name
         if not staff_search:
-            members = [m for m in members if m.allow_publish_info or all([q in m.surname.lower() or q in m.get_preferred_name().lower() for q in queries])]
+            members = [m for m in members if m.show_full_name() or all([q in m.surname.lower() or q in m.get_preferred_name().lower() for q in queries])]
 
         return members
 
@@ -105,7 +108,6 @@ class Member(SuperClass):
     graduated_year = models.IntegerField(blank=True, null=True)
     # OTHER
     dead = models.BooleanField(default=False)
-    # TODO: separate consent to own table
     subscribed_to_modulen = models.BooleanField(default=False)
     allow_publish_info = models.BooleanField(default=False)
     allow_studentbladet = models.BooleanField(default=False)
@@ -181,7 +183,7 @@ class Member(SuperClass):
 
     def get_full_name_HTML(self):
         '''
-        Return name with the preferred name undercored. This can go wrong if the preferred name is not set correctly to one of the given names.
+        Return name with the preferred name underlined. This can go wrong if the preferred name is not set correctly to one of the given names.
 
         NOTE: A.replace(B, C) can be a bit confusing in Python if B = "" is used, since the empty string "" is assumed to be "everywhere" in Python strings:
             "abc".replace("", "X")    => "XaXbXcX"
@@ -205,7 +207,7 @@ class Member(SuperClass):
 
     @property
     def public_full_name(self):
-        if self.showContactInformation():
+        if self.show_full_name():
             return self.full_name
         return f'{self.get_given_names_with_initials()} {self.surname}'
 
@@ -215,13 +217,13 @@ class Member(SuperClass):
 
     @property
     def public_full_name_for_sorting(self):
-        if self.showContactInformation():
+        if self.show_full_name():
             return self.full_name_for_sorting
         return f'{self.get_surname_without_prefixes()}, {self.get_given_names_with_initials()}'
 
     @property
     def current_member_type(self):
-        member_type = self.getMostRecentMemberType()
+        member_type = self.get_latest_member_type()
 
         if member_type:
             return member_type.get_type_display()
@@ -235,7 +237,51 @@ class Member(SuperClass):
             country = str(self.country.name)
         city = f'{self.postal_code} {self.city}'.strip()
         address_parts = [self.street_address, city, country]
-        return ", ".join([s for s in address_parts if s])
+        address = ", ".join([s for s in address_parts if s])
+        # Do not show only country
+        return address if address != country else ''
+
+    @property
+    def graduated_text(self):
+        if self.graduated_year:
+            return str(self.graduated_year)
+        return "Ja" if self.graduated else "Nej"
+
+    @property
+    def studytime_text(self):
+        if self.graduated_year:
+            return f"{self.enrolment_year or ''}–{self.graduated_year}"
+        if self.graduated:
+            return f"{self.enrolment_year or ''}–?"
+        if self.enrolment_year:
+            return f"{self.enrolment_year}–"
+        return ""
+
+    @property
+    def omembertime_text(self):
+        for t in self.member_types.all():
+            if t.type == "OM":
+                return f"{t.begin_date.year if t.begin_date else '?'}–{t.end_date.year if t.end_date else ''}"
+        return ""
+
+    @property
+    def smembertime_text(self):
+        for t in self.member_types.all():
+            if t.type == "ST":
+                return f"{t.begin_date.year if t.begin_date else '?'}–{t.end_date.year if t.end_date else ''}"
+        return ""
+
+    @property
+    def subscribed_to_modulen_text(self):
+        return "Ja" if self.subscribed_to_modulen else "Nej"
+
+    @property
+    def allow_studentbladet_text(self):
+        return "Ja" if self.allow_studentbladet else "Nej"
+
+    @property
+    def allow_publish_info_text(self):
+        return "Ja" if self.allow_publish_info else "Nej"
 
     @property
     def n_decorations(self):
@@ -255,6 +301,26 @@ class Member(SuperClass):
             return self.count_group_memberships
         return self.group_memberships.count()
 
+    def get_ldap_groups(self):
+        if not self.username:
+            return []
+
+        try:
+            with LDAPAccountManager() as lm:
+                return lm.get_user_groups(self.username)
+        except:
+            return []
+
+    def get_bill_balance(self):
+        if not self.bill_code:
+            return None
+
+        bm = BILLAccountManager()
+        try:
+            return bm.get_account_by_code(self.bill_code)['balance']
+        except:
+            return None
+
     def save(self, *args, **kwargs):
         if not self.username:
             self.username = None
@@ -264,8 +330,6 @@ class Member(SuperClass):
         # Sync email to LDAP if changed
         error = None
         if self.username and self.email != self._original_email:
-            from api.ldap import LDAPAccountManager
-            from ldap import LDAPError
             try:
                 with LDAPAccountManager() as lm:
                     # Skip syncing email to LDAP if the LDAP account does not exist
@@ -281,28 +345,28 @@ class Member(SuperClass):
         if error:
             raise error
 
-    def getMostRecentMemberType(self):
+    def get_latest_member_type(self):
         types = self.member_types.all()
 
         if (len(types)) == 0:
             return None
 
-        ordinarie = next((x for x in types if x.type == "OM"), None)
-        if ordinarie and not ordinarie.end_date:
-            return ordinarie
-
         stalm = next((x for x in types if x.type == "ST"), None)
         if stalm and not stalm.end_date:
             return stalm
 
+        ordinarie = next((x for x in types if x.type == "OM"), None)
+        if ordinarie and not ordinarie.end_date:
+            return ordinarie
+
         return None
 
-    def shouldBeStalm(self):
+    def should_be_stalm(self):
         ''' Used to find Juniorstalmar members that should magically become stalmar somehow '''
-        return not self.isValidMember() and ("JS" in [x.type for x in MemberType.objects.filter(member=self)])
+        return not self.is_valid_member() and ("JS" in [x.type for x in MemberType.objects.filter(member=self)])
 
-    def isValidMember(self):
-        memberType = self.getMostRecentMemberType()
+    def is_valid_member(self):
+        memberType = self.get_latest_member_type()
         return memberType is not None and (memberType.type == "OM" or memberType.type == "ST")
 
     @property
@@ -312,7 +376,10 @@ class Member(SuperClass):
         member_type_phux = next((x for x in types if x.type == "PH"), None)
         return member_type_phux.begin_date.year if member_type_phux else None
 
-    def showContactInformation(self):
+    def show_full_name(self):
+        return self.allow_publish_info or self.dead
+
+    def show_contact_info(self):
         return self.allow_publish_info and not self.dead
 
     @classmethod
@@ -485,7 +552,7 @@ class Group(SuperClass):
     end_date = models.DateField()
 
     def __str__(self):
-        return f'{self.grouptype}: {self.begin_date} - {self.end_date}'
+        return f'{self.grouptype}: {self.begin_date} – {self.end_date}'
 
     @property
     def n_members(self):
@@ -608,7 +675,7 @@ class Functionary(SuperClass):
         unique_together = (("member", "functionarytype", "begin_date", "end_date"),)
 
     def __str__(self):
-        return f'{self.functionarytype}: {self.begin_date} - {self.end_date}, {self.member}'
+        return f'{self.functionarytype}: {self.begin_date} – {self.end_date}, {self.member}'
 
     @property
     def duration(self):
@@ -729,8 +796,8 @@ class MemberType(SuperClass):
     type = models.CharField(max_length=2, choices=TYPES, default="PH")
 
     def __str__(self):
-        s = f'{self.get_type_display()}: {self.begin_date} -'
-        s += f' {self.end_date}' if self.end_date else '>'
+        s = f'{self.get_type_display()}: {self.begin_date} '
+        s += f'– {self.end_date}' if self.end_date else '->'
         return s
 
     @classmethod
