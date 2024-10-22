@@ -74,7 +74,7 @@ class MemberManager(models.Manager):
 
         # Need to remove hidden Members that were matched on a non-preferred given name
         if not staff_search:
-            members = [m for m in members if m.allow_publish_info or all([q in m.surname.lower() or q in m.get_preferred_name().lower() for q in queries])]
+            members = [m for m in members if m.show_full_name() or all([q in m.surname.lower() or q in m.get_preferred_name().lower() for q in queries])]
 
         return members
 

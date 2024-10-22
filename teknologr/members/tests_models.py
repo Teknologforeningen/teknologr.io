@@ -70,7 +70,7 @@ class MemberTest(TestCase):
             preferred_name='Baz',
             surname='von der Tester',
             street_address='Otsvängen 22',
-            allow_publish_info=True,
+            allow_publish_info=False,
             dead=True,
         )
 
@@ -123,12 +123,12 @@ class MemberTest(TestCase):
     def test_public_full_name(self):
         self.assertEqual(self.member1.public_full_name, 'Foo B B Tester')
         self.assertEqual(self.member2.public_full_name, 'Foo Bar Baz Tester')
-        self.assertEqual(self.member3.public_full_name, 'F-B Biz-Baz von der Tester')
+        self.assertEqual(self.member3.public_full_name, 'Foo-Bar Biz-Baz von der Tester')
 
     def test_public_full_name_for_sorting(self):
         self.assertEqual(self.member1.public_full_name_for_sorting, 'Tester, Foo B B')
         self.assertEqual(self.member2.public_full_name_for_sorting, 'Tester, Foo Bar Baz')
-        self.assertEqual(self.member3.public_full_name_for_sorting, 'Tester, F-B Biz-Baz')
+        self.assertEqual(self.member3.public_full_name_for_sorting, 'Tester, Foo-Bar Biz-Baz')
 
     def test_name(self):
         self.assertFalse(hasattr(self.member1, 'name'))
@@ -156,7 +156,7 @@ class MemberTest(TestCase):
     def test_str(self):
         self.assertEqual('Foo B B Tester', str(self.member1))
         self.assertEqual('Foo Bar Baz Tester', str(self.member2))
-        self.assertEqual('F-B Biz-Baz von der Tester', str(self.member3))
+        self.assertEqual('Foo-Bar Biz-Baz von der Tester', str(self.member3))
 
     def test_search_by_name(self):
         Member.objects.create(given_names='Bar Foo', surname='von Test', allow_publish_info=False)
