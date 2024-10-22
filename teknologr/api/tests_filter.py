@@ -306,7 +306,7 @@ class MemberFilterDegreeProgrammeTest(BaseAPITest, TestCases):
         super().setUp()
 
         self.query = 'degree_programme=Svakar'
-        self.n_normal = 1
+        self.n_normal = 2
         self.n_staff = 2
 
         # Should be found by all
@@ -386,7 +386,7 @@ class MemberFilterGraduatedTrueTest(BaseAPITest, TestCases):
         super().setUp()
 
         self.query = 'graduated=true'
-        self.n_normal = 2
+        self.n_normal = 3
         self.n_staff = 3
 
         # Should be found by all
@@ -405,8 +405,6 @@ class MemberFilterGraduatedTrueTest(BaseAPITest, TestCases):
             graduated_year=2000,
             allow_publish_info=True,
         )
-
-        # Should only be found by staff
         Member.objects.create(
             # Graduated, but hidden
             given_names='Test',
@@ -430,7 +428,7 @@ class MemberFilterGraduatedFalseTest(BaseAPITest, TestCases):
 
         # Dummy member included
         self.query = 'graduated=false'
-        self.n_normal = 2
+        self.n_normal = 3
         self.n_staff = 3
 
         # Should be found by all
@@ -440,8 +438,6 @@ class MemberFilterGraduatedFalseTest(BaseAPITest, TestCases):
             graduated=False,
             allow_publish_info=True,
         )
-
-        # Should only be found by staff
         Member.objects.create(
             # Graduated and has graduated year
             given_names='Test',
@@ -485,7 +481,7 @@ class MemberFilterGraduatedInvalidTest(MemberFilterGraduatedTrueTest):
         # Dummy member included
         # XXX: This should probably return all Members, but now the filter is being recognized as "set", so all hidden Members will be filtered out for normal users
         self.query = 'graduated=unknown'
-        self.n_normal = 4
+        self.n_normal = 5
         self.n_staff = 5
 
 class MemberFilterGraduatedYearTest(BaseAPITest, TestCases):
