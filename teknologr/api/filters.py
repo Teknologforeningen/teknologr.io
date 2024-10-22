@@ -102,18 +102,6 @@ class MemberFilter(BaseFilter):
         method='filter_n_decorations',
         label='Antalet betygelser är mellan',
     )
-
-    # Public but hidable fields (hidden Members are not included)
-    HIDABLE = Member.HIDABLE_FIELDS + ['address']
-    address = django_filters.CharFilter(
-        # NOTE: Custom field name, but added manually to HIDABLE
-        method='filter_address',
-        label='Adressen innehåller',
-    )
-    email = CharFilterWithKeywords(
-        lookup_expr='icontains',
-        label='E-postadressen innehåller',
-    )
     degree_programme = CharFilterWithKeywords(
         lookup_expr='icontains',
         label='Studieprogrammet innehåller',
@@ -127,6 +115,18 @@ class MemberFilter(BaseFilter):
     )
     graduated_year = django_filters.RangeFilter(
         label='Utexamineringsåret är mellan',
+    )
+
+    # Public but hidable fields (hidden Members are not included)
+    HIDABLE = Member.HIDABLE_FIELDS + ['address']
+    address = django_filters.CharFilter(
+        # NOTE: Custom field name, but added manually to HIDABLE
+        method='filter_address',
+        label='Adressen innehåller',
+    )
+    email = CharFilterWithKeywords(
+        lookup_expr='icontains',
+        label='E-postadressen innehåller',
     )
 
     # Staff only filters

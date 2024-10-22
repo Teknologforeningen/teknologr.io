@@ -255,6 +255,10 @@ MEMBER_PUBLIC = {
     'n_functionaries': int,
     'n_groups': int,
     'n_decorations': int,
+    'degree_programme': str,
+    'enrolment_year': int,
+    'graduated': bool,
+    'graduated_year': int,
 }
 # Shown if member is not hidden
 MEMBER_PERSONAL = {
@@ -265,10 +269,6 @@ MEMBER_PERSONAL = {
     'country': str,
     'phone': str,
     'email': str,
-    'degree_programme': str,
-    'enrolment_year': int,
-    'graduated': bool,
-    'graduated_year': int,
 }
 # Shown only to admins
 MEMBER_ADMIN = {
