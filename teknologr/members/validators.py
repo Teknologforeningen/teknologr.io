@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from datetime import datetime
-import re
+import regex as re
 
 def in_range(value, a, b):
     if value is None:
@@ -20,21 +20,21 @@ class CommonValidators:
     # XXX: Validate student id?
 
     def clean_given_names(self):
-        given_names = self.cleaned_data.get('given_names')
-        regex = re.compile('^[a-zA-Z -]*$')
+        given_names = self.cleaned_data.get('given_names').strip()
+        regex = re.compile(r'^[\p{L} -]*$')
         if not regex.match(given_names):
             raise ValidationError('Ogiltigt förnamn')
         return given_names
 
     def clean_surname(self):
-        surname = self.cleaned_data.get('surname')
-        regex = re.compile('^[a-zA-Z -]*$')
+        surname = self.cleaned_data.get('surname').strip()
+        regex = re.compile(r'^[\p{L} -]*$')
         if not regex.match(surname):
             raise ValidationError('Ogiltigt efternamn')
         return surname
 
     def clean_email(self):
-        email = self.cleaned_data.get('email')
+        email = self.cleaned_data.get('email').strip()
         if not email:
             return ''
         try:
@@ -44,7 +44,7 @@ class CommonValidators:
         return email
 
     def clean_phone(self):
-        phone = self.cleaned_data.get('phone')
+        phone = self.cleaned_data.get('phone').strip()
         if not phone:
             return ''
         regex = re.compile('^\+?[0-9][0-9- ]*[0-9]$')
