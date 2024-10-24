@@ -10,6 +10,7 @@ django-bootstrap4~=2.3.1
 djangorestframework~=3.12.1
 djangorestframework-csv~=2.1.0
 pep8~=1.7.1
-requests~=2.24.0
+regex~=2024.9.11
+requests~=2.31.0
 psycopg2~=2.8.6
 git+https://github.com/Work4Labs/django-test-pep8

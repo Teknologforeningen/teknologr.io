@@ -1,7 +1,9 @@
-install: bin/python
-
 bin/python:
 	virtualenv -p /usr/bin/python3 .
+
+.PHONY: install migrate checkmigrations serve deploy clean
+
+install: bin/python requirements.txt
 	bin/pip install -r requirements.txt
 
 migrate: bin/python
