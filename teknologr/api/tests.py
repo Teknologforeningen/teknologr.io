@@ -327,7 +327,7 @@ MEMBER_ADMIN_DETAIL = {
         'begin_date': str,
         'end_date': (str, None),
     }],
-    'bill_code': (str, None),
+    'bill_code': (int, None),
 }
 
 class MembersAPITest(BaseAPITest, GetAllMethodTests, PostMethodTests):

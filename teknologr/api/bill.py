@@ -1,6 +1,7 @@
 import requests
 import re
 import json
+import html
 from getenv import env
 
 # All BILL accounts are connected to a specific LDAP username.
@@ -39,7 +40,8 @@ def __request(path):
     try:
         number = int(r.text)
     except ValueError:
-        return r.text
+        # BILL uses HTML ecoding to represent non-ASCII characters
+        return html.unescape(r.text)
 
     # A negative number means an error code
     if number == -3:
@@ -75,7 +77,10 @@ def get_account(username):
     '''
     try:
         result = __request(f"get?type=user&id={username}")
-        return json.loads(result)
+        info = json.loads(result)
+        info['acc'] = int(info['acc'])
+        info['balance'] = float(info['balance'])
+        return info
     except BILLException as e:
         if e == ERROR_ACCOUNT_DOES_NOT_EXIST:
             return None
