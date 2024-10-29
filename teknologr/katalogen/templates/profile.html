@@ -40,14 +40,19 @@
           <tr>
             <th>BILL-konto</th>
             <td class="text-right">
-              <span class="monospace">{{ member.bill_code|default:'' }}</span>
+              <span class="monospace">{{ bill.acc }}</span>
+            </td>
+          </tr>
+          <tr>
+            <th>BILL-smeknamn</th>
+            <td class="text-right">{{ bill.nick }}
             </td>
           </tr>
           <tr>
             <th>BILL-saldo</th>
             <td class="text-right">
-              {% if bill_balance %}
-                {{ bill_balance }} €
+              {% if bill.balance %}
+                {{ bill.balance }} €
               {% endif %}
             </td>
           </tr>

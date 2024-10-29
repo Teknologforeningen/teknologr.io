@@ -53,6 +53,10 @@ class MemberSerializer(BaseSerializer):
     def to_representation(self, instance):
         data = super().to_representation(instance)
 
+        # Hide bill_code by default, because it is no longer cached in Member
+        if 'bill_code' in data:
+            data.pop('bill_code')
+
         hide = not self.is_staff and not instance.show_contact_info()
         if hide:
             for field in Member.HIDABLE_FIELDS:
@@ -82,6 +86,10 @@ class MemberSerializer(BaseSerializer):
                     'begin_date': mt.begin_date,
                     'end_date': mt.end_date,
                 } for mt in instance.member_types.all()]
+
+                # Fetch and add BILL id on detail view only
+                bill_info = instance.get_bill_info() or {}
+                data['bill_code'] = bill_info.get('acc')
 
         # Modify certain fields if necessary
         if hide:

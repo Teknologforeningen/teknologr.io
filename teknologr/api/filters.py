@@ -131,6 +131,7 @@ class MemberFilter(BaseFilter):
 
     # Staff only filters
     STAFF_ONLY = Member.STAFF_ONLY_FIELDS
+    STAFF_ONLY.remove('bill_code') # No longer cached, so can not filter on it
     birth_date = django_filters.DateFromToRangeFilter(
         label='Född mellan',
     )
@@ -155,9 +156,6 @@ class MemberFilter(BaseFilter):
     )
     username = CharFilterWithKeywords(
         label='Användarnamn',
-    )
-    bill_code = CharFilterWithKeywords(
-        label='BILL-konto',
     )
 
     def includes_hidable_field(self):
@@ -332,7 +330,6 @@ class ApplicantFilter(MemberFilter):
     graduated_year = None
     comment = None
     dead = None
-    bill_code = None
     created = None
     modified = None
     n_functionaries = None

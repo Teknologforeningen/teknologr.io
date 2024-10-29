@@ -283,7 +283,8 @@ MEMBER_ADMIN = {
     'allow_studentbladet': bool,
     'comment': str,
     'username': (str, None),
-    'bill_code': (str, None),
+    # No longer cached in Member, only fetched for detail view
+    # 'bill_code': (str, None),
 }
 MEMBER_DETAIL = {
     'functionaries': [{
@@ -326,6 +327,7 @@ MEMBER_ADMIN_DETAIL = {
         'begin_date': str,
         'end_date': (str, None),
     }],
+    'bill_code': (str, None),
 }
 
 class MembersAPITest(BaseAPITest, GetAllMethodTests, PostMethodTests):

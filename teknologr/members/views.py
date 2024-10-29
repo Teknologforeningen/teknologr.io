@@ -7,7 +7,7 @@ from members.programmes import DEGREE_PROGRAMME_CHOICES
 from registration.models import Applicant
 from registration.forms import RegistrationForm
 from api.ldap import LDAPAccountManager, LDAPError_to_string
-from api.bill import BILLAccountManager
+import api.bill as bill
 from getenv import env
 from locale import strxfrm
 from ldap import LDAPError
@@ -113,7 +113,7 @@ def member(request, member_id):
     context['membertypes'] = member.member_types.all()
     context['add_mt_form'] = MemberTypeForm(initial={'member': member_id})
 
-    # Get user account info
+    # Get LDAP and BILL account info based on the username
     if member.username:
         try:
             with LDAPAccountManager() as lm:
@@ -121,15 +121,11 @@ def member(request, member_id):
         except LDAPError as e:
             context['LDAP'] = {'error': LDAPError_to_string(e)}
 
-    if member.bill_code:
-        bm = BILLAccountManager()
-        context['bill_admin_url'] = bm.admin_url(member.bill_code)
         try:
-            context['BILL'] = bm.get_account_by_code(member.bill_code) or {}
-            username = context['BILL'].get('id')
-            if username and member.username != username:
-                context['BILL']['error'] = f'LDAP användarnamnen här ({member.username}) och i BILL ({username}) matchar inte'
-        except Exception as e:
+            info = bill.get_account(member.username)
+            context['BILL'] = info
+            context['bill_admin_url'] = bill.admin_url(info.get('acc'))
+        except bill.BILLException as e:
             context['BILL'] = {'error': str(e)}
 
     # load side list items
