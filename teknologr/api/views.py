@@ -15,7 +15,7 @@ from datetime import datetime
 from api.serializers import *
 from api.filters import *
 from api.ldap import LDAPAccountManager, LDAPError_to_string
-from api.bill import BILLAccountManager, BILLException
+import api.bill as bill
 from api.utils import assert_public_member_fields
 from api.mailutils import mailNewPassword, mailNewAccount
 from members.models import GroupMembership, Member, Group
@@ -272,7 +272,7 @@ class LDAPAccountView(APIView):
             return HttpResponse('Username or password field missing', status=400)
 
         if member.username:
-            return HttpResponse('Member already has an LDAP account', status=400)
+            return HttpResponse('Member already has a username', status=400)
 
         if Member.objects.filter(username=username).exists():
             return HttpResponse(f'Username "{username}" is already taken', status=400)
@@ -299,8 +299,9 @@ class LDAPAccountView(APIView):
         member = get_object_or_404(Member, id=member_id)
 
         if not member.username:
-            return HttpResponse('Member has no LDAP account', status=400)
-        if member.bill_code:
+            return HttpResponse('Member has no username', status=400)
+
+        if member.get_bill_info():
             return HttpResponse('BILL account must be deleted first', status=400)
 
         try:
@@ -380,57 +381,43 @@ def change_ldap_password(request, member_id):
 class BILLAccountView(APIView):
     def get(self, request, member_id):
         member = get_object_or_404(Member, id=member_id)
+
+        if not member.username:
+            return Response({'detail': 'username missing'}, status=404)
+
         try:
-            account = BILLAccountManager().get_account_by_code(member.bill_code)
-        except Exception as e:
-            return Response({'detail': str(e)}, status=500)
-        if not account:
-            return Response({'detail': 'Could not find BILL account.'}, status=404)
-        return Response(account)
+            info = bill.get_account(member.username)
+            if info:
+                return Response(info)
+        except bill.BILLException as e:
+            return Response({'detail': str(e)}, status=404)
+        return Response({'detail': 'No BILL account found'}, status=404)
 
     def post(self, request, member_id):
         member = get_object_or_404(Member, id=member_id)
 
-        if member.bill_code:
-            return HttpResponse('Member already has a BILL account', status=400)
         if not member.username:
-            return HttpResponse('LDAP account missing', status=400)
+            return HttpResponse('username missing', status=400)
 
-        bm = BILLAccountManager()
-        bill_code = None
-
-        # Check if there already is a BILL account with this LDAP name
+        # Check if the Member already has a BILL account before creating a new one
         try:
-            bill_code = bm.get_account_by_username(member.username).get('acc')
-        except:
-            pass
-
-        # If not, create a new BILL account
-        if not bill_code:
-            try:
-                bill_code = bm.create_bill_account(member.username)
-            except BILLException as e:
-                return HttpResponse(str(e), status=400)
-
-        member.bill_code = bill_code
-        member.save()
+            if not bill.get_account(member.username):
+                bill.create_account(member.username)
+        except bill.BILLException as e:
+            return HttpResponse(str(e), status=400)
 
         return HttpResponse(status=200)
 
     def delete(self, request, member_id):
         member = get_object_or_404(Member, id=member_id)
 
-        if not member.bill_code:
-            return HttpResponse('Member has no BILL account', status=400)
+        if not member.username:
+            return HttpResponse('username missing', status=400)
 
-        bm = BILLAccountManager()
         try:
-            bm.delete_bill_account(member.bill_code)
-        except BILLException as e:
+            bill.delete_account(member.username)
+        except bill.BILLException as e:
             return HttpResponse(str(e), status=400)
-
-        member.bill_code = None
-        member.save()
 
         return HttpResponse(status=200)
 

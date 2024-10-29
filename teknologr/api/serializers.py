@@ -53,6 +53,10 @@ class MemberSerializer(BaseSerializer):
     def to_representation(self, instance):
         data = super().to_representation(instance)
 
+        # Hide bill_code by default, because it is no longer cached in Member
+        if 'bill_code' in data:
+            data.pop('bill_code')
+
         hide = not self.is_staff and not instance.show_contact_info()
         if hide:
             for field in Member.HIDABLE_FIELDS:
@@ -61,6 +65,12 @@ class MemberSerializer(BaseSerializer):
         # Add the actual related objects if detail view
         # XXX: Do we need to prefetch all related objects here? It's now done earlier, by the caller...
         if self.detail:
+            if self.is_staff:
+                # Fetch and add BILL id on detail view only
+                # XXX: 'bill_code' is the wrong term
+                bill_info = instance.get_bill_info() or {}
+                data['bill_code'] = bill_info.get('acc')
+
             data['decorations'] = [{
                 'decoration': {'id': do.decoration.id, 'name': do.decoration.name},
                 'acquired': do.acquired,

@@ -33,7 +33,7 @@ class BaseAPITest(APITestCase):
             allow_publish_info=True,
             comment='Dummy',
             username='dummyd1',
-            bill_code=42,
+            # bill_code=42,
         )
 
     def login_user(self):
@@ -847,6 +847,7 @@ class MemberFilterUsernameAnyTest(BaseAPITest, TestCases):
         )
 
 
+'''
 class MemberFilterBillCodeTest(BaseAPITest, TestCases):
     def setUp(self):
         super().setUp()
@@ -872,3 +873,4 @@ class MemberFilterBillCodeTest(BaseAPITest, TestCases):
             allow_publish_info=True,
             dead=False,
         )
+'''

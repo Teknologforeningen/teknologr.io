@@ -10,7 +10,7 @@ from operator import attrgetter
 from datetime import date
 from katalogen.utils import *
 from members.utils import *
-from api.bill import BILLAccountManager
+import api.bill as bill
 from api.ldap import LDAPAccountManager
 from ldap import LDAPError
 
@@ -311,15 +311,17 @@ class Member(SuperClass):
         except:
             return []
 
-    def get_bill_balance(self):
-        if not self.bill_code:
-            return None
-
-        bm = BILLAccountManager()
-        try:
-            return bm.get_account_by_code(self.bill_code)['balance']
-        except:
-            return None
+    def get_bill_info(self):
+        '''
+        Returns information about the BILL account connected to this Member.
+        Returns None if no account is found.
+        '''
+        if self.username:
+            try:
+                return bill.get_account(self.username)
+            except:
+                pass
+        return None
 
     def save(self, *args, **kwargs):
         if not self.username:

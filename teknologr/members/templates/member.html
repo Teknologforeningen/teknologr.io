@@ -14,7 +14,7 @@
             {% if member.username %}
             <a href="{% url 'api:ldap_account' member.id %}">LDAP</a>
             {% endif %}
-            {% if member.bill_code %}
+            {% if BILL.acc %}
             <a href="{% url 'api:bill' member.id %}">BILL</a>
             {% endif %}
             {% if bill_admin_url %}
@@ -232,9 +232,11 @@
               class="btn btn-danger"
               data-id="{{ member.id }}"
               {% if LDAP.error %}
-              disabled title="LDAP error..."
-              {% elif member.bill_code %}
-              disabled title="Ta bort BILL-konto först"
+                disabled
+                title="LDAP error..."
+              {% elif BILL %}
+                disabled
+                title="Ta bort BILL-konto först"
               {% endif %}>
               Ta bort LDAP-konto
             </button>
@@ -253,33 +255,37 @@
           </div>
           <div class="col-sm-6">
             <h5>BILL</h5>
-            {% if member.bill_code %}
+            {% if BILL %}
+              {% if BILL.error %}
+                <div class="alert alert-danger">{{ BILL.error }}</div>
+              {% else %}
+                <b>Konto:</b>
+                <span class="monospace">{{ BILL.acc }}</span>
+                <br/>
 
-            {% if BILL.error %}
-              <div class="alert alert-danger">{{ BILL.error }}</div>
-            {% elif not BILL.acc %}
-              <div class="alert alert-danger">BILL-konto "{{ member.bill_code }}" existerar inte</div>
-            {% endif %}
+                <b>Smeknamn:</b> {{ BILL.nick }}
+                <br/>
 
-            <b>Konto:</b>
-            <span class="monospace">{{ member.bill_code }}</span>
-            <br/>
+                <b>Saldo:</b> {{ BILL.balance }}€
+                <br/>
 
-            {% if BILL.acc %}
-            <b>Saldo:</b> {{ BILL.balance }}€
-            <br/>
-            {% endif %}
-
-            <button
-              id="delete-bill-button"
-              class="btn btn-danger"
-              data-id="{{ member.id }}"
-              {% if BILL.error %}disabled title="BILL error..."{% endif %}>
-              Ta bort BILL-konto
-            </button>
+                <button
+                  id="delete-bill-button"
+                  class="btn btn-danger"
+                  data-id="{{ member.id }}"
+                >Ta bort BILL-konto</button>
+              {% endif %}
 
             {% else %}
-            <button id="add-bill-button" class="btn btn-primary" {% if not LDAP.username %} disabled title="Skapa LDAP-konto först"{% endif %} data-id="{{ member.id }}">Skapa BILL-konto</button>
+              <button
+                id="add-bill-button"
+                class="btn btn-primary"
+                data-id="{{ member.id }}"
+                {% if not LDAP.username %}
+                  disabled
+                  title="Skapa LDAP-konto först"
+                {% endif %}
+              >Skapa BILL-konto</button>
             {% endif %}
           </div>
         </div>
