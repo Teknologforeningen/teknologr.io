@@ -79,7 +79,8 @@ def get_account(username):
         result = __request(f"get?type=user&id={username}")
         info = json.loads(result)
         info['acc'] = int(info['acc'])
-        info['balance'] = float(info['balance'])
+        # Balance is a float, but leave it as a string to avoid having to format it later
+        # info['balance'] = float(info['balance'])
         return info
     except BILLException as e:
         if e == ERROR_ACCOUNT_DOES_NOT_EXIST:

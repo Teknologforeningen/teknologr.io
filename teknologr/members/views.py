@@ -123,8 +123,9 @@ def member(request, member_id):
 
         try:
             info = bill.get_account(member.username)
-            context['BILL'] = info
-            context['bill_admin_url'] = bill.admin_url(info.get('acc'))
+            if info:
+                context['BILL'] = info
+                context['bill_admin_url'] = bill.admin_url(info.get('acc'))
         except bill.BILLException as e:
             context['BILL'] = {'error': str(e)}
 

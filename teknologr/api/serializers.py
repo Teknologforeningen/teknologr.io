@@ -65,6 +65,12 @@ class MemberSerializer(BaseSerializer):
         # Add the actual related objects if detail view
         # XXX: Do we need to prefetch all related objects here? It's now done earlier, by the caller...
         if self.detail:
+            if self.is_staff:
+                # Fetch and add BILL id on detail view only
+                # XXX: 'bill_code' is the wrong term
+                bill_info = instance.get_bill_info() or {}
+                data['bill_code'] = bill_info.get('acc')
+
             data['decorations'] = [{
                 'decoration': {'id': do.decoration.id, 'name': do.decoration.name},
                 'acquired': do.acquired,
@@ -86,10 +92,6 @@ class MemberSerializer(BaseSerializer):
                     'begin_date': mt.begin_date,
                     'end_date': mt.end_date,
                 } for mt in instance.member_types.all()]
-
-                # Fetch and add BILL id on detail view only
-                bill_info = instance.get_bill_info() or {}
-                data['bill_code'] = bill_info.get('acc')
 
         # Modify certain fields if necessary
         if hide:

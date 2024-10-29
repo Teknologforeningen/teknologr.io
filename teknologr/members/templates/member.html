@@ -15,7 +15,7 @@
             <a href="{% url 'api:ldap_account' member.id %}">LDAP</a>
             {% endif %}
             {% if BILL.acc %}
-            <a href="{% url 'api:bill' BILL.acc %}">BILL</a>
+            <a href="{% url 'api:bill' member.id %}">BILL</a>
             {% endif %}
             {% if bill_admin_url %}
             <a href="{{ bill_admin_url }}">BILL admin</a>
@@ -263,7 +263,7 @@
                 <span class="monospace">{{ BILL.acc }}</span>
                 <br/>
 
-                <b>Smeknamn:</b> {{ BILL.nick }}€
+                <b>Smeknamn:</b> {{ BILL.nick }}
                 <br/>
 
                 <b>Saldo:</b> {{ BILL.balance }}€
