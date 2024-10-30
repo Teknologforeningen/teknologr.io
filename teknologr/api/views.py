@@ -3,6 +3,7 @@ from django.db import connection
 from django.db.models import Q
 from django.db.utils import IntegrityError
 from django.http import HttpResponse
+from django.utils import timezone
 from django_filters import rest_framework as filters
 from rest_framework import viewsets, permissions
 from rest_framework.views import APIView
@@ -10,8 +11,6 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from ldap import LDAPError
-from collections import defaultdict
-from datetime import datetime
 from api.serializers import *
 from api.filters import *
 from api.ldap import LDAPAccountManager, LDAPError_to_string
@@ -581,10 +580,48 @@ def member_types_for_member(request, mode, query):
 # Used by BILL and GeneriKey
 @api_view(['GET'])
 def members_by_member_type(request, membertype, field=None):
-    member_pks = MemberType.objects.filter(type=membertype, end_date=None).values_list("member", flat=True)
-    fld = "username" if field == "usernames" else "student_id"
-    members = Member.objects.filter(pk__in=member_pks).values_list(fld, flat=True)
-    return Response(members, status=200)
+    if membertype not in [a[0] for a in MemberType.TYPES]:
+        return Response({'detail': 'invalid membertype'}, status=404)
+
+    # Need to be careful with 'OM' requests, because it is used to check for valid members. This need to be "foolproof" and account for (at least) the user error of leaving the 'OM' MemberType untouched when adding graduation date or the 'ST' MemberType. The same kind of logic can be applied to the other MemberTypes.
+
+    def get_member_ids(mt):
+        today = timezone.now().date().strftime('%Y-%m-%d')
+        return MemberType.objects.filter(type=mt).exclude(end_date__lt=today).values_list('member', flat=True)
+
+    pks = set(get_member_ids(membertype))
+
+    if membertype == 'PH':
+        pks.difference_update(get_member_ids('OM'))
+        pks.difference_update(get_member_ids('ST'))
+        pks.difference_update(get_member_ids('EM'))
+
+        members = Member.objects.filter(pk__in=pks).exclude(
+            Q(graduated=True) | ~Q(graduated_year=None)
+        )
+
+    elif membertype in ['OM', 'JS']:
+        pks.difference_update(get_member_ids('ST'))
+        pks.difference_update(get_member_ids('EM'))
+
+        members = Member.objects.filter(pk__in=pks).exclude(
+            Q(graduated=True) | ~Q(graduated_year=None)
+        )
+
+    elif membertype == 'ST':
+        pks.difference_update(get_member_ids('EM'))
+
+        members = Member.objects.filter(pk__in=pks)
+
+    else:
+        members = Member.objects.filter(pk__in=pks)
+
+    fld = "username" if field and "username" in field else "student_id"
+    result = members.values_list(fld, flat=True)
+    print(request.GET)
+    if 'skip_null' in request.GET:
+        result = [r for r in result if r is not None]
+    return Response(result, status=200)
 
 
 # Data for HTK

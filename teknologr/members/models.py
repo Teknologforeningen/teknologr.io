@@ -790,7 +790,6 @@ class MemberType(SuperClass):
         ("KA", "Kanslist"),
         ("IM", "Inte medlem"),
         ("KE", "Kanslist emerita"),
-
     )
     member = models.ForeignKey("Member", on_delete=models.CASCADE, related_name='member_types')
     begin_date = models.DateField(null=True)
