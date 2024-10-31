@@ -93,6 +93,7 @@ class TestCases():
         m4 = Member.objects.create(student_id='444', username='abc4', graduated_year=2023)
         m5 = Member.objects.create(student_id='555', username='abc5')
         m6 = Member.objects.create(student_id='666', username='abc6')
+        m7 = Member.objects.create(student_id='777', username='abc7')
 
         MemberType.objects.create(member=m1, type='OM')
 
@@ -109,9 +110,13 @@ class TestCases():
         MemberType.objects.create(member=m5, type='OM')
         MemberType.objects.create(member=m5, type='ST')
 
-        # Has 'EM' MemberType
+        # Has 'FG' MemberType
         MemberType.objects.create(member=m6, type='OM')
-        MemberType.objects.create(member=m6, type='EM')
+        MemberType.objects.create(member=m6, type='FG')
+
+        # Has 'EM' MemberType
+        MemberType.objects.create(member=m7, type='OM')
+        MemberType.objects.create(member=m7, type='EM')
 
         self.login_superuser()
         response = self.get('OM')
@@ -125,6 +130,7 @@ class TestCases():
         m4 = Member.objects.create(student_id='444', username='abc4', graduated_year=2023)
         m5 = Member.objects.create(student_id='555', username='abc5')
         m6 = Member.objects.create(student_id='666', username='abc6')
+        m7 = Member.objects.create(student_id='777', username='abc7')
 
         MemberType.objects.create(member=m1, type='JS')
 
@@ -141,9 +147,13 @@ class TestCases():
         MemberType.objects.create(member=m5, type='JS')
         MemberType.objects.create(member=m5, type='ST')
 
-        # Has 'EM' MemberType
+        # Has 'FG' MemberType
         MemberType.objects.create(member=m6, type='JS')
-        MemberType.objects.create(member=m6, type='EM')
+        MemberType.objects.create(member=m6, type='FG')
+
+        # Has 'EM' MemberType
+        MemberType.objects.create(member=m7, type='JS')
+        MemberType.objects.create(member=m7, type='EM')
 
         self.login_superuser()
         response = self.get('JS')

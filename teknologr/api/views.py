@@ -594,6 +594,7 @@ def members_by_member_type(request, membertype, field=None):
     if membertype == 'PH':
         pks.difference_update(get_member_ids('OM'))
         pks.difference_update(get_member_ids('ST'))
+        pks.difference_update(get_member_ids('FG'))
         pks.difference_update(get_member_ids('EM'))
 
         members = Member.objects.filter(pk__in=pks).exclude(
@@ -602,6 +603,7 @@ def members_by_member_type(request, membertype, field=None):
 
     elif membertype in ['OM', 'JS']:
         pks.difference_update(get_member_ids('ST'))
+        pks.difference_update(get_member_ids('FG'))
         pks.difference_update(get_member_ids('EM'))
 
         members = Member.objects.filter(pk__in=pks).exclude(
