@@ -1,5 +1,5 @@
 import django_filters
-from django.db.models import Count
+from django.db.models import Q, Count
 from members.models import *
 from functools import reduce
 from operator import and_
