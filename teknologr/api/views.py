@@ -618,7 +618,6 @@ def members_by_member_type(request, membertype, field=None):
 
     fld = "username" if field and "username" in field else "student_id"
     result = members.values_list(fld, flat=True)
-    print(request.GET)
     if 'skip_null' in request.GET:
         result = [r for r in result if r is not None]
     return Response(result, status=200)
