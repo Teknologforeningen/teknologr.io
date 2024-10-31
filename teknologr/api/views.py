@@ -619,7 +619,7 @@ def members_by_member_type(request, membertype, field=None):
         members = Member.objects.filter(pk__in=pks)
 
     fld = "username" if field and "username" in field else "student_id"
-    result = members.values_list(fld, flat=True)
+    result = members.exclude(dead=True).values_list(fld, flat=True)
     if 'skip_null' in request.GET:
         result = [r for r in result if r is not None]
     return Response(result, status=200)

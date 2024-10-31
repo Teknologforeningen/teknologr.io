@@ -74,7 +74,7 @@ class TestCases():
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json(), [self.map(m1)])
 
-    def test_doubles(self):
+    def test_duplicates(self):
         m1 = Member.objects.create(student_id='123456', username='abc1')
 
         MemberType.objects.create(member=m1, type='KE')
@@ -91,9 +91,10 @@ class TestCases():
         m2 = Member.objects.create(student_id='222', username='abc2')
         m3 = Member.objects.create(student_id='333', username='abc3', graduated=True)
         m4 = Member.objects.create(student_id='444', username='abc4', graduated_year=2023)
-        m5 = Member.objects.create(student_id='555', username='abc5')
+        m5 = Member.objects.create(student_id='555', username='abc5', dead=True)
         m6 = Member.objects.create(student_id='666', username='abc6')
         m7 = Member.objects.create(student_id='777', username='abc7')
+        m8 = Member.objects.create(student_id='888', username='abc8')
 
         MemberType.objects.create(member=m1, type='OM')
 
@@ -106,17 +107,20 @@ class TestCases():
         # Graduated year
         MemberType.objects.create(member=m4, type='OM')
 
-        # Has 'ST' MemberType
+        # Dead
         MemberType.objects.create(member=m5, type='OM')
-        MemberType.objects.create(member=m5, type='ST')
+
+        # Has 'ST' MemberType
+        MemberType.objects.create(member=m6, type='OM')
+        MemberType.objects.create(member=m6, type='ST')
 
         # Has 'FG' MemberType
-        MemberType.objects.create(member=m6, type='OM')
-        MemberType.objects.create(member=m6, type='FG')
+        MemberType.objects.create(member=m7, type='OM')
+        MemberType.objects.create(member=m7, type='FG')
 
         # Has 'EM' MemberType
-        MemberType.objects.create(member=m7, type='OM')
-        MemberType.objects.create(member=m7, type='EM')
+        MemberType.objects.create(member=m8, type='OM')
+        MemberType.objects.create(member=m8, type='EM')
 
         self.login_superuser()
         response = self.get('OM')
@@ -128,9 +132,10 @@ class TestCases():
         m2 = Member.objects.create(student_id='222', username='abc2')
         m3 = Member.objects.create(student_id='333', username='abc3', graduated=True)
         m4 = Member.objects.create(student_id='444', username='abc4', graduated_year=2023)
-        m5 = Member.objects.create(student_id='555', username='abc5')
+        m5 = Member.objects.create(student_id='555', username='abc5', dead=True)
         m6 = Member.objects.create(student_id='666', username='abc6')
         m7 = Member.objects.create(student_id='777', username='abc7')
+        m8 = Member.objects.create(student_id='888', username='abc8')
 
         MemberType.objects.create(member=m1, type='JS')
 
@@ -143,17 +148,20 @@ class TestCases():
         # Graduated year
         MemberType.objects.create(member=m4, type='JS')
 
-        # Has 'ST' MemberType
+        # Dead
         MemberType.objects.create(member=m5, type='JS')
-        MemberType.objects.create(member=m5, type='ST')
+
+        # Has 'ST' MemberType
+        MemberType.objects.create(member=m6, type='JS')
+        MemberType.objects.create(member=m6, type='ST')
 
         # Has 'FG' MemberType
-        MemberType.objects.create(member=m6, type='JS')
-        MemberType.objects.create(member=m6, type='FG')
+        MemberType.objects.create(member=m7, type='JS')
+        MemberType.objects.create(member=m7, type='FG')
 
         # Has 'EM' MemberType
-        MemberType.objects.create(member=m7, type='JS')
-        MemberType.objects.create(member=m7, type='EM')
+        MemberType.objects.create(member=m8, type='JS')
+        MemberType.objects.create(member=m8, type='EM')
 
         self.login_superuser()
         response = self.get('JS')
@@ -163,16 +171,20 @@ class TestCases():
     def test_ST(self):
         m1 = Member.objects.create(student_id='111', username='abc1')
         m2 = Member.objects.create(student_id='222', username='abc2')
-        m3 = Member.objects.create(student_id='333', username='abc3')
+        m3 = Member.objects.create(student_id='333', username='abc3', dead=True)
+        m4 = Member.objects.create(student_id='444', username='abc4')
 
         MemberType.objects.create(member=m1, type='ST')
 
         # Ended
         MemberType.objects.create(member=m2, type='ST', end_date="2010-01-01")
 
-        # Has 'EM' MemberType
+        # Dead
         MemberType.objects.create(member=m3, type='ST')
-        MemberType.objects.create(member=m3, type='EM')
+
+        # Has 'EM' MemberType
+        MemberType.objects.create(member=m4, type='ST')
+        MemberType.objects.create(member=m4, type='EM')
 
         self.login_superuser()
         response = self.get('ST')
@@ -184,9 +196,11 @@ class TestCases():
         m2 = Member.objects.create(student_id='222', username='abc2')
         m3 = Member.objects.create(student_id='333', username='abc3', graduated=True)
         m4 = Member.objects.create(student_id='444', username='abc4', graduated_year=2023)
-        m5 = Member.objects.create(student_id='555', username='abc5')
+        m5 = Member.objects.create(student_id='555', username='abc5', dead=True)
         m6 = Member.objects.create(student_id='666', username='abc6')
         m7 = Member.objects.create(student_id='777', username='abc7')
+        m8 = Member.objects.create(student_id='888', username='abc8')
+        m9 = Member.objects.create(student_id='999', username='abc9')
 
         MemberType.objects.create(member=m1, type='PH')
 
@@ -199,17 +213,24 @@ class TestCases():
         # Graduated year
         MemberType.objects.create(member=m4, type='PH')
 
-        # Has 'OM' MemberType
+        # Dead
         MemberType.objects.create(member=m5, type='PH')
-        MemberType.objects.create(member=m5, type='OM')
+
+        # Has 'OM' MemberType
+        MemberType.objects.create(member=m6, type='PH')
+        MemberType.objects.create(member=m6, type='OM')
 
         # Has 'ST' MemberType
-        MemberType.objects.create(member=m6, type='PH')
-        MemberType.objects.create(member=m6, type='ST')
+        MemberType.objects.create(member=m7, type='PH')
+        MemberType.objects.create(member=m7, type='ST')
+
+        # Has 'FG' MemberType
+        MemberType.objects.create(member=m8, type='JS')
+        MemberType.objects.create(member=m8, type='FG')
 
         # Has 'EM' MemberType
-        MemberType.objects.create(member=m7, type='PH')
-        MemberType.objects.create(member=m7, type='EM')
+        MemberType.objects.create(member=m9, type='PH')
+        MemberType.objects.create(member=m9, type='EM')
 
         self.login_superuser()
         response = self.get('PH')
