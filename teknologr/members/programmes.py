@@ -12,23 +12,20 @@ DEGREE_PROGRAMME_CHOICES = {
         'Filmljudinspelning och -ljudplanering',
         'Filmning',
         'Filmregi',
-        'Grafisk design',
         'Inredningsarkitektur',
         'Kostymdesign',
         'Landskapsarkitektur',
         'Mode',
         'Teaterscenografi',
+        'Visuell kommunikation och design',
     ),
     'BIZ': (
         'Kauppatieteet',
     ),
     'CHEM': (
-        'Kemi-, bio- och materialteknik',
+        'Kemiteknik',
     ),
     'ENG': (
-        'Den byggda miljön',
-        'Energi- och miljöteknik',
-        'Maskin- och byggnadsteknik',
         'Energi- och maskinteknik',
         'Byggnadsteknik',
         'Fastighetsekonomi och geoinformatik',
@@ -43,8 +40,10 @@ DEGREE_PROGRAMME_CHOICES = {
         'Teknisk psykologi'
     ),
     'ELEC': (
-        'Automations- och informationsteknologi',
+        'Automation och robotik',
         'Bioinformationsteknologi',
-        'Elektronik och elektroteknik',
+        'Elektronik och elektrofysik',
+        'Elenergiteknik',
+        'Informationsteknologi',
     ),
 }
