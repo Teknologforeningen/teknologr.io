@@ -625,8 +625,8 @@ def members_by_member_type(request, membertype, field=None):
 
 # JSON file including all necessary information for HTK, i.e. member's activity at TF.
 # Dump content changed a bit on 8.9.2025 in an effort to reduce its size:
-#   Before: 5735 members (1.73MB) in 7.5 seconds
-#   After:
+#   Before: 5735 members (1.73MB) in 7+ seconds
+#   After:  3084 members (1.15MB) in 7+ seconds
 @api_view(['GET'])
 def dump_htk(request, member_id=None):
     def dumpMember(member):
