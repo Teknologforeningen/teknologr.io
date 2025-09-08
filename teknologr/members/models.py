@@ -39,10 +39,6 @@ class MemberManager(models.Manager):
             Prefetch('functionaries', queryset=Functionary.objects.select_related('functionarytype')),
             Prefetch('group_memberships', queryset=GroupMembership.objects.select_related('group', 'group__grouptype')),
             'member_types',
-        ).annotate(
-            count_decoration_ownerships=Count('decoration_ownerships'),
-            count_functionaries=Count('functionaries'),
-            count_group_memberships=Count('group_memberships'),
         )
 
     def get_prefetched_or_404(self, member_id):
@@ -285,20 +281,14 @@ class Member(SuperClass):
 
     @property
     def n_decorations(self):
-        if hasattr(self, 'count_decoration_ownerships'):
-            return self.count_decoration_ownerships
         return self.decoration_ownerships.count()
 
     @property
     def n_functionaries(self):
-        if hasattr(self, 'count_functionaries'):
-            return self.count_functionaries
         return self.functionaries.count()
 
     @property
     def n_groups(self):
-        if hasattr(self, 'count_group_memberships'):
-            return self.count_group_memberships
         return self.group_memberships.count()
 
     def get_ldap_groups(self):
@@ -622,6 +612,12 @@ class GroupType(SuperClass):
         if hasattr(self, 'count'):
             return self.count
         return self.groups.count()
+
+    @property
+    def n_groups_non_empty(self):
+        if hasattr(self, 'count_non_empty'):
+            return self.count_non_empty
+        return self.groups.filter(memberships__gt=0).count()
 
     @property
     def n_members_total(self):
