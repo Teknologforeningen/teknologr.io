@@ -23,9 +23,9 @@
           {% for gt in group_types %}
             <tr>
               <td class="text-left"><a href="{% url 'katalogen:groups' gt.id %}">{{ gt.name }}</a></td>
-              <td>{{ gt.count_non_empty }}</td>
-              <td>{{ gt.count_members_total }}</td>
-              <td>{{ gt.count_members_unique }}</td>
+              <td>{{ gt.n_groups_non_empty }}</td>
+              <td>{{ gt.n_members_total }}</td>
+              <td>{{ gt.n_members_unique }}</td>
             </tr>
           {% endfor %}
         </tbody>

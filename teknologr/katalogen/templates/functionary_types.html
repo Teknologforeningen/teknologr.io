@@ -21,8 +21,8 @@
           {% for ft in functionary_types %}
             <tr>
               <td class="text-left"><a href="{% url 'katalogen:functionary_type' ft.id %}">{{ ft.name }}</a></td>
-              <td>{{ ft.count }}</td>
-              <td>{{ ft.count_unique }}</td>
+              <td>{{ ft.n_functionaries_total }}</td>
+              <td>{{ ft.n_functionaries_unique }}</td>
             </tr>
           {% endfor %}
         </tbody>

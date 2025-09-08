@@ -67,7 +67,7 @@ class MemberSearchFilter(SearchFilter):
         return fields
 
 class MemberViewSet(BaseModelViewSet):
-    queryset = Member.objects.all_with_related()
+    queryset = Member.objects.all_with_related().order_by('id')
     serializer_class = MemberSerializer
     filter_backends = (MemberSearchFilter, filters.DjangoFilterBackend, OrderingFilter, )
     filterset_class = MemberFilter
@@ -83,7 +83,7 @@ class MemberViewSet(BaseModelViewSet):
 # GroupTypes, Groups and GroupMemberships
 
 class GroupTypeViewSet(BaseModelViewSet):
-    queryset = GroupType.objects.all()
+    queryset = GroupType.objects.all().order_by('id')
     serializer_class = GroupTypeSerializer
     filter_backends = (SearchFilter, filters.DjangoFilterBackend, OrderingFilter, )
     search_fields = ('name', 'comment', )
@@ -91,7 +91,7 @@ class GroupTypeViewSet(BaseModelViewSet):
     ordering_fields = ('id', 'name', )
 
 class GroupViewSet(BaseModelViewSet):
-    queryset = Group.objects.select_related('grouptype')
+    queryset = Group.objects.select_related('grouptype').order_by('id')
     serializer_class = GroupSerializer
     filter_backends = (filters.DjangoFilterBackend, OrderingFilter, )
     filterset_class = GroupFilter
@@ -104,7 +104,7 @@ class GroupViewSet(BaseModelViewSet):
     )
 
 class GroupMembershipViewSet(BaseModelViewSet):
-    queryset = GroupMembership.objects.all_with_related()
+    queryset = GroupMembership.objects.all_with_related().order_by('id')
     serializer_class = GroupMembershipSerializer
     filter_backends = (filters.DjangoFilterBackend, OrderingFilter, )
     filterset_class = GroupMembershipFilter
@@ -190,7 +190,7 @@ def multi_decoration_ownerships_save(request):
 # FunctionaryTypes and Functionaries
 
 class FunctionaryTypeViewSet(BaseModelViewSet):
-    queryset = FunctionaryType.objects.all()
+    queryset = FunctionaryType.objects.all().order_by('id')
     serializer_class = FunctionaryTypeSerializer
     filter_backends = (SearchFilter, filters.DjangoFilterBackend, OrderingFilter, )
     search_fields = ('name', 'comment', )
@@ -198,7 +198,7 @@ class FunctionaryTypeViewSet(BaseModelViewSet):
     ordering_fields = ('id', 'name', )
 
 class FunctionaryViewSet(BaseModelViewSet):
-    queryset = Functionary.objects.all_with_related()
+    queryset = Functionary.objects.all_with_related().order_by('id')
     serializer_class = FunctionarySerializer
     filter_backends = (filters.DjangoFilterBackend, OrderingFilter, )
     filterset_class = FunctionaryFilter
@@ -213,7 +213,7 @@ class FunctionaryViewSet(BaseModelViewSet):
 # Decorations and DecorationOwnerships
 
 class DecorationViewSet(BaseModelViewSet):
-    queryset = Decoration.objects.all()
+    queryset = Decoration.objects.all().order_by('id')
     serializer_class = DecorationSerializer
     filter_backends = (SearchFilter, filters.DjangoFilterBackend, OrderingFilter, )
     search_fields = ('name', 'comment', )
@@ -221,7 +221,7 @@ class DecorationViewSet(BaseModelViewSet):
     ordering_fields = ('id', 'name', )
 
 class DecorationOwnershipViewSet(BaseModelViewSet):
-    queryset = DecorationOwnership.objects.all_with_related()
+    queryset = DecorationOwnership.objects.all_with_related().order_by('id')
     serializer_class = DecorationOwnershipSerializer
     filter_backends = (filters.DjangoFilterBackend, OrderingFilter, )
     filterset_class = DecorationOwnershipFilter
@@ -239,7 +239,7 @@ class DecorationOwnershipViewSet(BaseModelViewSet):
 class MemberTypeViewSet(BaseModelViewSet):
     # NOTE: Default permissions (staff-only)
     permission_classes = (permissions.IsAdminUser, )
-    queryset = MemberType.objects.all_with_related()
+    queryset = MemberType.objects.all_with_related().order_by('id')
     filter_backends = (filters.DjangoFilterBackend, OrderingFilter, )
     filterset_class = MemberTypeFilter
     ordering_fields = (
@@ -426,7 +426,7 @@ class BILLAccountView(APIView):
 class ApplicantViewSet(BaseModelViewSet):
     # NOTE: Default permissions (staff-only)
     permission_classes = (permissions.IsAdminUser, )
-    queryset = Applicant.objects.all()
+    queryset = Applicant.objects.all().order_by('id')
     filter_backends = (SearchFilter, filters.DjangoFilterBackend, OrderingFilter, )
     search_fields = (
         'surname',
@@ -623,67 +623,67 @@ def members_by_member_type(request, membertype, field=None):
     return Response(result, status=200)
 
 
-# Data for HTK
-# JSON file including all necessary information for HTK, i.e. member's activity at TF
+# JSON file including all necessary information for HTK, i.e. member's activity at TF.
+# Dump content changed a bit on 8.9.2025 in an effort to reduce its size:
+#   Before: 5735 members (1.73MB) in 7.5 seconds
+#   After:
 @api_view(['GET'])
 def dump_htk(request, member_id=None):
     def dumpMember(member):
-        # Functionaries
-        funcs = member.functionaries.all()
-        func_list = []
-        for func in funcs:
-            func_str = "{}: {} > {}".format(
-                func.functionarytype.name,
-                func.begin_date,
-                func.end_date
-            )
-            func_list.append(func_str)
-        # Groups
-        group_memberships = member.group_memberships.all()
-        group_list = []
-        for gm in group_memberships:
-            group_str = "{}: {} > {}".format(
-                gm.group.grouptype.name,
-                gm.group.begin_date,
-                gm.group.end_date
-            )
-            group_list.append(group_str)
-        # Membertypes
-        types = member.member_types.all()
-        type_list = []
-        for type in types:
-            type_str = "{}: {} > {}".format(
-                type.get_type_display(),
-                type.begin_date,
-                type.end_date
-            )
-            type_list.append(type_str)
-        # Decorations
-        decoration_ownerships = member.decoration_ownerships.all()
-        decoration_list = []
-        for do in decoration_ownerships:
-            decoration_str = "{}: {}".format(
-                do.decoration.name,
-                do.acquired
-            )
-            decoration_list.append(decoration_str)
-
-        return {
+        dump = {
             "id": member.id,
-            "name": member.full_name,
-            "functionaries": func_list,
-            "groups": group_list,
-            "membertypes": type_list,
-            "decorations": decoration_list
+            "name": member.common_name,
         }
 
+        # Decorations
+        decoration_ownerships = member.decoration_ownerships.all()
+        if decoration_ownerships:
+            dump['decorations'] = [
+                f"{do.decoration.name}: {do.acquired}"
+                for do in decoration_ownerships
+            ]
+
+        # Functionaries
+        functionaries = member.functionaries.all()
+        if functionaries:
+            dump['functionaries'] = [
+                f"{f.functionarytype.name}: {f.begin_date} > {f.end_date}"
+                for f in functionaries
+            ]
+
+        # Groups
+        group_memberships = member.group_memberships.all()
+        if group_memberships:
+            dump['groups'] = [
+                f"{gm.group.grouptype.name}: {gm.group.begin_date} > {gm.group.end_date}"
+                for gm in group_memberships
+            ]
+
+        # Membertypes
+        membertypes = member.member_types.all()
+        if membertypes:
+            dump['membertypes'] = [
+                f"{mt.get_type_display()}: {mt.begin_date} > {mt.end_date}"
+                for mt in membertypes
+            ]
+
+        return dump
+
     # Remember to prefetch all needed data to avoid hitting the db with n_members*5 extra fetches
+
+    # If Member id is given, return one result
     if member_id:
         member = Member.objects.get_prefetched_or_404(member_id)
-        data = dumpMember(member)
-    else:
-        data = [dumpMember(member) for member in Member.objects.all_with_related()]
+        return Response(dumpMember(member), status=200)
 
+    # If no Member id, return dumps for all relevant members
+    def is_relevant(member):
+        if member.dead:
+            return False
+        return member.n_groups or member.n_functionaries or member.n_decorations
+
+    # Could make a more specific query, but let's just fetch all and filter here
+    data = [dumpMember(m) for m in Member.objects.all_with_related() if is_relevant(m)]
     return Response(data, status=200)
 
 

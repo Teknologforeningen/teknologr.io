@@ -73,9 +73,9 @@ class HTK_Full(BaseClass, DumpsTestCases):
     path = f'/api/dump-htk/'
     response = [{
         'id': 1,
-        'name': 'Sverker Svakar von Teknolog',
+        'name': 'Svakar von Teknolog',
         'functionaries': [f'Funkkis: {today} > 2999-01-01'],
-        'groups': [],
+        # 'groups': [],
         'membertypes': ['Ordinarie Medlem: 1999-01-01 > None'],
         'decorations': ['Hedersmedlem: 1999-01-01'],
     }]
@@ -84,9 +84,9 @@ class HTK_One(BaseClass, DumpsTestCases):
     path = f'/api/dump-htk/1/'
     response = {
         'id': 1,
-        'name': 'Sverker Svakar von Teknolog',
+        'name': 'Svakar von Teknolog',
         'functionaries': [f'Funkkis: {today} > 2999-01-01'],
-        'groups': [],
+        # 'groups': [],
         'membertypes': ['Ordinarie Medlem: 1999-01-01 > None'],
         'decorations': ['Hedersmedlem: 1999-01-01'],
     }
