@@ -67,7 +67,7 @@ class BaseFilter(django_filters.rest_framework.FilterSet):
         return user and user.is_staff
 
     def filter_count(self, queryset, value, field_name):
-        name = f'n_{field_name}'
+        name = f'__COUNT_FILTER_{field_name}'
         queryset = queryset.annotate(**{name: Count(field_name, distinct=True)})
         min = value.start
         max = value.stop
