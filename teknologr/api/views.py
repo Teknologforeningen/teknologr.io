@@ -67,7 +67,7 @@ class MemberSearchFilter(SearchFilter):
         return fields
 
 class MemberViewSet(BaseModelViewSet):
-    queryset = Member.objects.all_with_related()
+    queryset = Member.objects.all_with_related().order_by('id')
     serializer_class = MemberSerializer
     filter_backends = (MemberSearchFilter, filters.DjangoFilterBackend, OrderingFilter, )
     filterset_class = MemberFilter
@@ -83,7 +83,7 @@ class MemberViewSet(BaseModelViewSet):
 # GroupTypes, Groups and GroupMemberships
 
 class GroupTypeViewSet(BaseModelViewSet):
-    queryset = GroupType.objects.all()
+    queryset = GroupType.objects.all().order_by('id')
     serializer_class = GroupTypeSerializer
     filter_backends = (SearchFilter, filters.DjangoFilterBackend, OrderingFilter, )
     search_fields = ('name', 'comment', )
@@ -91,7 +91,7 @@ class GroupTypeViewSet(BaseModelViewSet):
     ordering_fields = ('id', 'name', )
 
 class GroupViewSet(BaseModelViewSet):
-    queryset = Group.objects.select_related('grouptype')
+    queryset = Group.objects.select_related('grouptype').order_by('id')
     serializer_class = GroupSerializer
     filter_backends = (filters.DjangoFilterBackend, OrderingFilter, )
     filterset_class = GroupFilter
@@ -104,7 +104,7 @@ class GroupViewSet(BaseModelViewSet):
     )
 
 class GroupMembershipViewSet(BaseModelViewSet):
-    queryset = GroupMembership.objects.all_with_related()
+    queryset = GroupMembership.objects.all_with_related().order_by('id')
     serializer_class = GroupMembershipSerializer
     filter_backends = (filters.DjangoFilterBackend, OrderingFilter, )
     filterset_class = GroupMembershipFilter
@@ -190,7 +190,7 @@ def multi_decoration_ownerships_save(request):
 # FunctionaryTypes and Functionaries
 
 class FunctionaryTypeViewSet(BaseModelViewSet):
-    queryset = FunctionaryType.objects.all()
+    queryset = FunctionaryType.objects.all().order_by('id')
     serializer_class = FunctionaryTypeSerializer
     filter_backends = (SearchFilter, filters.DjangoFilterBackend, OrderingFilter, )
     search_fields = ('name', 'comment', )
@@ -198,7 +198,7 @@ class FunctionaryTypeViewSet(BaseModelViewSet):
     ordering_fields = ('id', 'name', )
 
 class FunctionaryViewSet(BaseModelViewSet):
-    queryset = Functionary.objects.all_with_related()
+    queryset = Functionary.objects.all_with_related().order_by('id')
     serializer_class = FunctionarySerializer
     filter_backends = (filters.DjangoFilterBackend, OrderingFilter, )
     filterset_class = FunctionaryFilter
@@ -213,7 +213,7 @@ class FunctionaryViewSet(BaseModelViewSet):
 # Decorations and DecorationOwnerships
 
 class DecorationViewSet(BaseModelViewSet):
-    queryset = Decoration.objects.all()
+    queryset = Decoration.objects.all().order_by('id')
     serializer_class = DecorationSerializer
     filter_backends = (SearchFilter, filters.DjangoFilterBackend, OrderingFilter, )
     search_fields = ('name', 'comment', )
@@ -221,7 +221,7 @@ class DecorationViewSet(BaseModelViewSet):
     ordering_fields = ('id', 'name', )
 
 class DecorationOwnershipViewSet(BaseModelViewSet):
-    queryset = DecorationOwnership.objects.all_with_related()
+    queryset = DecorationOwnership.objects.all_with_related().order_by('id')
     serializer_class = DecorationOwnershipSerializer
     filter_backends = (filters.DjangoFilterBackend, OrderingFilter, )
     filterset_class = DecorationOwnershipFilter
@@ -239,7 +239,7 @@ class DecorationOwnershipViewSet(BaseModelViewSet):
 class MemberTypeViewSet(BaseModelViewSet):
     # NOTE: Default permissions (staff-only)
     permission_classes = (permissions.IsAdminUser, )
-    queryset = MemberType.objects.all_with_related()
+    queryset = MemberType.objects.all_with_related().order_by('id')
     filter_backends = (filters.DjangoFilterBackend, OrderingFilter, )
     filterset_class = MemberTypeFilter
     ordering_fields = (
@@ -426,7 +426,7 @@ class BILLAccountView(APIView):
 class ApplicantViewSet(BaseModelViewSet):
     # NOTE: Default permissions (staff-only)
     permission_classes = (permissions.IsAdminUser, )
-    queryset = Applicant.objects.all()
+    queryset = Applicant.objects.all().order_by('id')
     filter_backends = (SearchFilter, filters.DjangoFilterBackend, OrderingFilter, )
     search_fields = (
         'surname',
