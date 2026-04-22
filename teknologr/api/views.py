@@ -11,6 +11,7 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from ldap import LDAPError
+from locale import strxfrm
 from api.serializers import *
 from api.filters import *
 from api.ldap import LDAPAccountManager, LDAPError_to_string
@@ -319,7 +320,9 @@ class LDAPAccountView(APIView):
 def get_ldap_user_list(_):
     try:
         with LDAPAccountManager() as lm:
-            return Response(lm.get_user_list())
+            usernames = lm.get_user_list()
+            usernames.sort(key=lambda uname: strxfrm(uname))
+            return Response(usernames)
     except LDAPError as e:
         return Response({'detail': LDAPError_to_string(e)}, status=500)
 

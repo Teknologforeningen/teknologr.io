@@ -233,7 +233,7 @@ class LDAPAccountManager:
             return True
 
         self.for_each_user(cb, ['uid'])
-        return sorted(usernames)
+        return usernames
 
     def get_user_details(self, username):
         result = self.ldap.search_s(
