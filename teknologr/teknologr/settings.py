@@ -270,6 +270,12 @@ AUTH_LDAP_FIND_GROUP_PERMS = True
 AUTH_LDAP_CACHE_GROUPS = True
 AUTH_LDAP_GROUP_CACHE_TIMEOUT = 3600
 
+# The minimum uidNumber to use for LDAP-accounts
+AUTH_LDAP_MIN_UID = 1000
+
+# The maximium page size to use when fetching (all users) from LDAP. Too high and you might hit LDAPError code 4 (Size Limit Exceeded).
+AUTH_LDAP_PAGE_SIZE = 2000
+
 
 # Keep ModelBackend around for per-user permissions and maybe a local
 # superuser.

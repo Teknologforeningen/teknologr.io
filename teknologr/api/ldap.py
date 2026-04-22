@@ -1,6 +1,7 @@
 import ldap
 import ldap.modlist
 from getenv import env
+from teknologr.settings import AUTH_LDAP_MIN_UID as MIN_UID, AUTH_LDAP_PAGE_SIZE as PAGE_SIZE
 
 import time
 
@@ -80,15 +81,74 @@ class LDAPAccountManager:
         group_dn = env("LDAP_MEMBER_GROUP_DN")
         self.ldap.modify_s(group_dn, [(ldap.MOD_ADD, 'memberUid', username.encode('utf-8'))])
 
-    def get_next_uidnumber(self):
-        # Returns the next free uidnumber greater than 1000
-        output = self.ldap.search_s(env("LDAP_USER_DN"), ldap.SCOPE_ONELEVEL, attrlist=['uidNumber'])
-        uidnumbers = [int(user[1]['uidNumber'][0]) for user in output]
-        uidnumbers.sort()
+    def for_each_user(self, cb, attrlist = None):
+        """
+        Helper function for fetching all LDAP users. Fetching of users are made in batches, because the total amount of users might exceed the LDAP server's size limit for queries. Hitting the size limit gives LDAPError code 4 (Size Limit Exceeded).
 
-        # Find first free uid over 1000.
-        last = 1000
-        for uid in uidnumbers:
+        `cb` is a callback function that is called for each fetched user. If the callback returns falsy, the iteration is stopped prematurely.
+        `attrlist` is a list of attributes to fetch for each user.
+
+        It would be nice to use the built-in pagination, but that does not seem to circumvent the size limit...
+        Example:
+            from ldap.controls import SimplePagedResultsControl
+            serverctrls = [ SimplePagedResultsControl(True, size=PAGE_SIZE, cookie=b'') ]
+            ...
+
+        On a related note, it would also be nice to use server-side sorting for this. In that case each batch could simply use a lower-bound for uidNumber, and use the `sizelimit=` argument in `search_ext_s` to limit the number of results. If the server sorted the results, it would be easy to get the next lower-bound from the last result and redo the query until all users have been fetched. However, our LDAP server does (currently) not support server-side sorting, and the `sizelimit=` argument does not seem to work either (or maybe I'm just doing something wrong)...
+        Example:
+            from ldap.controls.sss import SSSRequestControl
+            serverctrls = [ SSSRequestControl(True, ['uidNumber']) ]
+            ...
+
+        XXX: Implement pagination for other queries too?
+        """
+
+        first = MIN_UID
+        limit = PAGE_SIZE
+
+        while True:
+            # Filter for all but the last query:
+            #   first <= uidNumber <= first + limit - 1
+            # Filter for the last query:
+            #   first <= uidNumber
+            filterstr = f'(&(uidNumber>={first})'
+            if limit:
+                filterstr += f'(uidNumber<={first + limit - 1})'
+            filterstr += ')'
+
+            first += limit
+
+            users = self.ldap.search_ext_s(
+                env("LDAP_USER_DN"),
+                ldap.SCOPE_ONELEVEL,
+                filterstr=filterstr,
+                attrlist=attrlist or ["uid", "uidNumber"],
+            ) or []
+
+            for user in users:
+                # user is ('uid=XXX,cn=...', { attrs })
+                if not cb(user[1]):
+                    return
+
+            if not limit:
+                return
+
+            # Arbitrary heuristic to decide when to remove the limit and make the last query
+            if len(users) < limit/2:
+                limit = 0
+
+    def get_next_uidnumber(self):
+        uids = []
+
+        def cb(user):
+            uids.append(int(self.__get_key(user, 'uidNumber') or 0))
+            return True
+
+        self.for_each_user(cb, ['uidNumber'])
+        uids.sort()
+
+        last = MIN_UID - 1
+        for uid in uids:
             if uid > last + 1:
                 break
             last = uid
@@ -166,11 +226,14 @@ class LDAPAccountManager:
         return value[0].decode('utf-8')
 
     def get_user_list(self):
-        result = self.ldap.search_s(
-            env('LDAP_USER_DN'),
-            ldap.SCOPE_ONELEVEL,
-            attrlist=['uid'])
-        return sorted([self.__get_key(user[1], 'uid') for user in result])
+        usernames = []
+
+        def cb(user):
+            usernames.append(self.__get_key(user, 'uid'))
+            return True
+
+        self.for_each_user(cb, ['uid'])
+        return sorted(usernames)
 
     def get_user_details(self, username):
         result = self.ldap.search_s(
