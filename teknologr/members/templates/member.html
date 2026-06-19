@@ -264,7 +264,7 @@
                 <span class="monospace">{{ BILL.acc }}</span>
                 <br/>
 
-                <b>Smeknamn:</b> {{ BILL.nick }}
+                <b>Smeknamn:</b> {{ BILL.nick|default_if_none:'' }}
                 <br/>
 
                 <b>Saldo:</b> {{ BILL.balance }}€
