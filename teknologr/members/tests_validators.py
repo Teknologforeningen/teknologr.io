@@ -54,6 +54,8 @@ class ValidatorTest(TestCase):
             "123 - 456 - 789",
             " 040123456 ",
             "+358 40 - 123",
+            "(09)1234",
+            "+358(0)401234",
         ]:
             self.setData("phone", number)
             self.validator.clean_phone()
@@ -65,6 +67,9 @@ class ValidatorTest(TestCase):
             "+ 358123",
             "-040123456",
             "040123456-",
+            "(+358)40123456",
+            ")040123456",
+            "040123456(",
         ]:
             self.setData("phone", number)
             with self.assertRaises(ValidationError):

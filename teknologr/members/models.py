@@ -320,7 +320,7 @@ class Member(SuperClass):
         '''
         if self.username:
             try:
-                return { 'key': bill.get_key(self.username) }
+                return {'key': bill.get_key(self.username)}
             except:
                 pass
         return None
