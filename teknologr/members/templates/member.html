@@ -126,7 +126,6 @@
 
             <div class="col-md-6">
               <label for="{{form.degree_programme.id_for_label}}">Studieinriktning</label>
-              <a href="https://wiki.teknologforeningen.fi/itwiki/index.php/Medlemsregister#Studieprogramslistan" target="_blank" class="glyphicon glyphicon-info-sign text-info" data-toggle="tooltip" data-original-title="Välj alltid om möjligt ett alternativ från listan. Om listan behöver ändras, klicka på denna ikon för att se instruktioner till det."></a>
               <select id="{{form.degree_programme.auto_id}}" autocomplete="off" class="form-control es-input" name="{{form.degree_programme.html_name}}">
                 {% for option in programmes %}
                 <option{% if option == form.degree_programme.value %} selected {% endif %}>{{option}}</option>
