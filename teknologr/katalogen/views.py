@@ -76,8 +76,10 @@ def profile(request, member_id):
 
     own_profile = member.username == request.user.username
     bill = None
+    gk = None
     if own_profile:
         bill = member.get_bill_info()
+        gk = member.get_generikey_info()
 
     return render(request, 'profile.html', {
         **_get_base_context(request),
@@ -86,6 +88,7 @@ def profile(request, member_id):
         'show_contact_info': own_profile or member.show_contact_info(),
         'member': member,
         'bill': bill,
+        'generikey': gk,
         'combined': combine,
         'functionary_type_durations': ft_durations,
         'group_type_durations': gt_durations,

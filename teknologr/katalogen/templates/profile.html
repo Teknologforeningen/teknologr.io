@@ -56,6 +56,12 @@
               {% endif %}
             </td>
           </tr>
+          <tr>
+            <th>Generikey nyckelnummer</th>
+            <td class="text-right">
+              <span class="monospace">{{ generikey.key|default_if_none:'' }}</span>
+            </td>
+          </tr>
         </tbody>
       </table>
       {% endif %}

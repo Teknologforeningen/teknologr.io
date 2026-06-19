@@ -313,6 +313,18 @@ class Member(SuperClass):
                 pass
         return None
 
+    def get_generikey_info(self):
+        '''
+        Returns information about the Generikey account connected to this Member.
+        Returns None if no account is found.
+        '''
+        if self.username:
+            try:
+                return { 'key': bill.get_key(self.username) }
+            except:
+                pass
+        return None
+
     def save(self, *args, **kwargs):
         if not self.username:
             self.username = None

@@ -108,3 +108,25 @@ def get_account(username):
     # Balance is a float, but leave it as a string to avoid having to format it later
     # info['balance'] = float(info['balance'])
     return info
+
+def get_key(username):
+    '''
+    Get the number of the Generikey key tied to a user.
+    Returns None if no key was found.
+    '''
+
+    '''
+    Possible return values:
+      >=0: Success, key number
+      -1: Username validation failed
+      -2: Account does not exist
+      -3: No key tied to account
+    '''
+    result = __request(f"key?user={username}")
+
+    if type(result) == int:
+        if result >= 0:
+            return result
+        if result == -2 or result == -3:
+            return None
+    raise BILLException(f"BILL returned error: {result}")
