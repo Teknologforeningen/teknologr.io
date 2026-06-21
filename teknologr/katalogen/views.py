@@ -83,7 +83,8 @@ def profile(request, member_id):
 def profile_functionaries(request, member_id):
     '''Fragment endpoint for swapping using HTMX.'''
 
-    member = Member.objects.get_prefetched_or_404(member_id)
+    # Only need to prefetch functionaries
+    member = Member.objects.get_with_functionaries_or_404(member_id)
     combine = request.GET.get('combine', '0') != '0'
     ft_durations = member.get_ft_durations(combine)
 
@@ -97,7 +98,8 @@ def profile_functionaries(request, member_id):
 def profile_groups(request, member_id):
     '''Fragment endpoint for swapping using HTMX.'''
 
-    member = Member.objects.get_prefetched_or_404(member_id)
+    # Only need to prefetch group memberships
+    member = Member.objects.get_with_groups_or_404(member_id)
     combine = request.GET.get('combine', '0') != '0'
     gt_durations = member.get_gt_durations(combine)
 

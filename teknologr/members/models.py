@@ -44,6 +44,16 @@ class MemberManager(models.Manager):
     def get_prefetched_or_404(self, member_id):
         return get_object_or_404(self.all_with_related(), id=member_id)
 
+    def get_with_functionaries_or_404(self, member_id):
+        return get_object_or_404(self.prefetch_related(
+            Prefetch('functionaries', queryset=Functionary.objects.select_related('functionarytype')),
+        ), id=member_id)
+
+    def get_with_groups_or_404(self, member_id):
+        return get_object_or_404(self.prefetch_related(
+            Prefetch('group_memberships', queryset=GroupMembership.objects.select_related('group', 'group__grouptype'))
+        ), id=member_id)
+
     def search_by_name(self, queries, staff_search=False):
         if not queries:
             return []
