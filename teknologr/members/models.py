@@ -44,6 +44,16 @@ class MemberManager(models.Manager):
     def get_prefetched_or_404(self, member_id):
         return get_object_or_404(self.all_with_related(), id=member_id)
 
+    def get_with_functionaries_or_404(self, member_id):
+        return get_object_or_404(self.prefetch_related(
+            Prefetch('functionaries', queryset=Functionary.objects.select_related('functionarytype')),
+        ), id=member_id)
+
+    def get_with_groups_or_404(self, member_id):
+        return get_object_or_404(self.prefetch_related(
+            Prefetch('group_memberships', queryset=GroupMembership.objects.select_related('group', 'group__grouptype'))
+        ), id=member_id)
+
     def search_by_name(self, queries, staff_search=False):
         if not queries:
             return []
@@ -291,6 +301,32 @@ class Member(SuperClass):
     def n_groups(self):
         return self.group_memberships.count()
 
+    def get_ft_durations(self, combined):
+        functionaries = list(self.functionaries.all())
+
+        # Order the items differently depending on if they will be combined or not
+        ordering = [('name', False)] if combined else [('name', False), ('date', True)]
+        for by, reverse in ordering:
+            Functionary.order_by(functionaries, by, reverse)
+
+        ft_durations = [(f.functionarytype, f.duration) for f in functionaries]
+        if combined:
+            ft_durations = MultiDuration.combine_per_key(ft_durations)
+        return ft_durations
+
+    def get_gt_durations(self, combined):
+        group_memberships = list(self.group_memberships.all())
+
+        # Order the items differently depending on if they will be combined or not
+        ordering = [('name', False)] if combined else [('name', False), ('date', True)]
+        for by, reverse in ordering:
+            GroupMembership.order_by(group_memberships, by, reverse)
+
+        gt_durations = [(gm.group.grouptype, gm.group.duration) for gm in group_memberships]
+        if combined:
+            gt_durations = MultiDuration.combine_per_key(gt_durations)
+        return gt_durations
+
     def get_ldap_groups(self):
         if not self.username:
             return []
@@ -309,6 +345,18 @@ class Member(SuperClass):
         if self.username:
             try:
                 return bill.get_account(self.username)
+            except:
+                pass
+        return None
+
+    def get_generikey_info(self):
+        '''
+        Returns information about the Generikey account connected to this Member.
+        Returns None if no account is found.
+        '''
+        if self.username:
+            try:
+                return {'key': bill.get_key(self.username)}
             except:
                 pass
         return None

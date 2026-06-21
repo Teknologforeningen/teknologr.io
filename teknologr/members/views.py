@@ -129,6 +129,12 @@ def member(request, member_id):
         except bill.BILLException as e:
             context['BILL'] = {'error': str(e)}
 
+        gk = context['generikey'] = {}
+        try:
+            gk['key'] = bill.get_key(member.username)
+        except bill.BILLException as e:
+            gk['error'] = str(e)
+
     # load side list items
     set_side_context(context, 'members', member)
     return render(request, 'member.html', context)

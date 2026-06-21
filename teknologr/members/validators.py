@@ -47,7 +47,7 @@ class CommonValidators:
         phone = self.cleaned_data.get('phone').strip()
         if not phone:
             return ''
-        regex = re.compile('^\+?[0-9][0-9- ]*[0-9]$')
+        regex = re.compile(r'^\+?[0-9(][0-9- ()]*[0-9)]$')
         if not regex.match(phone) or '--' in phone:
             raise ValidationError('Ogiltigt telefonnummer')
         return phone

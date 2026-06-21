@@ -126,7 +126,6 @@
 
             <div class="col-md-6">
               <label for="{{form.degree_programme.id_for_label}}">Studieinriktning</label>
-              <a href="https://wiki.teknologforeningen.fi/itwiki/index.php/Medlemsregister#Studieprogramslistan" target="_blank" class="glyphicon glyphicon-info-sign text-info" data-toggle="tooltip" data-original-title="Välj alltid om möjligt ett alternativ från listan. Om listan behöver ändras, klicka på denna ikon för att se instruktioner till det."></a>
               <select id="{{form.degree_programme.auto_id}}" autocomplete="off" class="form-control es-input" name="{{form.degree_programme.html_name}}">
                 {% for option in programmes %}
                 <option{% if option == form.degree_programme.value %} selected {% endif %}>{{option}}</option>
@@ -202,7 +201,7 @@
           <h4 class="col-12">Användarkonton</h4>
         </div>
         <div class="row mb-4">
-          <div class="col-sm-6">
+          <div class="col-lg-4">
             <h5>LDAP</h5>
             {% if member.username %}
 
@@ -253,7 +252,8 @@
 
             {% endif %}
           </div>
-          <div class="col-sm-6">
+
+          <div class="col-lg-4">
             <h5>BILL</h5>
             {% if BILL %}
               {% if BILL.error %}
@@ -263,7 +263,7 @@
                 <span class="monospace">{{ BILL.acc }}</span>
                 <br/>
 
-                <b>Smeknamn:</b> {{ BILL.nick }}
+                <b>Smeknamn:</b> {{ BILL.nick|default_if_none:'' }}
                 <br/>
 
                 <b>Saldo:</b> {{ BILL.balance }}€
@@ -286,6 +286,18 @@
                   title="Skapa LDAP-konto först"
                 {% endif %}
               >Skapa BILL-konto</button>
+            {% endif %}
+          </div>
+
+          <div class="col-lg-4">
+            <h5>Generikey</h5>
+            {% if generikey.error %}
+              <div class="alert alert-danger">{{ generikey.error }}</div>
+            {% elif not LDAP.username %}
+              Användarnamn saknas
+            {% else %}
+              <b>Nyckelnummer:</b>
+              <span class="monospace">{{ generikey.key|default_if_none:'' }}</span>
             {% endif %}
           </div>
         </div>

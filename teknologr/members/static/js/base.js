@@ -23,7 +23,7 @@ const call_if_function = (fn, ...params) => {
  * @param {String | (e: Element) => String} option.url
  * @param {Object | (e: Element) => Object} dption.data
  * @param {String | (e: Element) => String} option.confirmMessage
- * @param {String | (e: Element) => String} option.newLocation
+ * @param {String | (e: Element, msg: Any) => String} option.newLocation
  */
 const add_request_listener = ({ selector, method, url, data, confirmMessage, newLocation }) => {
 	// Get the element(s) to attach the listener to
@@ -35,6 +35,7 @@ const add_request_listener = ({ selector, method, url, data, confirmMessage, new
 		// Add a listener to the element
 		e.on(type, event => {
 			event.preventDefault();
+			event.stopPropagation();
 
 			const msg = call_if_function(confirmMessage, e);
 			if (msg && !confirm(msg)) return;
@@ -52,8 +53,8 @@ const add_request_listener = ({ selector, method, url, data, confirmMessage, new
 				else location.reload();
 			});
 			// XXX: The error message is not very helpful for the user, so should probably change this to something else
-			request.fail((jqHXR, _textStatus) => {
-				alert(`Request failed with status ${jqHXR.status} (${jqHXR.statusText}): ${jqHXR.responseText}`);
+			request.fail((jqXHR, textStatus, errorThrown) => {
+				alert(`Request failed with status ${jqXHR.status} (${jqXHR.statusText}): ${jqXHR.responseText}`);
 			});
 		});
 	});

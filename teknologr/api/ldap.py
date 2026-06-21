@@ -81,7 +81,7 @@ class LDAPAccountManager:
         group_dn = env("LDAP_MEMBER_GROUP_DN")
         self.ldap.modify_s(group_dn, [(ldap.MOD_ADD, 'memberUid', username.encode('utf-8'))])
 
-    def for_each_user(self, cb, attrlist = None):
+    def for_each_user(self, cb, attrlist=None):
         """
         Helper function for fetching all LDAP users. Fetching of users are made in batches, because the total amount of users might exceed the LDAP server's size limit for queries. Hitting the size limit gives LDAPError code 4 (Size Limit Exceeded).
 
