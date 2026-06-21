@@ -291,6 +291,32 @@ class Member(SuperClass):
     def n_groups(self):
         return self.group_memberships.count()
 
+    def get_ft_durations(self, combined):
+        functionaries = list(self.functionaries.all())
+
+        # Order the items differently depending on if they will be combined or not
+        ordering = [('name', False)] if combined else [('name', False), ('date', True)]
+        for by, reverse in ordering:
+            Functionary.order_by(functionaries, by, reverse)
+
+        ft_durations = [(f.functionarytype, f.duration) for f in functionaries]
+        if combined:
+            ft_durations = MultiDuration.combine_per_key(ft_durations)
+        return ft_durations
+
+    def get_gt_durations(self, combined):
+        group_memberships = list(self.group_memberships.all())
+
+        # Order the items differently depending on if they will be combined or not
+        ordering = [('name', False)] if combined else [('name', False), ('date', True)]
+        for by, reverse in ordering:
+            GroupMembership.order_by(group_memberships, by, reverse)
+
+        gt_durations = [(gm.group.grouptype, gm.group.duration) for gm in group_memberships]
+        if combined:
+            gt_durations = MultiDuration.combine_per_key(gt_durations)
+        return gt_durations
+
     def get_ldap_groups(self):
         if not self.username:
             return []

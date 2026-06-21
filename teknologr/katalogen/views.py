@@ -51,28 +51,12 @@ def search(request):
 def profile(request, member_id):
     """
     View the public profile of a member. All details will be shown if the user allows it, or if this is the user's own profile.
-
-    URL query parameters available:
-     - combine=<0/1>: Whether or not to combine the same Functionaries and GroupMemberships into a single row. The ordering will switch to lexicographical instead of reversed date as well.
     """
     member = Member.objects.get_prefetched_or_404(member_id)
-    functionaries = list(member.functionaries.all())
-    group_memberships = list(member.group_memberships.all())
 
-    combine = request.GET.get('combine', '0') != '0'
-
-    # Order the items differently depending on if they will be combined or not
-    ordering = [('name', False)] if combine else [('name', False), ('date', True)]
-    for by, reverse in ordering:
-        Functionary.order_by(functionaries, by, reverse)
-        GroupMembership.order_by(group_memberships, by, reverse)
-
-    ft_durations = [(f.functionarytype, f.duration) for f in functionaries]
-    gt_durations = [(gm.group.grouptype, gm.group.duration) for gm in group_memberships]
-
-    if combine:
-        ft_durations = MultiDuration.combine_per_key(ft_durations)
-        gt_durations = MultiDuration.combine_per_key(gt_durations)
+    combine = False
+    ft_durations = member.get_ft_durations(combine)
+    gt_durations = member.get_gt_durations(combine)
 
     own_profile = member.username == request.user.username
     bill = None
@@ -93,6 +77,34 @@ def profile(request, member_id):
         'functionary_type_durations': ft_durations,
         'group_type_durations': gt_durations,
         'decoration_ownerships': member.decoration_ownerships_by_date,
+    })
+
+@login_required
+def profile_functionaries(request, member_id):
+    '''Fragment endpoint for swapping using HTMX.'''
+
+    member = Member.objects.get_prefetched_or_404(member_id)
+    combine = request.GET.get('combine', '0') != '0'
+    ft_durations = member.get_ft_durations(combine)
+
+    return render(request, 'profile_functionaries.html', {
+        'member': member,
+        'combined': combine,
+        'functionary_type_durations': ft_durations,
+    })
+
+@login_required
+def profile_groups(request, member_id):
+    '''Fragment endpoint for swapping using HTMX.'''
+
+    member = Member.objects.get_prefetched_or_404(member_id)
+    combine = request.GET.get('combine', '0') != '0'
+    gt_durations = member.get_gt_durations(combine)
+
+    return render(request, 'profile_groups.html', {
+        'member': member,
+        'combined': combine,
+        'group_type_durations': gt_durations,
     })
 
 @login_required
