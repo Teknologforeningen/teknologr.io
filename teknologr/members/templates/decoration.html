@@ -43,7 +43,14 @@
         <tr>
           <td>
             <i class="far fa-edit edit-do-button text-info" role="button" title="Editera betygelseinnehav" data-id="{{ ownership.id }}"></i>
-            <i class="fas fa-times delete-do-button text-danger" role="button" title="Radera betygelseinnehav" data-id="{{ ownership.id }}"></i>
+            <i
+              class="fas fa-times text-danger"
+              role="button"
+              title="Radera betygelseinnehav"
+              hx-delete="{% url 'api:decorationownership-detail' ownership.id %}"
+              hx-confirm="Vill du radera detta betygelseinnehav?"
+              hx-on::after-request="if (event.detail.successful) this.closest('tr').remove()"
+            ></i>
           </td>
           <td><a href="{% url 'admin:member' ownership.member.id %}">{{ ownership.member.get_full_name_HTML }}</a></td>
           <td>{{ ownership.acquired }}</td>

@@ -26,7 +26,7 @@
   <script src="{% static 'assets/js/jquery-ui-1.13.2.min.js' %}"></script>
 </head>
 
-<body>
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
   <nav class="navbar navbar-expand-sm navbar-dark bg-dark sticky-top">
     <a class="navbar-brand" href="{% url 'admin:home' %}">teknologr.io</a>
 
@@ -96,6 +96,9 @@
     <!-- For modals and tooltips -->
     <script src="{% static 'assets/js/popper-1.14.7.min.js' %}"></script>
     <script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+
+    <!-- HTMX -->
+    <script src="{% static 'assets/js/htmx-2.0.2.min.js' %}"></script>
 
     <script src="{% static 'js/ajax_api.js' %}"></script>
     <script src="{% static 'js/base.js' %}"></script>

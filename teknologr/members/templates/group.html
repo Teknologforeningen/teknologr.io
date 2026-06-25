@@ -93,7 +93,14 @@
             {% for membership in groupmembers %}
               <tr>
                 <td>
-                  <i class="col-2 fas fa-times delete-gm-button text-danger" role="button" title="Radera gruppmedlemskap" data-id="{{ membership.id }}"></i>
+                  <i
+                    class="col-2 fas fa-times text-danger"
+                    role="button"
+                    title="Radera gruppmedlemskap"
+                    hx-delete="{% url 'api:groupmembership-detail' membership.id %}"
+                    hx-confirm="Vill du radera detta gruppmedlemskap?"
+                    hx-on::after-request="if (event.detail.successful) this.closest('tr').remove()"
+                  ></i>
                   <a class="col-10" href="{% url 'admin:member' membership.member.id %}">{{ membership.member.get_full_name_HTML }}</a>
                 </td>
               </tr>

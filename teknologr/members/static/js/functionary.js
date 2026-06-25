@@ -21,13 +21,6 @@ $(document).ready(function () {
 		url: `/api/multi-functionaries/`,
 		confirmMessage: confirmMessageCreateMembers,
 	});
-	// Remove a person from the list
-	add_request_listener({
-		selector: ".delete-f-button",
-		method: "DELETE",
-		url: element => `/api/functionaries/${element.data("id")}/`,
-		confirmMessage: "Vill du radera detta postinnehav?",
-	});
 
 	add_ajax_multiselect_extension({
 		selector_button: "#fform-create-member",

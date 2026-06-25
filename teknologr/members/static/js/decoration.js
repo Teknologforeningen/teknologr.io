@@ -22,14 +22,6 @@ $(document).ready(function () {
 		confirmMessage: confirmMessageCreateMembers,
 	});
 
-	// Delete a person from the list
-	add_request_listener({
-		selector: ".delete-do-button",
-		method: "DELETE",
-		url: element => `/api/decorationownerships/${element.data("id")}/`,
-		confirmMessage: "Vill du radera detta betygelseinnehav?",
-	});
-
 	add_ajax_multiselect_extension({
 		selector_button: "#doform-create-member",
 		selector_input: "#doform_member_text",

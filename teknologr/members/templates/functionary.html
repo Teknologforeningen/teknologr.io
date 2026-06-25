@@ -43,7 +43,14 @@
       <tr>
         <td>
           <i class="far fa-edit edit-f-button text-info" role="button" title="Editera postinnehav" data-id="{{ functionary.id }}"></i>
-          <i class="fas fa-times delete-f-button text-danger" role="button" title="Radera postinnehav" data-id="{{ functionary.id }}"></i>
+          <i
+            class="fas fa-times text-danger"
+            role="button"
+            title="Radera postinnehav"
+            hx-delete="{% url 'api:functionary-detail' functionary.id %}"
+            hx-confirm="Vill du radera detta postinnehav?"
+            hx-on::after-request="if (event.detail.successful) this.closest('tr').remove()"
+          ></i>
         </td>
         <td><a href="{% url 'admin:member' functionary.member.id %}">{{ functionary.member.get_full_name_HTML }}</a></td>
         <td>{{ functionary.begin_date }}</td>

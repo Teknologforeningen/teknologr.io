@@ -45,13 +45,6 @@ $(document).ready(function () {
 		url: "/api/multi-groupmemberships/",
 		confirmMessage: confirmMessageCreateMembers,
 	});
-	// Remove a member from the selected group
-	add_request_listener({
-		selector: ".delete-gm-button",
-		method: "DELETE",
-		url: element => `/api/groupmemberships/${element.data("id")}/`,
-		confirmMessage: "Vill du radera detta gruppmedlemskap?",
-	});
 
 	// Copy the hidden list of emails to the clipboard
 	$('#copy2clipboard').click(function(){
