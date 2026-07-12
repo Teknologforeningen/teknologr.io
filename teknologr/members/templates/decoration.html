@@ -9,7 +9,7 @@
       <button id="delete-d-button" class="btn btn-danger" title="Radera betygelse" data-id="{{ decoration.id }}">Radera</button>
       <a class="btn btn-secondary" href="{% url 'katalogen:decoration' decoration.id %}">Katalogen</a>
       <a class="btn btn-secondary" href="{% url 'api:decoration-detail' decoration.id %}">API</a>
-      {% include "modals/decoration_edit.html" with modalname="edit-d-modal" title="Editera betygelse" form=edit_d_form decoration=decoration only %}
+      {% include "modals/decoration_edit.html" with id="edit-d-modal" title="Editera betygelse" form=edit_d_form decoration=decoration only %}
     </div>
   </div>
   <h1 class="page-header" title="Skapad: {{ decoration.created }}&#013;Ändrad: {{ decoration.modified }}">
@@ -28,7 +28,7 @@
 
   <h4 class="list-inline-item">Innehavare av betygelsen</h4>
   <i class="list-inline-item fas fa-plus text-success icon-20" role="button" title="Lägg till betygelseinnehav" data-toggle="modal" data-target="#add-d-modal"></i>
-  {% include "modals/decorationownership_add.html" with modalname="add-d-modal" title="Lägg till betygelseinnehav ("|add:decoration.name|add:")" form=add_do_form only %}
+  {% include "modals/decorationownership_add.html" with id="add-d-modal" title="Lägg till betygelseinnehav ("|add:decoration.name|add:")" form=add_do_form only %}
 
   <table class="table table-sm table-striped table-borderless">
     <thead class="no-border">
@@ -57,7 +57,7 @@
         </tr>
       {% endfor %}
       <!-- This modal is populated by base.js when an edit-do-button is clicked -->
-      {% include "modals/modal.html" with modalname="edit-do-modal" title="Editera betygelseinnehav" only %}
+      {% include "modals/modal.html" with id="edit-do-modal" title="Editera betygelseinnehav" only %}
     </tbody>
   </table>
 </div>

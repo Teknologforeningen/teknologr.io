@@ -9,7 +9,7 @@
       <button id="delete-ft-button" class="btn btn-danger" title="Radera post" data-id="{{ functionary_type.id }}">Radera</button>
       <a class="btn btn-secondary" href="{% url 'katalogen:functionary_type' functionary_type.id %}">Katalogen</a>
       <a class="btn btn-secondary" href="{% url 'api:functionarytype-detail' functionary_type.id %}">API</a>
-      {% include "modals/functionarytype_edit.html" with modalname="edit-ft-modal" title="Editera post" form=edit_ft_form functionary_type=functionary_type only %}
+      {% include "modals/functionarytype_edit.html" with id="edit-ft-modal" title="Editera post" form=edit_ft_form functionary_type=functionary_type only %}
     </div>
   </div>
   <h1 class="page-header" title="Skapad: {{ functionary_type.created }}&#013;Ändrad: {{ functionary_type.modified }}">
@@ -27,7 +27,7 @@
 
   <h4 class="list-inline-item">Innehavare av posten</h4>
   <i class="list-inline-item fas fa-plus text-success icon-20" role="button" title="Lägg till postinnehav" data-toggle="modal" data-target="#add-f-modal"></i>
-  {% include "modals/functionary_add.html" with modalname="add-f-modal" title="Lägg till postinnehav ("|add:functionary_type.name|add:")" form=add_f_form only %}
+  {% include "modals/functionary_add.html" with id="add-f-modal" title="Lägg till postinnehav ("|add:functionary_type.name|add:")" form=add_f_form only %}
 
   <table class="table table-sm table-striped table-borderless">
     <thead class="no-border">
@@ -58,7 +58,7 @@
       </tr>
     {% endfor %}
     <!-- This modal is populated by base.js when an edit-f-button is clicked -->
-    {% include "modals/modal.html" with modalname="edit-f-modal" title="Editera postinnehav" only %}
+    {% include "modals/modal.html" with id="edit-f-modal" title="Editera postinnehav" only %}
     </tbody>
   </table>
 </div>

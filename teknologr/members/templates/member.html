@@ -221,11 +221,11 @@
             <button
               class="btn btn-primary"
               data-toggle="modal"
-              data-target="#changepw_modal"
+              data-target="#edit-pw-modal"
               {% if not LDAP.username %}disabled title="LDAP-konto existerar inte"{% endif %}>
               Ändra lösenord
             </button>
-            {% include "modals/ldap_changepw.html" with modalname="changepw_modal" title="Ändra LDAP lösenord" member_id=member.id only %}
+            {% include "modals/ldap_changepw.html" with id="edit-pw-modal" title="Ändra LDAP lösenord" member_id=member.id only %}
             <button
               id="delete-ldap-button"
               class="btn btn-danger"
@@ -245,10 +245,10 @@
             <button
               class="btn btn-primary"
               data-toggle="modal"
-              data-target="#addldap_modal">
+              data-target="#add-ldap-modal">
               Skapa LDAP-konto
             </button>
-            {% include "modals/ldap_add.html" with modalname="addldap_modal" title="Skapa LDAP-konto" member_id=member.id only %}
+            {% include "modals/ldap_add.html" with id="add-ldap-modal" title="Skapa LDAP-konto" member_id=member.id only %}
 
             {% endif %}
           </div>
@@ -310,7 +310,7 @@
           <li class="list-inline-item"><h4>Betygelser</h4></li>
           <li class="list-inline-item float-right">
             <button class="btn btn-sm btn-success" data-toggle="modal" data-target="#add-do-modal">Lägg till ny</button>
-            {% include "modals/decorationownership_add.html" with modalname="add-do-modal" title="Lägg till betygelseinnehav" form=add_do_form only %}
+            {% include "modals/decorationownership_add.html" with id="add-do-modal" title="Lägg till betygelseinnehav" form=add_do_form only %}
           </li>
         </ul>
         <table class="table table-sm table-striped table-borderless">
@@ -330,14 +330,14 @@
             </tr>
             {% endfor %}
             <!-- This modal is populated by base.js when an edit-f-button is clicked -->
-            {% include "modals/modal.html" with modalname="edit-do-modal" title="Editera betygelseinnehav" only %}
+            {% include "modals/modal.html" with id="edit-do-modal" title="Editera betygelseinnehav" only %}
         </table>
 
         <ul class="list-inline mt-4 mb-0">
           <li class="list-inline-item"><h4>Poster</h4></li>
           <li class="list-inline-item float-right">
             <button class="btn btn-sm btn-success" data-toggle="modal" data-target="#add-f-modal">Lägg till ny</button>
-            {% include "modals/functionary_add.html" with modalname="add-f-modal" title="Lägg till postinnehav" form=add_f_form only %}
+            {% include "modals/functionary_add.html" with id="add-f-modal" title="Lägg till postinnehav" form=add_f_form only %}
           </li>
         </ul>
         <table class="table table-sm table-striped table-borderless">
@@ -359,14 +359,14 @@
               </tr>
             {% endfor %}
             <!-- This modal is populated by base.js when an edit-f-button is clicked -->
-            {% include "modals/modal.html" with modalname="edit-f-modal" title="Editera postinnehav" only %}
+            {% include "modals/modal.html" with id="edit-f-modal" title="Editera postinnehav" only %}
         </table>
 
         <ul class="list-inline mt-4 mb-0">
           <li class="list-inline-item"><h4>Grupper</h4></li>
           <li class="list-inline-item float-right">
             <button class="btn btn-sm btn-success" data-toggle="modal" data-target="#add-gm-modal">Lägg till ny</button>
-            {% include "modals/groupmembership_add.html" with modalname="add-gm-modal" title="Lägg till gruppmedlemskap" form=add_gm_form only %}
+            {% include "modals/groupmembership_add.html" with id="add-gm-modal" title="Lägg till gruppmedlemskap" form=add_gm_form only %}
           </li>
         </ul>
         <table class="table table-sm table-striped table-borderless">
@@ -390,7 +390,7 @@
           <li class="list-inline-item"><h4>Medlemstyper</h4></li>
           <li class="list-inline-item float-right">
             <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#add-mt-modal">Lägg till ny</button>
-            {% include "modals/membertype_add.html" with modalname="add-mt-modal" title="Lägg till medlemstyp" form=add_mt_form only %}
+            {% include "modals/membertype_add.html" with id="add-mt-modal" title="Lägg till medlemstyp" form=add_mt_form only %}
           </li>
         </ul>
         <table class="table table-sm table-striped table-borderless">
@@ -418,7 +418,7 @@
               {% endfor %}
         </table>
         <!-- This modal is populated by member.js when an edit-mt-button is clicked -->
-        {% include "modals/modal.html" with modalname="edit-mt-modal" title="Editera medlemstyp" only %}
+        {% include "modals/modal.html" with id="edit-mt-modal" title="Editera medlemstyp" only %}
       </div>
     </div>
   </div>
