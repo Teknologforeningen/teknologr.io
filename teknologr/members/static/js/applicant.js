@@ -40,22 +40,6 @@ $(document).ready(function() {
         }
     });
 
-    add_request_listener({
-        selector: "#delete-a-button",
-        method: "DELETE",
-        url: element => `/api/applicants/${element.data("id")}/`,
-        data: element => ({ "applicant_id": element.data("id") }),
-        confirmMessage: "Vill du radera denna ansökan?",
-        newLocation: "/admin/applicants/",
-    });
-
-    add_request_listener({
-        selector: "#make-member-form",
-        method: "POST",
-        url: element => `/api/applicants/make-member/${element.data("id")}/`,
-        newLocation: "/admin/applicants/",
-    });
-
     // Set the datepicker on birth date, in case input type of date is not supported
     if (datefield.type != 'date') {
         const currentYear = new Date().getFullYear();

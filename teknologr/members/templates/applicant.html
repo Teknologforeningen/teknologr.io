@@ -120,15 +120,24 @@
     <!-- Extra buttons -->
     <div class="row mt-2">
       <div class="col-md-8">
-        <button id="delete-a-button" class="btn btn-danger" data-id={{ applicant.id }}>Radera</button>
-        <button class="btn btn-warning" data-toggle="modal" data-target="#make-member-modal">Deltagit i Namö</button>
+        <button
+          class="btn btn-danger"
+          hx-delete={% url 'api:applicant-detail' applicant.id %}
+          hx-swap="none"
+          hx-confirm="Vill du radera denna ansökan?"
+          hx-on::after-request="if (event.detail.successful) window.location.href = '{% url 'admin:empty' 'applicants' %}'"
+        >Radera</button>
+
+        <button 
+          class="btn btn-warning"
+          data-toggle="modal"
+          data-target="#make-member-modal"
+        >Deltagit i Namö</button>
+        {% include "modals/applicant_makemember.html" with id="make-member-modal" title="Gör medlem av "|add:applicant.name form=make_member_form applicant=applicant only %}
       </div>
     </div>
   </div>
 </div>
-
-{% include "modals/applicant_makemember.html" with id="make-member-modal" title="Gör medlem av "|add:applicant.name form=make_member_form applicantId=applicant.id only %}
-
 {% endblock %}
 
 {% block scripts %}

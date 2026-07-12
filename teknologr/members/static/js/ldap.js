@@ -14,40 +14,5 @@ function validatePassword(){
 
 $(document).ready(function() {
   $('#confirm_password').keyup(validatePassword);
-  $('#ldap_password').change(validatePassword)
-
-  // Create an LDAP account for the selected user
-  add_request_listener({
-    selector: "#add-ldap-form",
-    method: "POST",
-    url: element => `/api/accounts/ldap/${element.data('id')}/`,
-  });
-  // Delete the LDAP account for the selected user
-  add_request_listener({
-    selector: "#delete-ldap-button",
-    method: "DELETE",
-    url: element => `/api/accounts/ldap/${element.data('id')}/`,
-    confirmMessage: "Vill du ta bort detta LDAP-konto?",
-  });
-  // Change the LDAP password for the selected user
-  add_request_listener({
-    selector: "#change-ldappw-form",
-    method: "POST",
-    url: element => `/api/accounts/ldap/change_pw/${element.data('id')}/`,
-  });
-
-  // Create a BILL account for the selected member
-  add_request_listener({
-    selector: "#add-bill-button",
-    method: "POST",
-    url: element => `/api/accounts/bill/${element.data('id')}/`,
-    data: element => ({ "member_id": element.data('id') }),
-  });
-  // Delete the BILL account for the selected member
-  add_request_listener({
-    selector: "#delete-bill-button",
-    method: "DELETE",
-    url: element => `/api/accounts/bill/${element.data('id')}/`,
-    confirmMessage: "Vill du ta bort detta BILL-konto?",
-  });
+  $('#ldap_password').change(validatePassword);
 });

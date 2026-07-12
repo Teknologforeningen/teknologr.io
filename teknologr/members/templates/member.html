@@ -38,7 +38,7 @@
     </div>
     {% endif %}
 
-    <div class="row form-group">
+    <div class="row form-group" hx-swap="none">
 
       <!-- Form -->
 
@@ -192,7 +192,12 @@
           <div class="row mt-4">
             <div class="col-md-12">
               <button type="submit" class="btn btn-success">Spara</button>
-              <button id="delete-m-button" class="btn btn-danger" data-id={{member.id}}>Radera</button>
+              <button
+                class="btn btn-danger"
+                hx-delete="{% url 'api:member-detail' member.id %}"
+                hx-confirm="Vill du radera denna medlem?"
+                hx-on::after-request="if (event.detail.successful) window.location.href = '{% url 'admin:empty' 'members' %}'"
+              >Radera</button>
             </div>
           </div>
         </form>
@@ -225,11 +230,13 @@
               {% if not LDAP.username %}disabled title="LDAP-konto existerar inte"{% endif %}>
               Ändra lösenord
             </button>
-            {% include "modals/ldap_changepw.html" with id="edit-pw-modal" title="Ändra LDAP lösenord" member_id=member.id only %}
+            {% include "modals/ldap_changepw.html" with id="edit-pw-modal" title="Ändra LDAP lösenord" member=member only %}
+
             <button
-              id="delete-ldap-button"
               class="btn btn-danger"
-              data-id="{{ member.id }}"
+              hx-delete="{% url 'api:ldap_account' member.id %}"
+              hx-confirm="Vill du ta bort detta LDAP-konto?"
+              hx-on::after-request="if (event.detail.successful) window.location.reload()"
               {% if LDAP.error %}
                 disabled
                 title="LDAP error..."
@@ -245,10 +252,9 @@
             <button
               class="btn btn-primary"
               data-toggle="modal"
-              data-target="#add-ldap-modal">
-              Skapa LDAP-konto
-            </button>
-            {% include "modals/ldap_add.html" with id="add-ldap-modal" title="Skapa LDAP-konto" member_id=member.id only %}
+              data-target="#add-ldap-modal"
+            >Skapa LDAP-konto</button>
+            {% include "modals/ldap_add.html" with id="add-ldap-modal" title="Skapa LDAP-konto" member=member only %}
 
             {% endif %}
           </div>
@@ -270,17 +276,19 @@
                 <br/>
 
                 <button
-                  id="delete-bill-button"
                   class="btn btn-danger"
-                  data-id="{{ member.id }}"
+                  hx-delete="{% url 'api:bill' member.id %}"
+                  hx-confirm="Vill du ta bort detta BILL-konto?"
+                  hx-on::after-request="if (event.detail.successful) window.location.reload()"
                 >Ta bort BILL-konto</button>
               {% endif %}
 
             {% else %}
               <button
-                id="add-bill-button"
                 class="btn btn-primary"
-                data-id="{{ member.id }}"
+                hx-post="{% url 'api:bill' member.id %}"
+                hx-vals="{'member_id': {{ member.id }}}"
+                hx-on::after-request="if (event.detail.successful) window.location.reload()"
                 {% if not LDAP.username %}
                   disabled
                   title="Skapa LDAP-konto först"
@@ -323,7 +331,14 @@
             <tr>
               <td>
                 <i class="far fa-edit edit-do-button text-info" role="button" title="Editera betygelseinnehav" data-id="{{ do.id }}"></i>
-                <i class="fas fa-times delete-do-button text-danger" role="button" title="Radera betygelseinnehav" data-id="{{ do.id }}"></i>
+                <i
+                  class="fas fa-times text-danger"
+                  role="button"
+                  title="Radera betygelseinnehav"
+                  hx-delete="{% url 'api:decorationownership-detail' do.id %}"
+                  hx-confirm="Vill du radera detta betygelseinnehav?"
+                  hx-on::after-request="if (event.detail.successful) this.closest('tr').remove()"
+                ></i>
               </td>
               <td><a href="{% url 'admin:decoration' do.decoration.id %}">{{ do.decoration.name }}</a></td>
               <td>{{ do.acquired }}</td>
@@ -351,7 +366,14 @@
               <tr>
                 <td>
                   <i class="far fa-edit edit-f-button text-info" role="button" title="Editera postinnehav" data-id="{{ f.id }}"></i>
-                  <i class="fas fa-times delete-f-button text-danger" role="button" title="Radera postinnehav" data-id="{{ f.id }}"></i>
+                  <i
+                    class="fas fa-times text-danger"
+                    role="button"
+                    title="Radera postinnehav"
+                    hx-delete="{% url 'api:functionary-detail' f.id %}"
+                    hx-confirm="Vill du radera detta postinnehav?"
+                    hx-on::after-request="if (event.detail.successful) this.closest('tr').remove()"
+                  ></i>
                 </td>
                 <td><a href="{% url 'admin:functionary_type' f.functionarytype.id %}">{{ f.functionarytype.name }}</a></td>
                 <td>{{ f.begin_date }}</td>
@@ -378,7 +400,14 @@
             </tr></thead>
             {% for gm in group_memberships %}
             <tr>
-              <td><i class="fas fa-times delete-gm-button text-danger" role="button" title="Radera gruppmedlemskap" data-id="{{ gm.id }}"></i></td>
+              <td><i
+                class="fas fa-times text-danger"
+                role="button"
+                title="Radera gruppmedlemskap"
+                hx-delete="{% url 'api:groupmembership-detail' gm.id %}"
+                hx-confirm="Vill du radera detta gruppmedlemskap?"
+                hx-on::after-request="if (event.detail.successful) this.closest('tr').remove()"
+              ></i></td>
               <td><a href="{% url 'admin:group' gm.group.grouptype.id gm.group.id %}">{{ gm.group.grouptype.name }}</a></td>
               <td>{{ gm.group.begin_date }}</td>
               <td>{{ gm.group.end_date }}</td>
@@ -404,7 +433,14 @@
             <tr>
               <td>
                 <i class="far fa-edit text-info edit-mt-button" role="button" title="Editera medlemstyp" data-id="{{ type.id }}"></i>
-                <i class="fas fa-times delete-mt-button text-danger" role="button" title="Radera medlemstyp" data-id="{{ type.id }}"></i>
+                <i
+                  class="fas fa-times text-danger"
+                  role="button"
+                  title="Radera medlemstyp"
+                  hx-delete="{% url 'api:membertype-detail' type.id %}"
+                  hx-confirm="Vill du radera denna medlemstyp?"
+                  hx-on::after-request="if (event.detail.successful) this.closest('tr').remove()"
+                ></i>
               </td>
               <td>
                 {{type.get_type_display}}

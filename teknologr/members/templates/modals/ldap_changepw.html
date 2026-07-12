@@ -1,7 +1,12 @@
 {% extends "modals/modal.html" %}
 
 {% block modalcontent %}
-<form id="change-ldappw-form" autocomplete="new-password" data-id="{{member_id}}">
+<form
+  autocomplete="new-password"
+  hx-post="{% url 'api:ldap_change_pw' member.id %}"
+  hx-swap="none"
+  hx-on::after-request="if (event.detail.successful) window.location.reload()"
+>
   {% csrf_token %}
   <div class="row form-group">
     <div class="col-3">

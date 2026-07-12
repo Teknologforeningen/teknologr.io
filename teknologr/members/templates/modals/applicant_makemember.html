@@ -1,7 +1,11 @@
 {% extends "modals/modal.html" %}
 
 {% block modalcontent %}
-<form id="make-member-form" data-id="{{ applicantId }}">
+<form
+  hx-post="{% url 'api:make_member' applicant.id %}"
+  hx-swap="none"
+  hx-on::after-request="if (event.detail.successful) window.location.href = '{% url 'admin:empty' 'applicants' %}'"
+>
     {% csrf_token %}
     {{ form.media }}
 

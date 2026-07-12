@@ -25,42 +25,6 @@ $(document).ready(function() {
 		url: "/api/membertypes/",
 	});
 
-	// Buttons for deleting individual items from the selected member
-	// XXX: Could probably be combined
-	add_request_listener({
-		selector: ".delete-do-button",
-		method: "DELETE",
-		url: element => `/api/decorationownerships/${element.data("id")}/`,
-		confirmMessage: "Vill du radera detta betygelseinnehav?",
-	});
-	add_request_listener({
-		selector: ".delete-f-button",
-		url: element => `/api/functionaries/${element.data("id")}/`,
-		method: "DELETE",
-		confirmMessage: "Vill du radera detta postinnehav?",
-	});
-	add_request_listener({
-		selector: ".delete-gm-button",
-		method: "DELETE",
-		url: element => `/api/groupmemberships/${element.data("id")}/`,
-		confirmMessage: "Vill du radera detta gruppmedlemskap?",
-	});
-	add_request_listener({
-		selector: ".delete-mt-button",
-		method: "DELETE",
-		url: element => `/api/membertypes/${element.data("id")}/`,
-		confirmMessage: "Vill du radera denna medlemstyp?",
-	});
-
-	// Delete the selected member
-	add_request_listener({
-		selector: "#delete-m-button",
-		method: "DELETE",
-		url: element => `/api/members/${element.data("id")}/`,
-		confirmMessage: "Vill du radera denna medlem?",
-		newLocation: "/admin/members/",
-	});
-
 	$('.edit-mt-button').click(function(){
 		const id = $(this).data("id");
 		$("#edit-mt-modal .modal-body").load(`/admin/membertypes/${id}/form/`, () => {
