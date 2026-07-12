@@ -152,7 +152,9 @@ class GroupForm(BSModelForm):
 
     begin_date = DateField(widget=DateInput(attrs={'type': 'date'}))
     end_date = DateField(widget=DateInput(attrs={'type': 'date'}))
+    grouptype = ChoiceField(choices=[])
 
+    @staticmethod
     def get_grouptype_choices():
         '''
         Function for getting the GroupType choices dynamically, since the list will not be updated as expected otherwise.
@@ -160,8 +162,6 @@ class GroupForm(BSModelForm):
         Using ModelChoiceField would also solve the problem, but that does not allow for sorting the queryset manually.
         '''
         return [(None, '---------')] + [(gt.id, gt.name) for gt in GroupType.objects.all_by_name()]
-
-    grouptype = ChoiceField(choices=get_grouptype_choices)
 
     def __init__(self, *args, **kwargs):
         # Make sure automatic dom element ids are different from other forms'
@@ -176,6 +176,7 @@ class GroupForm(BSModelForm):
             }
         super(GroupForm, self).__init__(*args, **kwargs)
 
+        self.fields['grouptype'].choices = self.get_grouptype_choices()
 
 class GroupMembershipForm(BSModelForm):
     class Meta:
