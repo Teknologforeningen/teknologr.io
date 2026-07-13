@@ -1,7 +1,13 @@
 {% extends "modals/modal.html" %}
 
 {% block modalcontent %}
-<form id="edit-d-form" autocomplete="off" data-id="{{ decoration.id }}" class="form-inline">
+<form
+  class="form-inline"
+  autocomplete="off"
+  hx-put="{% url 'api:decoration-detail' decoration.id %}"
+  hx-swap="none"
+  hx-on::after-request="if (event.detail.successful) window.location.reload()"
+>
   {% csrf_token %}
   <div class="row form-group w-100">
     <div class="col-3"><label for="{{ form.name.id_for_label }}">Namn</label></div>

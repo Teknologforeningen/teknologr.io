@@ -181,7 +181,7 @@ def group_type(request, grouptype_id, group_id=None):
         )
 
     set_side_context(context, 'grouptypes', grouptype)
-    return render(request, 'group.html', context)
+    return render(request, 'group_type.html', context)
 
 
 @user_passes_test(lambda u: u.is_staff, login_url='/login/')
@@ -201,7 +201,7 @@ def functionary_type(request, functionarytype_id):
     context['add_f_form'] = FunctionaryForm(initial={"functionarytype": functionarytype_id})
 
     set_side_context(context, 'functionarytypes', functionarytype)
-    return render(request, 'functionary.html', context)
+    return render(request, 'functionary_type.html', context)
 
 
 @user_passes_test(lambda u: u.is_staff, login_url='/login/')

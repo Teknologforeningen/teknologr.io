@@ -5,11 +5,25 @@
 <div class="container-fluid">
   <div class="row mb-2">
     <div class="col-12">
-      <button class="btn btn-primary" title="Editera post" data-toggle="modal" data-target="#edit-ft-modal">Editera</button>
-      <button id="delete-ft-button" class="btn btn-danger" title="Radera post" data-id="{{ functionary_type.id }}">Radera</button>
+      <button
+        class="btn btn-primary"
+        title="Editera post"
+        data-toggle="modal"
+        data-target="#edit-ft-modal"
+      >Editera</button>
+      {% include "modals/functionarytype_edit.html" with id="edit-ft-modal" title="Editera post" form=edit_ft_form functionary_type=functionary_type only %}
+
+      <button
+        class="btn btn-danger"
+        title="Radera post"
+        hx-delete="{% url 'api:functionarytype-detail' functionary_type.id %}"
+        hx-swap="none"
+        hx-confirm="Vill du radera denna post och alla dess postinnehav?"
+        hx-on::after-request="if (event.detail.successful) window.location.href = '{% url 'admin:empty' 'functionarytypes' %}'"
+      >Radera</button>
+
       <a class="btn btn-secondary" href="{% url 'katalogen:functionary_type' functionary_type.id %}">Katalogen</a>
       <a class="btn btn-secondary" href="{% url 'api:functionarytype-detail' functionary_type.id %}">API</a>
-      {% include "modals/functionarytype_edit.html" with id="edit-ft-modal" title="Editera post" form=edit_ft_form functionary_type=functionary_type only %}
     </div>
   </div>
   <h1 class="page-header" title="Skapad: {{ functionary_type.created }}&#013;Ändrad: {{ functionary_type.modified }}">

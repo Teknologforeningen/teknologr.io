@@ -5,11 +5,25 @@
 <div class="container-fluid">
   <div class="row mb-2">
     <div class="col-12">
-      <button class="btn btn-primary" title="Editera betygelse" data-toggle="modal" data-target="#edit-d-modal">Editera</button>
-      <button id="delete-d-button" class="btn btn-danger" title="Radera betygelse" data-id="{{ decoration.id }}">Radera</button>
+      <button
+        class="btn btn-primary"
+        title="Editera betygelse"
+        data-toggle="modal"
+        data-target="#edit-d-modal"
+      >Editera</button>
+      {% include "modals/decoration_edit.html" with id="edit-d-modal" title="Editera betygelse" form=edit_d_form decoration=decoration only %}
+
+      <button
+        class="btn btn-danger"
+        title="Radera betygelse"
+        hx-delete="{% url 'api:decoration-detail' decoration.id %}"
+        hx-swap="none"
+        hx-confirm="Vill du radera denna betygelse och alla dess betygelseinnehav?"
+        hx-on::after-request="if (event.detail.successful) window.location.href = '{% url 'admin:empty' 'decorations' %}'"
+      >Radera</button>
+
       <a class="btn btn-secondary" href="{% url 'katalogen:decoration' decoration.id %}">Katalogen</a>
       <a class="btn btn-secondary" href="{% url 'api:decoration-detail' decoration.id %}">API</a>
-      {% include "modals/decoration_edit.html" with id="edit-d-modal" title="Editera betygelse" form=edit_d_form decoration=decoration only %}
     </div>
   </div>
   <h1 class="page-header" title="Skapad: {{ decoration.created }}&#013;Ändrad: {{ decoration.modified }}">

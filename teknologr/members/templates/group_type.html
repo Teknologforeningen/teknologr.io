@@ -5,8 +5,23 @@
 <div class="container-fluid">
   <div class="row mb-2">
     <div class="col-12">
-      <button class="btn btn-primary" title="Editera grupp" data-toggle="modal" data-target="#edit-gt-modal">Editera</button>
-      <button id="delete-gt-button" class="btn btn-danger" title="Radera grupp" data-id="{{ grouptype.id }}">Radera</button>
+      <button
+        class="btn btn-primary"
+        title="Editera grupp"
+        data-toggle="modal"
+        data-target="#edit-gt-modal"
+      >Editera</button>
+      {% include "modals/grouptype_edit.html" with id="edit-gt-modal" title="Editera grupp" form=edit_gt_form grouptype=grouptype only %}
+
+      <button
+        class="btn btn-danger"
+        title="Radera grupp"
+        hx-delete="{% url 'api:grouptype-detail' grouptype.id %}"
+        hx-swap="none"
+        hx-confirm="Vill du radera denna grupp och alla dess undergrupper?"
+        hx-on::after-request="if (event.detail.successful) window.location.href = '{% url 'admin:empty' 'grouptypes' %}'"
+      >Radera</button>
+
       <div class="btn btn-secondary dropdown">
         Katalogen <i class="fa fa-caret-down"></i>
         <div class="dropdown-content">
@@ -14,6 +29,7 @@
           <a href="{% url 'katalogen:group_memberships' grouptype.id %}">Gruppmedlemmar</a>
         </div>
       </div>
+
       <div class="btn btn-secondary dropdown">
         API <i class="fa fa-caret-down"></i>
         <div class="dropdown-content">
@@ -25,7 +41,6 @@
           {% endif %}
         </div>
       </div>
-      {% include "modals/grouptype_edit.html" with id="edit-gt-modal" title="Editera grupp" form=edit_gt_form grouptype=grouptype only %}
     </div>
   </div>
   <h1 class="page-header" title="Skapad: {{ grouptype.created }}&#013;Ändrad: {{ grouptype.modified }}">
