@@ -113,8 +113,8 @@ const add_ajax_multiselect_extension = ({ selector_button, selector_input, selec
 		hidden_input.val(hidden_input.val() + substring);
 
 		// Keep track of the amount of names added by storing the counter on the form
-		const data = input.closest("form").data();
-		data.counter = (data.counter || 0) + 1;
+		const form = input.closest("form").get(0);
+		form.dataset.counter = (Number(form.dataset.counter) || 0) + 1;
 
 		// Add name to list
 		const div = $("<div>", {
@@ -129,16 +129,28 @@ const add_ajax_multiselect_extension = ({ selector_button, selector_input, selec
 				const value = hidden_input.val();
 				const i = value.indexOf(substring);
 				hidden_input.val(value.slice(0, i) + value.slice(i + substring.length));
-				data.counter--;
+				form.dataset.counter--;
 				div.remove();
 			},
 		}).prependTo(div);
 	});
 }
 
-const confirmMessageCreateMembers = e => {
-	const newMembers = e.data("counter");
-	return newMembers && `Du håller på att skapa ${newMembers === 1 ? "1 ny medlem" : `${newMembers} nya medlemmar`}. Fortsätt?`;
+/**
+ * Populate the common modal with content of a given url.
+ */
+function populateCommonModal(button, url) {
+	const modal = document.getElementById("common-modal");
+	if (!modal) throw new Error("Common modal not found");
+
+	// Set title
+	modal.querySelector(".modal-title").textContent = button.getAttribute("title");
+
+	// Set content and show modal
+	htmx.ajax("GET", url, {
+		target: modal.querySelector(".modal-body"),
+		swap: "innerHTML",
+	}).then(() => $(modal).modal());
 }
 
 $(document).ready(function () {
@@ -232,40 +244,6 @@ $(document).ready(function () {
 	});
 
 	/**
-	 * Populate modal for editing a decoration ownership.
-	 * Can not be placed in functionary.js because it is needed on the member page too.
-	 */
-	$(".edit-do-button").click(function() {
-		const id = $(this).data("id");
-		$("#edit-do-modal .modal-body").load(`/admin/decorationownerships/${id}/form/`, () => {
-			add_request_listener({
-				selector: "#edit-do-form",
-				method: "PUT",
-				url: `/api/decorationownerships/${id}/`,
-			});
-
-			$("#edit-do-modal").modal();
-		});
-	});
-
-	/**
-	 * Populate modal for editing a functionary.
-	 * Can not be placed in decoration.js because it is needed on the member page too.
-	 */
-	$(".edit-f-button").click(function() {
-		const id = $(this).data("id");
-		$("#edit-f-modal .modal-body").load(`/admin/functionaries/${id}/form/`, () => {
-			add_request_listener({
-				selector: "#edit-f-form",
-				method: "PUT",
-				url: `/api/functionaries/${id}/`,
-			});
-
-			$("#edit-f-modal").modal();
-		});
-	});
-
-	/**
 	 * Set focus on the first (visible) input element in the form when opening any modal. All modals should have an id ending with '-modal'.
 	 */
 	$("[id$='-modal']").on("shown.bs.modal", function() {
@@ -291,5 +269,20 @@ $(document).ready(function () {
 
 		// Set the end_date year equal to the begin_date year
 		end_element.val(`${begin_value.split("-")[0]}-12-31`);
+	});
+
+	/**
+	 * Handle multi-member POSTs by hooking the htmx:confirm event and (maybe) dispatching a custom confirm alert.
+	 */
+	document.body.addEventListener("htmx:confirm", event => {
+		const data = event.detail.elt.dataset;
+		const counter = Number(data.counter);
+		if (!counter || data.customConfirm !== "multi-member") return;
+
+		event.preventDefault();
+		const msg = `Du håller på att skapa ${counter === 1 ? "1 ny medlem" : `${counter} nya medlemmar`}. Fortsätt?`
+		if (confirm(msg)) {
+			event.detail.issueRequest(true);
+		}
 	});
 });

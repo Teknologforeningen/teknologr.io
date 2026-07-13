@@ -316,8 +316,12 @@
       <div class="col-lg-4">
         <ul class="list-inline mt-4 mb-0">
           <li class="list-inline-item"><h4>Betygelser</h4></li>
-          <li class="list-inline-item float-right">
-            <button class="btn btn-sm btn-success" data-toggle="modal" data-target="#add-do-modal">Lägg till ny</button>
+          <li class="list-inline-item float-right" >
+            <button
+              class="btn btn-sm btn-success"
+              data-toggle="modal"
+              data-target="#add-do-modal"
+            >Lägg till ny</button>
             {% include "modals/decorationownership_add.html" with id="add-do-modal" title="Lägg till betygelseinnehav" form=add_do_form only %}
           </li>
         </ul>
@@ -330,7 +334,12 @@
             {% for do in decoration_ownerships %}
             <tr>
               <td>
-                <i class="far fa-edit edit-do-button text-info" role="button" title="Editera betygelseinnehav" data-id="{{ do.id }}"></i>
+                <i
+                  class="far fa-edit edit-do-button text-info"
+                  role="button"
+                  title="Editera betygelseinnehav"
+                  onclick="populateCommonModal(this, '{% url 'admin:decoration_ownership_form' do.id %}')"
+                ></i>
                 <i
                   class="fas fa-times text-danger"
                   role="button"
@@ -344,14 +353,16 @@
               <td>{{ do.acquired }}</td>
             </tr>
             {% endfor %}
-            <!-- This modal is populated by base.js when an edit-f-button is clicked -->
-            {% include "modals/modal.html" with id="edit-do-modal" title="Editera betygelseinnehav" only %}
         </table>
 
         <ul class="list-inline mt-4 mb-0">
           <li class="list-inline-item"><h4>Poster</h4></li>
           <li class="list-inline-item float-right">
-            <button class="btn btn-sm btn-success" data-toggle="modal" data-target="#add-f-modal">Lägg till ny</button>
+            <button
+              class="btn btn-sm btn-success"
+              data-toggle="modal"
+              data-target="#add-f-modal"
+            >Lägg till ny</button>
             {% include "modals/functionary_add.html" with id="add-f-modal" title="Lägg till postinnehav" form=add_f_form only %}
           </li>
         </ul>
@@ -365,7 +376,12 @@
             {% for f in functionaries %}
               <tr>
                 <td>
-                  <i class="far fa-edit edit-f-button text-info" role="button" title="Editera postinnehav" data-id="{{ f.id }}"></i>
+                  <i
+                    class="far fa-edit text-info"
+                    role="button"
+                    title="Editera postinnehav"
+                    onclick="populateCommonModal(this, '{% url 'admin:functionary_form' f.id %}')"
+                  ></i>
                   <i
                     class="fas fa-times text-danger"
                     role="button"
@@ -380,14 +396,16 @@
                 <td>{{ f.end_date }}</td>
               </tr>
             {% endfor %}
-            <!-- This modal is populated by base.js when an edit-f-button is clicked -->
-            {% include "modals/modal.html" with id="edit-f-modal" title="Editera postinnehav" only %}
         </table>
 
         <ul class="list-inline mt-4 mb-0">
           <li class="list-inline-item"><h4>Grupper</h4></li>
           <li class="list-inline-item float-right">
-            <button class="btn btn-sm btn-success" data-toggle="modal" data-target="#add-gm-modal">Lägg till ny</button>
+            <button
+              class="btn btn-sm btn-success"
+              data-toggle="modal"
+              data-target="#add-gm-modal"
+            >Lägg till ny</button>
             {% include "modals/groupmembership_add.html" with id="add-gm-modal" title="Lägg till gruppmedlemskap" form=add_gm_form only %}
           </li>
         </ul>
@@ -418,7 +436,11 @@
         <ul class="list-inline mt-4 mb-0">
           <li class="list-inline-item"><h4>Medlemstyper</h4></li>
           <li class="list-inline-item float-right">
-            <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#add-mt-modal">Lägg till ny</button>
+            <button
+              class="btn btn-success btn-sm"
+              data-toggle="modal"
+              data-target="#add-mt-modal"
+            >Lägg till ny</button>
             {% include "modals/membertype_add.html" with id="add-mt-modal" title="Lägg till medlemstyp" form=add_mt_form only %}
           </li>
         </ul>
@@ -432,7 +454,12 @@
             {% for type in membertypes %}
             <tr>
               <td>
-                <i class="far fa-edit text-info edit-mt-button" role="button" title="Editera medlemstyp" data-id="{{ type.id }}"></i>
+                <i
+                  class="far fa-edit text-info"
+                  role="button"
+                  title="Editera medlemstyp"
+                  onclick="populateCommonModal(this, '{% url 'admin:membertype_form' type.id %}')"
+                ></i>
                 <i
                   class="fas fa-times text-danger"
                   role="button"
@@ -453,8 +480,6 @@
               </td></tr>
               {% endfor %}
         </table>
-        <!-- This modal is populated by member.js when an edit-mt-button is clicked -->
-        {% include "modals/modal.html" with id="edit-mt-modal" title="Editera medlemstyp" only %}
       </div>
     </div>
   </div>

@@ -60,10 +60,12 @@ router.register(r'applicants', ApplicantViewSet)
 urlpatterns = [
     url(r'^', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    url(r'^multi-groupmemberships/$', multi_group_memberships_save),
-    url(r'^multi-functionaries/$', multi_functionaries_save),
-    url(r'^multi-decorationownerships/$', multi_decoration_ownerships_save),
+
+    url(r'^multi-groupmemberships/$', multi_group_memberships_save, name='multi_groupmemberships'),
+    url(r'^multi-functionaries/$', multi_functionaries_save, name='multi_functionaries'),
+    url(r'^multi-decorationownerships/$', multi_decoration_ownerships_save, name='multi_decorationownerships'),
     url(r'^multi-applicantsubmissions/$', multi_applicant_submissions),
+
     url(r'^ldap/users/$', get_ldap_user_list),
     url(r'^ldap/users/(.+)/$', get_ldap_user_details, name='ldap_user'),
     url(r'^ldap/groups/$', get_ldap_group_list),

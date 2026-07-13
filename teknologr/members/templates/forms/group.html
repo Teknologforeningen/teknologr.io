@@ -1,7 +1,18 @@
-<form id="{{ form_id }}" autocomplete="off" data-id="{{ group_id }}">
-  {% csrf_token %}
-
-  {% if show_grouptype %}
+<form
+  autocomplete="off"
+  {% if form.instance.pk %}
+    hx-put="{% url 'api:group-detail' form.instance.pk %}"
+  {% else %}
+    hx-post="{% url 'api:group-list' %}"
+  {% endif %}
+  hx-swap="none"
+  hx-on::after-request="if (event.detail.successful) {
+    const data = JSON.parse(event.detail.xhr.responseText);
+    const url = `/admin/grouptypes/${data.grouptype.id}/${data.id}/`;
+    window.location.href = url;
+  }"
+>
+  {% if group %}
   <div class="row form-group">
     <div class="col-3">
       <label for="{{ form.grouptype.id_for_label }}">Grupp</label>

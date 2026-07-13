@@ -143,20 +143,20 @@ def getOrCreateMemberIdFromMultiSelectValue(id_or_names):
 
 @api_view(['POST'])
 def multi_group_memberships_save(request):
-    gid = request.data.get('group')
+    gid = int(request.data.get('group'))
     members = getMultiSelectValues(request, 'member')
 
     for id_or_name in members:
         mid = getOrCreateMemberIdFromMultiSelectValue(id_or_name)
         # get_or_create is used to ignore duplicates
-        GroupMembership.objects.get_or_create(member_id=mid, group_id=int(gid))
+        GroupMembership.objects.get_or_create(member_id=mid, group_id=gid)
 
     return HttpResponse(status=200)
 
 
 @api_view(['POST'])
 def multi_functionaries_save(request):
-    fid = request.data.get('functionarytype')
+    fid = int(request.data.get('functionarytype'))
     members = getMultiSelectValues(request, 'member')
     begin_date = request.data.get('begin_date')
     end_date = request.data.get('end_date')
@@ -166,7 +166,7 @@ def multi_functionaries_save(request):
         # get_or_create is used to ignore duplicates
         Functionary.objects.get_or_create(
             member_id=mid,
-            functionarytype_id=int(fid),
+            functionarytype_id=fid,
             end_date=end_date,
             begin_date=begin_date
         )
@@ -176,14 +176,14 @@ def multi_functionaries_save(request):
 
 @api_view(['POST'])
 def multi_decoration_ownerships_save(request):
-    did = request.data.get('decoration')
+    did = int(request.data.get('decoration'))
     members = getMultiSelectValues(request, 'member')
     acquired = request.data.get('acquired')
 
     for id_or_name in members:
         mid = getOrCreateMemberIdFromMultiSelectValue(id_or_name)
         # get_or_create is used to ignore duplicates
-        DecorationOwnership.objects.get_or_create(member_id=mid, decoration_id=int(did), acquired=acquired)
+        DecorationOwnership.objects.get_or_create(member_id=mid, decoration_id=did, acquired=acquired)
 
     return HttpResponse(status=200)
 

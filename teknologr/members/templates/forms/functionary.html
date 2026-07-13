@@ -1,6 +1,14 @@
-<form id="{{ form_id }}" autocomplete="off">
-  {% csrf_token %}
-
+<form
+  autocomplete="off"
+  {% if form.instance.pk %}
+    hx-put="{% url 'api:functionary-detail' form.instance.pk %}"
+  {% else %}
+    data-custom-confirm="multi-member"
+    hx-post="{% url 'api:multi_functionaries' %}"
+  {% endif %}
+  hx-swap="none"
+  hx-on::after-request="if (event.detail.successful) window.location.reload()"
+>
   {% if form.member.initial %}
   {{ form.member.as_hidden }}
   {% else %}

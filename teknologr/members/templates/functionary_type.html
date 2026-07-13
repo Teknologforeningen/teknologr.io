@@ -40,7 +40,13 @@
   {% endif %}
 
   <h4 class="list-inline-item">Innehavare av posten</h4>
-  <i class="list-inline-item fas fa-plus text-success icon-20" role="button" title="Lägg till postinnehav" data-toggle="modal" data-target="#add-f-modal"></i>
+  <i
+    class="list-inline-item fas fa-plus text-success icon-20"
+    role="button"
+    title="Lägg till postinnehav"
+    data-toggle="modal"
+    data-target="#add-f-modal"
+  ></i>
   {% include "modals/functionary_add.html" with id="add-f-modal" title="Lägg till postinnehav ("|add:functionary_type.name|add:")" form=add_f_form only %}
 
   <table class="table table-sm table-striped table-borderless">
@@ -56,7 +62,12 @@
     {% for functionary in functionaries %}
       <tr>
         <td>
-          <i class="far fa-edit edit-f-button text-info" role="button" title="Editera postinnehav" data-id="{{ functionary.id }}"></i>
+          <i
+            class="far fa-edit text-info"
+            role="button"
+            title="Editera postinnehav"
+            onclick="populateCommonModal(this, '{% url 'admin:functionary_form' functionary.id %}')"
+          ></i>
           <i
             class="fas fa-times text-danger"
             role="button"
@@ -71,8 +82,6 @@
         <td>{{ functionary.end_date }}</td>
       </tr>
     {% endfor %}
-    <!-- This modal is populated by base.js when an edit-f-button is clicked -->
-    {% include "modals/modal.html" with id="edit-f-modal" title="Editera postinnehav" only %}
     </tbody>
   </table>
 </div>

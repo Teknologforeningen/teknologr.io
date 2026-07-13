@@ -82,6 +82,9 @@
         {% include "modals/applicant_choosemultiple.html" with id="add-multiple-applicants-modal" title="Acceptera flera ansökningar" form=side.multiple_applicants_form only %}
       {% endif %}
 
+      <!-- Common multi-purpose modal, populated by populateCommonModal() -->
+      {% include "modals/modal.html" with id="common-modal" only %}
+
       <div id='main' class="col-md-8 offset-md-4 col-lg-9 offset-lg-3 main">
         {% block main %}
         {% endblock %}

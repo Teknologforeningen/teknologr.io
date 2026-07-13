@@ -59,8 +59,14 @@
   <div class="row">
     <div class="col-lg-8">
       <h4 class="list-inline-item">Undergrupper</h4>
-      <i class="list-inline-item fas fa-plus text-success icon-20" role="button" title="Skapa ny undergrupp" data-toggle="modal" data-target="#add-g-modal"></i>
-      {% include "modals/group_add.html" with id="add-g-modal" title="Skapa ny undergrupp för "|add:grouptype.name form=add_g_form grouptype=grouptype only %}
+      <i
+        class="list-inline-item fas fa-plus text-success icon-20"
+        role="button"
+        title="Skapa ny undergrupp"
+        data-toggle="modal"
+        data-target="#add-g-modal"
+      ></i>
+      {% include "modals/group_addedit.html" with id="add-g-modal" title="Skapa ny undergrupp för "|add:grouptype.name form=add_g_form only %}
 
       <table class="table table-sm table-striped table-borderless">
         <thead class="no-border">
@@ -75,7 +81,16 @@
         {% for g in groups %}
           <tr class="clickable {% if group.id == g.id %} active {% endif %}" data-href="{% url 'admin:group' grouptype.id g.id %}">
             <td>
-              <i class="fas fa-times delete-g-button text-danger" role="button" title="Radera undergrupp" data-id="{{ g.id }}" data-grouptype_id="{{ grouptype.id }}"></i>
+              <i
+                class="fas fa-times text-danger"
+                role="button"
+                title="Radera undergrupp"
+                hx-trigger="click consume"
+                hx-delete="{% url 'api:group-detail' g.id %}"
+                hx-swap="none"
+                hx-confirm="Vill du radera denna undergrupp och alla dess gruppmedlemskap?"
+                hx-on::after-request="if (event.detail.successful) window.location.href = '{% url 'admin:group_type' grouptype.id %}'"
+              ></i>
             </td>
             <td class="text-center">{{ g.begin_date }}</td>
             <td class="text-center">{{ g.end_date }}</td>
@@ -95,12 +110,28 @@
               <th>
                 <h4 title="Skapad: {{ group.created }}&#013;Ändrad: {{ group.modified }}">
                   {{ group.begin_date }}<br>- {{ group.end_date }}<br>
-                  <span>
-                    <i class="far fa-edit text-info icon-20" role="button" title="Editera undergrupp" data-toggle="modal" data-target="#edit-g-modal"></i>
-                    <i class="fas fa-plus text-success icon-20 align-middle" role="button" title="Lägg till gruppmedlemskap" data-toggle="modal" data-target="#add-gm-modal"></i>
-                    <i id="copy2clipboard" class="far fa-copy icon-20" role="button" title="Kopiera gruppmedlemmarnas epostadresser"></i>
-                  </span>
                 </h4>
+                <div>
+                  <i
+                    class="far fa-edit text-info icon-20"
+                    role="button"
+                    title="Editera undergrupp"
+                    data-toggle="modal"
+                    data-target="#edit-g-modal"
+                  ></i>
+                  {% include "modals/group_addedit.html" with id="edit-g-modal" title="Editera undergrupp" form=edit_g_form only %}
+
+                  <i
+                    class="fas fa-plus text-success icon-20 align-middle"
+                    role="button"
+                    title="Lägg till gruppmedlemskap"
+                    data-toggle="modal"
+                    data-target="#add-gm-modal"
+                  ></i>
+                  {% include "modals/groupmembership_add.html" with id="add-gm-modal" title="Lägg till gruppmedlemskap" form=add_gm_form only %}
+
+                  <i id="copy2clipboard" class="far fa-copy icon-20" role="button" title="Kopiera gruppmedlemmarnas epostadresser"></i>
+                </div>
               </th>
             </tr>
           </thead>
@@ -123,8 +154,6 @@
           </tbody>
         </table>
         <textarea id="members_email_list" style="opacity: 0;width: 0; height:0;">{{ emails }}</textarea>
-        {% include "modals/group_edit.html" with id="edit-g-modal" title="Editera undergrupp" form=edit_g_form group_id=group.id only %}
-        {% include "modals/groupmembership_add.html" with id="add-gm-modal" title="Lägg till gruppmedlemskap" form=add_gm_form only %}
       {% endif %}
     </div>
   </div>

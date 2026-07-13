@@ -1,6 +1,13 @@
-<form id="{{ formid }}" autocomplete="off">
-  {% csrf_token %}
-
+<form
+  autocomplete="off"
+  {% if form.instance.pk %}
+    hx-put="{% url 'api:membertype-detail' form.instance.pk %}"
+  {% else %}
+    hx-post="{% url 'api:membertype-list' %}"
+  {% endif %}
+  hx-swap="none"
+  hx-on::after-request="if (event.detail.successful) window.location.reload()"
+>
   {{ form.member.as_hidden }}
 
   <div class="row form-group">

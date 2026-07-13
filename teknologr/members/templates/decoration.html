@@ -31,7 +31,6 @@
   </h1>
 </div>
 
-
 <div class="container-fluid">
   <h4>Kommentar</h4>
   {% if decoration.comment %}
@@ -41,8 +40,14 @@
   {% endif %}
 
   <h4 class="list-inline-item">Innehavare av betygelsen</h4>
-  <i class="list-inline-item fas fa-plus text-success icon-20" role="button" title="Lägg till betygelseinnehav" data-toggle="modal" data-target="#add-d-modal"></i>
-  {% include "modals/decorationownership_add.html" with id="add-d-modal" title="Lägg till betygelseinnehav ("|add:decoration.name|add:")" form=add_do_form only %}
+  <i
+    class="list-inline-item fas fa-plus text-success icon-20"
+    role="button"
+    title="Lägg till betygelseinnehav"
+    data-toggle="modal"
+    data-target="#add-do-modal"
+  ></i>
+  {% include "modals/decorationownership_add.html" with id="add-do-modal" title="Lägg till betygelseinnehav ("|add:decoration.name|add:")" form=add_do_form only %}
 
   <table class="table table-sm table-striped table-borderless">
     <thead class="no-border">
@@ -56,7 +61,12 @@
       {% for ownership in decoration_ownerships %}
         <tr>
           <td>
-            <i class="far fa-edit edit-do-button text-info" role="button" title="Editera betygelseinnehav" data-id="{{ ownership.id }}"></i>
+            <i
+              class="far fa-edit text-info"
+              role="button"
+              title="Editera betygelseinnehav"
+              onclick="populateCommonModal(this, '{% url 'admin:decoration_ownership_form' ownership.id %}')"
+            ></i>
             <i
               class="fas fa-times text-danger"
               role="button"
@@ -70,8 +80,6 @@
           <td>{{ ownership.acquired }}</td>
         </tr>
       {% endfor %}
-      <!-- This modal is populated by base.js when an edit-do-button is clicked -->
-      {% include "modals/modal.html" with id="edit-do-modal" title="Editera betygelseinnehav" only %}
     </tbody>
   </table>
 </div>
