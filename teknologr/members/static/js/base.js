@@ -161,13 +161,6 @@ $(document).ready(function () {
 		newLocation: (element, msg) => `/admin/${element.data("active")}/${msg.id}/`,
 	});
 
-	add_request_listener({
-		selector: "#choose-multiple-applicants-form",
-		method: "POST",
-		url: "/api/multi-applicantsubmissions/",
-		newLocation: "/admin/applicants/",
-	});	
-
 	$('#side-search').keyup(function(event) {
 		var active = $(this).data('active');
 		var filter = $(this).val().toLowerCase();

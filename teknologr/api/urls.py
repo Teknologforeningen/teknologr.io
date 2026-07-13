@@ -64,7 +64,7 @@ urlpatterns = [
     url(r'^multi-groupmemberships/$', multi_group_memberships_save, name='multi_groupmemberships'),
     url(r'^multi-functionaries/$', multi_functionaries_save, name='multi_functionaries'),
     url(r'^multi-decorationownerships/$', multi_decoration_ownerships_save, name='multi_decorationownerships'),
-    url(r'^multi-applicantsubmissions/$', multi_applicant_submissions),
+    url(r'^multi-applicantsubmissions/$', multi_applicant_submissions, name='multi_applicants'),
 
     url(r'^ldap/users/$', get_ldap_user_list),
     url(r'^ldap/users/(.+)/$', get_ldap_user_details, name='ldap_user'),

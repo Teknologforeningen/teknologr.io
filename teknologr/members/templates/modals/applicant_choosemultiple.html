@@ -1,8 +1,12 @@
 {% extends "modals/modal.html" %}
 
 {% block modalcontent %}
-  <form id="choose-multiple-applicants-form">
-    {% csrf_token %}
+  <form
+    id="choose-multiple-applicants-form"
+    hx-post="{% url 'api:multi_applicants' %}"
+    hx-swap="none"
+    hx-on::after-request="if (event.detail.successful) window.location.href = '{% url 'admin:empty' 'applicants' %}'; else alert(event.detail.xhr.responseText)"
+  >
     {{ form.media }}
 
     <div class="row form-group w-100">

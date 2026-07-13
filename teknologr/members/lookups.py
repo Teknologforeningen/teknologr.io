@@ -34,19 +34,15 @@ class ApplicantLookup(LookupChannel):
     model = Applicant
 
     def get_query(self, q, request):
-        if not q:
-            return []
-
-        queries = [q.lower() for q in queries]
-        filters = [(Q(given_names__icontains=q) | Q(surname__icontains=q)) for q in queries]
-
-        return Applicant.objects.filter(*filters).order_by('surname', 'given_names')[:50]
+        applicants = Applicant.objects.search_by_name(q.split())
+        Applicant.order_by(applicants, 'name')
+        return applicants[:50]
 
     def get_result(self, obj):
         return obj.full_name
 
     def format_match(self, obj):
-        return obj.full_name
+        return obj.get_full_name_HTML()
 
     def format_item_display(self, obj):
         return obj.full_name

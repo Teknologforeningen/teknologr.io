@@ -541,10 +541,10 @@ def multi_applicant_submissions(request):
     for aid in applicants:
         response = am_view.post(request, aid)
         if (response.status_code != 200):
-            errors.append(response.data)
+            errors.append(response.content.decode())
 
     if len(errors) > 0:
-        return HttpResponse(f'{len(errors)} error(s) occured when accepting submissions: {" ".join(errors)}', status=400)
+        return HttpResponse(f"{len(errors)} error(s) occured when accepting submissions:\n - " + "\n - ".join(errors), status=400)
 
     return HttpResponse(status=200)
 
