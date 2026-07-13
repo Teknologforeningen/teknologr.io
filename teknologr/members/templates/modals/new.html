@@ -1,8 +1,12 @@
 {% extends "modals/modal.html" %}
 
 {% block modalcontent %}
-<form id="new-mgtftd-form" autocomplete="off" data-active="{{ active }}">
-  {% csrf_token %}
+<form
+  autocomplete="off"
+  hx-post="/api/{{ active }}/"
+  hx-swap="none"
+  hx-on::after-request="if (event.detail.successful) window.location.href = `/admin/{{ active }}/${JSON.parse(event.detail.xhr.response).id}/`"
+>
   {% if active == "members" %}
     <div class="row form-group">
       <div class="col-3">

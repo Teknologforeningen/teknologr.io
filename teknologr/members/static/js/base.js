@@ -9,58 +9,6 @@ const call_if_function = (fn, ...params) => {
 }
 
 /**
- * Helper function for adding a listener to an element that does a request.
- *
- * @param {Object} options
- * @param {String} option.element          The element(s) to add the listener to
- * @param {String} option.method           The request method
- * @param {String} option.url              The request url
- * @param {Object} [option.data]           The request data (default: Element.serialize())
- * @param {String} [option.confirmMessage] An optional confirm message
- * @param {String} [option.newLocation]    The url to redirect to after the request is done (default: reload current page)
- *
- * Some of the options also allow a function (e: Element) => T to be passed, if the option value depends on for example data on the specific element. These options are:
- * @param {String | (e: Element) => String} option.url
- * @param {Object | (e: Element) => Object} dption.data
- * @param {String | (e: Element) => String} option.confirmMessage
- * @param {String | (e: Element, msg: Any) => String} option.newLocation
- */
-const add_request_listener = ({ selector, method, url, data, confirmMessage, newLocation }) => {
-	// Get the element(s) to attach the listener to
-	$(selector).each((_, domElement) => {
-		// Deduce what to listen for based on the element tag
-		const type = domElement.tagName.toLowerCase() === "form" ? "submit" : "click";
-
-		const e = $(domElement);
-		// Add a listener to the element
-		e.on(type, event => {
-			event.preventDefault();
-			event.stopPropagation();
-
-			const msg = call_if_function(confirmMessage, e);
-			if (msg && !confirm(msg)) return;
-
-			// Do the request
-			const request = $.ajax({
-				method,
-				url: call_if_function(url, e),
-				data: data ? call_if_function(data, e) : e.serialize(),
-			});
-
-			// Add listeners to the request
-			request.done(msg => {
-				if (newLocation) window.location = call_if_function(newLocation, e, msg);
-				else location.reload();
-			});
-			// XXX: The error message is not very helpful for the user, so should probably change this to something else
-			request.fail((jqXHR, textStatus, errorThrown) => {
-				alert(`Request failed with status ${jqXHR.status} (${jqXHR.statusText}): ${jqXHR.responseText}`);
-			});
-		});
-	});
-}
-
-/**
  * Extend the functionality of the AutoCompleteSelectMultipleField from django-ajax-selects by also allowing new members to be created simultaneously. This is how it's done:
  * 1. Add click-listener to a button
  * 2. When clicked, the name is taken from the member search box
@@ -154,13 +102,6 @@ function populateCommonModal(button, url) {
 }
 
 $(document).ready(function () {
-	add_request_listener({
-		selector: "#new-mgtftd-form",
-		method: "POST",
-		url: element => `/api/${element.data("active")}/`,
-		newLocation: (element, msg) => `/admin/${element.data("active")}/${msg.id}/`,
-	});
-
 	$('#side-search').keyup(function(event) {
 		var active = $(this).data('active');
 		var filter = $(this).val().toLowerCase();
