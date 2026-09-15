@@ -114,10 +114,6 @@ tr.active {
   font-family: monospace;
 }
 
-.clickable {
-  cursor: pointer;
-}
-
 /* Dropdown content, hidden by default */
 .dropdown-content {
   display: none;

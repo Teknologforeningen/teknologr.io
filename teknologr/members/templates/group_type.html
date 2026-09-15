@@ -1,7 +1,3 @@
-{% extends "base.html" %}
-{% load static %}
-
-{% block main %}
 <div class="container-fluid">
   <div class="row mb-2">
     <div class="col-12">
@@ -77,9 +73,35 @@
             <th class="text-center">Medlemmar</th>
           </tr>
         </thead>
+
+        <script>
+          function handleSelect(element, event) {
+            if (event.detail.successful && event.detail.elt === element) {
+              element.closest("tbody").querySelectorAll("tr.active").forEach(row => row.classList.remove("active"));
+              element.classList.add("active");
+            }
+          }
+          function handleDelete(element, event) {
+            if (event.detail.successful) {
+              const row = element.closest("tr");
+              row.remove();
+              if (row.classList.contains("active")) {
+                document.getElementById("group-content").innerHTML = "";
+                history.replaceState({}, "", element.dataset.replaceUrl);
+              }
+            }
+          }
+        </script>
+
         <tbody>
         {% for g in groups %}
-          <tr class="clickable {% if group.id == g.id %} active {% endif %}" data-href="{% url 'admin:group' grouptype.id g.id %}">
+          <tr
+            class="{% if group.id == g.id %}active{% endif %}"
+            hx-get="{% url 'admin:group_content' grouptype.id g.id %}"
+            hx-target="#group-content"
+            hx-push-url="{% url 'admin:group' grouptype.id g.id %}"
+            hx-on::after-request="handleSelect(this, event)"
+          >
             <td>
               <i
                 class="fas fa-times text-danger"
@@ -89,7 +111,8 @@
                 hx-delete="{% url 'api:group-detail' g.id %}"
                 hx-swap="none"
                 hx-confirm="Vill du radera denna undergrupp och alla dess gruppmedlemskap?"
-                hx-on::after-request="if (event.detail.successful) window.location.href = '{% url 'admin:group_type' grouptype.id %}'"
+                hx-on::after-request="handleDelete(this, event)"
+                data-replace-url="{% url 'admin:group_type' grouptype.id %}"
               ></i>
             </td>
             <td class="text-center">{{ g.begin_date }}</td>
@@ -101,66 +124,8 @@
       </table>
     </div>
 
-    <!-- Right block, view single group -->
-    <div class="col-lg-4">
-      {% if group %}
-        <table class="table table-sm table-striped table-borderless">
-          <thead class="no-border">
-            <tr>
-              <th>
-                <h4 title="Skapad: {{ group.created }}&#013;Ändrad: {{ group.modified }}">
-                  {{ group.begin_date }}<br>- {{ group.end_date }}<br>
-                </h4>
-                <div>
-                  <i
-                    class="far fa-edit text-info icon-20"
-                    role="button"
-                    title="Editera undergrupp"
-                    data-toggle="modal"
-                    data-target="#edit-g-modal"
-                  ></i>
-                  {% include "modals/group_addedit.html" with id="edit-g-modal" title="Editera undergrupp" form=edit_g_form only %}
-
-                  <i
-                    class="fas fa-plus text-success icon-20 align-middle"
-                    role="button"
-                    title="Lägg till gruppmedlemskap"
-                    data-toggle="modal"
-                    data-target="#add-gm-modal"
-                  ></i>
-                  {% include "modals/groupmembership_add.html" with id="add-gm-modal" title="Lägg till gruppmedlemskap" form=add_gm_form only %}
-
-                  <i id="copy2clipboard" class="far fa-copy icon-20" role="button" title="Kopiera gruppmedlemmarnas epostadresser"></i>
-                </div>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for membership in groupmembers %}
-              <tr>
-                <td>
-                  <i
-                    class="col-2 fas fa-times text-danger"
-                    role="button"
-                    title="Radera gruppmedlemskap"
-                    hx-delete="{% url 'api:groupmembership-detail' membership.id %}"
-                    hx-confirm="Vill du radera detta gruppmedlemskap?"
-                    hx-on::after-request="if (event.detail.successful) this.closest('tr').remove()"
-                  ></i>
-                  <a class="col-10" href="{% url 'admin:member' membership.member.id %}">{{ membership.member.get_full_name_HTML }}</a>
-                </td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-        <textarea id="members_email_list" style="opacity: 0;width: 0; height:0;">{{ emails }}</textarea>
-      {% endif %}
+    <div id="group-content" class="col-lg-4">
+      {% include "group.html" %}
     </div>
   </div>
 </div>
-{% endblock %}
-
-{% block scripts %}
-  {{ block.super }}
-  <script src="{% static 'js/group.js' %}"></script>
-{% endblock %}

@@ -13,7 +13,7 @@ from locale import strxfrm
 from ldap import LDAPError
 
 
-def set_side_context(context, category, active_obj=None):
+def set_context_side(context, category, active_obj=None):
     side = {}
     side['active'] = category
     side['active_obj'] = active_obj.id if active_obj else None
@@ -56,7 +56,7 @@ def set_side_context(context, category, active_obj=None):
 @user_passes_test(lambda u: u.is_staff, login_url='/login/')
 def empty(request, category):
     context = {}
-    set_side_context(context, category)
+    set_context_side(context, category)
     return render(request, 'base.html', context)
 
 
@@ -136,7 +136,7 @@ def member(request, member_id):
             gk['error'] = str(e)
 
     # load side list items
-    set_side_context(context, 'members', member)
+    set_context_side(context, 'members', member)
     return render(request, 'member.html', context)
 
 
@@ -149,88 +149,120 @@ def membertype_form(request, membertype_id):
     })
 
 
+def set_context_gt(context, gtid, prefetch_memberships=False):
+    gt = context['grouptype'] = GroupType.objects.get_prefetched_or_404(gtid, prefetch_memberships)
+    context['groups'] = gt.groups_by_date
+    context['edit_gt_form'] = GroupTypeForm(instance=gt)
+    context['add_g_form'] = GroupForm(initial={"grouptype": gtid})
+    return gt
+
+def set_context_g(context, gid):
+    gid = int(gid)
+    if 'groups' in context:
+        g = context['group'] = next((group for group in context['groups'] if group.id == gid), None)
+        if not g:
+            raise Http404('No Group matches the given query.')
+    else:
+        g = context['group'] = Group.objects.get_prefetched_or_404(gid, False)
+
+    context['groupmembers'] = g.memberships_by_member
+    context['edit_g_form'] = GroupForm(instance=g)
+    # context['add_gm_form'] = GroupMembershipForm(initial={"group": gid})
+    context['emails'] = "\n".join(
+        [membership.member.email for membership in context['groupmembers']]
+    )
+    return g
+
 @user_passes_test(lambda u: u.is_staff, login_url='/login/')
-def group_type(request, grouptype_id, group_id=None):
+def group_type_content(request, gtid):
+    context = {}
+    set_context_gt(context, gtid)
+    return render(request, 'group_type.html', context)
+
+@user_passes_test(lambda u: u.is_staff, login_url='/login/')
+def group_content(request, gtid, gid):
+    context = {}
+    g = set_context_g(context, gid)
+
+    # Check GroupType id without fetching the related object
+    if g.grouptype_id != int(gtid):
+        raise Http404('Group does not belong to the given GroupType.')
+
+    return render(request, 'group.html', context)
+
+@user_passes_test(lambda u: u.is_staff, login_url='/login/')
+def group_type(request, gtid, gid=None):
     '''
     Could probably be enhanced to not query for memberships if no group_id is given, because currently 4 queries are done no matter what:
       1-3. Fetch GroupType with prefetched and ordered fields
       4. SELECT GroupType (for side bar)
     '''
     context = {}
+    gt = set_context_gt(context, gtid, gid is not None)
+    if gid is not None:
+        set_context_g(context, gid)
+    set_context_side(context, 'grouptypes', gt)
+    return render(request, 'group_type_full.html', context)
 
-    grouptype = GroupType.objects.get_prefetched_or_404(grouptype_id)
-    context['grouptype'] = grouptype
-    context['groups'] = grouptype.groups_by_date
 
-    context['edit_gt_form'] = GroupTypeForm(instance=grouptype)
-    context['add_g_form'] = GroupForm(initial={"grouptype": grouptype_id})
-
-    if group_id is not None:
-        # Find the selected group, while making sure the group is of the correct group type
-        group = next((g for g in context['groups'] if g.id == int(group_id)), None)
-        if not group:
-            raise Http404('No Group matches the given query.')
-
-        context['group'] = group
-        context['groupmembers'] = group.memberships_by_member
-
-        context['edit_g_form'] = GroupForm(instance=group)
-        context['add_gm_form'] = GroupMembershipForm(initial={"group": group_id})
-        context['emails'] = "\n".join(
-            [membership.member.email for membership in context['groupmembers']]
-        )
-
-    set_side_context(context, 'grouptypes', grouptype)
-    return render(request, 'group_type.html', context)
-
+def set_context_ft(context, ft_id):
+    ft = context['functionary_type'] = FunctionaryType.objects.get_prefetched_or_404(ft_id)
+    context['functionaries'] = ft.functionaries_by_date
+    context['edit_ft_form'] = FunctionaryTypeForm(instance=ft)
+    context['add_f_form'] = FunctionaryForm(initial={"functionarytype": ft_id})
+    return ft
 
 @user_passes_test(lambda u: u.is_staff, login_url='/login/')
-def functionary_type(request, functionarytype_id):
+def functionary_type_content(request, ft_id):
+    context = {}
+    set_context_ft(context, ft_id)
+    return render(request, 'functionary_type.html', context)
+
+@user_passes_test(lambda u: u.is_staff, login_url='/login/')
+def functionary_type(request, ft_id):
     '''
     This is done in 3 queries:
       1-2. Fetch FunctionaryType with prefetched and ordered fields
-      4. SELECT FunctionaryType (for side bar)
+      3. SELECT FunctionaryType (for side bar)
     '''
     context = {}
-
-    functionarytype = FunctionaryType.objects.get_prefetched_or_404(functionarytype_id)
-    context['functionary_type'] = functionarytype
-    context['functionaries'] = functionarytype.functionaries_by_date
-
-    context['edit_ft_form'] = FunctionaryTypeForm(instance=functionarytype)
-    context['add_f_form'] = FunctionaryForm(initial={"functionarytype": functionarytype_id})
-
-    set_side_context(context, 'functionarytypes', functionarytype)
-    return render(request, 'functionary_type.html', context)
+    ft = set_context_ft(context, ft_id)
+    set_context_side(context, 'functionarytypes', ft)
+    return render(request, 'functionary_type_full.html', context)
 
 
 @user_passes_test(lambda u: u.is_staff, login_url='/login/')
-def functionary_form(request, functionary_id):
-    functionary = get_object_or_404(Functionary, id=functionary_id)
+def functionary_form(request, f_id):
+    functionary = get_object_or_404(Functionary, id=f_id)
     return render(request, 'forms/functionary.html', {
         'form': FunctionaryForm(instance=functionary),
-        'form_id': 'edit-f-form',
     })
 
 
+def set_context_d(context, d_id):
+    d = context['decoration'] = Decoration.objects.get_prefetched_or_404(d_id)
+    context['decoration_ownerships'] = d.ownerships_by_date
+    context['edit_d_form'] = DecorationForm(instance=d)
+    context['add_do_form'] = DecorationOwnershipForm(initial={"decoration": d_id})
+    return d
+
 @user_passes_test(lambda u: u.is_staff, login_url='/login/')
-def decoration(request, decoration_id):
+def decoration_content(request, d_id):
+    context = {}
+    set_context_d(context, d_id)
+    return render(request, 'decoration.html', context)
+
+@user_passes_test(lambda u: u.is_staff, login_url='/login/')
+def decoration(request, d_id):
     '''
     This is done in 3 queries:
       1-2. Fetch Decoration with prefetched and ordered fields
       3. SELECT Decoration (for side bar)
     '''
     context = {}
-
-    decoration = Decoration.objects.get_prefetched_or_404(decoration_id)
-    context['decoration'] = decoration
-    context['decoration_ownerships'] = decoration.ownerships_by_date
-
-    context['edit_d_form'] = DecorationForm(instance=decoration)
-    context['add_do_form'] = DecorationOwnershipForm(initial={"decoration": decoration_id})
-
-    set_side_context(context, 'decorations', decoration)
-    return render(request, 'decoration.html', context)
+    d = set_context_d(context, d_id)
+    set_context_side(context, 'decorations', d)
+    return render(request, 'decoration_full.html', context)
 
 
 @user_passes_test(lambda u: u.is_staff, login_url='/login/')
@@ -259,5 +291,5 @@ def applicant(request, applicant_id):
     context['form'] = form
     context['make_member_form'] = ApplicantAdditionForm()
 
-    set_side_context(context, 'applicants', applicant)
+    set_context_side(context, 'applicants', applicant)
     return render(request, 'applicant.html', context)

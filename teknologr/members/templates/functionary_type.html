@@ -1,7 +1,5 @@
-{% extends "base.html" %}
 {% load static %}
 
-{% block main %}
 <div class="container-fluid">
   <div class="row mb-2">
     <div class="col-12">
@@ -85,9 +83,3 @@
     </tbody>
   </table>
 </div>
-{% endblock %}
-
-{% block scripts %}
-  {{ block.super }}
-  <script src="{% static 'js/functionary.js' %}"></script>
-{% endblock %}

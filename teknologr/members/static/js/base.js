@@ -4,7 +4,7 @@ var timer;
 /**
  * Helper method for calling a function, if it is a function.
  */
-const call_if_function = (fn, ...params) => {
+window.call_if_function = (fn, ...params) => {
 	return typeof fn === "function" ? fn(...params) : fn;
 }
 
@@ -20,7 +20,7 @@ const call_if_function = (fn, ...params) => {
  *
  * Note that a certain layout of the elements is assumed.
  */
-const add_ajax_multiselect_extension = ({ selector_button, selector_input, selector_submit }) => {
+window.add_ajax_multiselect_extension = ({ selector_button, selector_input, selector_submit }) => {
 	const create_member_button = $(selector_button);
 	const submit_button = $(selector_submit);
 	const input = $(selector_input);
@@ -126,7 +126,7 @@ $(document).ready(function () {
 		// If not members, simply hide/unhide the elements
 		} else {
 			const queries = filter.split(" ").filter(s => s);
-			$("#side-objects a").each(function () {
+			$(".side-object").each(function () {
 				const element = $(this);
 				let show = true;
 				// All parts of the query need to match the content
@@ -168,13 +168,6 @@ $(document).ready(function () {
 
 	$('[data-toggle="tooltip"]').tooltip({
 		placement : 'top'
-	});
-
-	/**
-	 * Make elements function as clickable links.
-	 */
-	$(".clickable").click(function() {
-		window.location = $(this).data("href");
 	});
 
 	/**

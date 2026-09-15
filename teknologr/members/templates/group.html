@@ -1,0 +1,61 @@
+{% load static %}
+
+{% if group %}
+  <table class="table table-sm table-striped table-borderless">
+    <thead class="no-border">
+      <tr>
+        <th>
+          <h4 title="Skapad: {{ group.created }}&#013;Ändrad: {{ group.modified }}">
+            {{ group.begin_date }}<br>- {{ group.end_date }}<br>
+          </h4>
+          <div>
+            <i
+              class="far fa-edit text-info icon-20"
+              role="button"
+              title="Editera undergrupp"
+              data-toggle="modal"
+              data-target="#edit-g-modal"
+            ></i>
+            {% include "modals/group_addedit.html" with id="edit-g-modal" title="Editera undergrupp" form=edit_g_form group_id=group.id only %}
+
+            <i
+              class="fas fa-plus text-success icon-20 align-middle"
+              role="button"
+              title="Lägg till gruppmedlemskap"
+              data-toggle="modal"
+              data-target="#add-gm-modal"
+            ></i>
+            {% include "modals/groupmembership_add.html" with id="add-gm-modal" title="Lägg till gruppmedlemskap" form=add_gm_form only %}
+
+            <i
+              class="far fa-copy icon-20"
+              role="button"
+              title="Kopiera gruppmedlemmarnas epostadresser"
+              onclick="document.getElementById('emails').select(); document.execCommand('copy'); alert('E-postadresser kopierade!')"
+            ></i>
+            <textarea id="emails" style="opacity: 0; width: 0; height: 0;">{{ emails }}</textarea>
+          </div>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for membership in groupmembers %}
+        <tr>
+          <td>
+            <i
+              class="col-2 fas fa-times text-danger"
+              role="button"
+              title="Radera gruppmedlemskap"
+              hx-delete="{% url 'api:groupmembership-detail' membership.id %}"
+              hx-confirm="Vill du radera detta gruppmedlemskap?"
+              hx-on::after-request="if (event.detail.successful) this.closest('tr').remove()"
+            ></i>
+            <a class="col-10" href="{% url 'admin:member' membership.member.id %}">{{ membership.member.get_full_name_HTML }}</a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endif %}
+
+<script src="{% static 'js/group.js' %}"></script>

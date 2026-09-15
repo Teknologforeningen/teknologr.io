@@ -585,6 +585,20 @@ class GroupManager(models.Manager):
         Group.order_by(l, 'name')
         return l, gm_counts['total'], gm_counts['unique']
 
+    def get_prefetched_or_404(self, group_id, prefetch_gt=True):
+        '''
+        This is done in 2-3 queries:
+        1. SELECT Group WHERE id=group_id
+        2. SELECT GroupMembership WHERE group__id=group_id
+        [3. SELECT GroupType WHERE grouptype__id=grouptype_id]
+        '''
+        queryset = Group.objects.prefetch_related(
+                Prefetch('memberships', queryset=GroupMembership.objects.select_related('member')),
+        )
+        if prefetch_gt:
+            queryset = queryset.prefetch_related('grouptype')
+        return get_object_or_404(queryset, id=group_id)
+
 class Group(SuperClass):
     objects = GroupManager()
     grouptype = models.ForeignKey("GroupType", on_delete=models.CASCADE, related_name="groups")
@@ -634,17 +648,20 @@ class GroupTypeManager(models.Manager):
         GroupType.order_by(l, 'name')
         return l
 
-    def get_prefetched_or_404(self, group_type_id):
+    def get_prefetched_or_404(self, group_type_id, prefetch_memberships=True):
         '''
         This is done in 3 queries:
         1. SELECT GroupType WHERE id=group_type_id
         2. SELECT Group WHERE grouptype__id=group_type_id
-        3. SELECT GroupMembership WHERE group__id IN ^
+        [3. SELECT GroupMembership WHERE group__id IN ^]
         '''
         queryset = GroupType.objects.prefetch_related(
             Prefetch('groups', queryset=Group.objects.all()),
-            Prefetch('groups__memberships', queryset=GroupMembership.objects.select_related('member')),
         )
+        if prefetch_memberships:
+            queryset = queryset.prefetch_related(
+                Prefetch('groups__memberships', queryset=GroupMembership.objects.select_related('member')),
+            )
         return get_object_or_404(queryset, id=group_type_id)
 
 class GroupType(SuperClass):

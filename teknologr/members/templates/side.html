@@ -36,6 +36,19 @@
 
 <div id="side-objects" class="list-group">
   {% for obj in side.objects %}
+    {% if side.active == 'decorations' or side.active == 'functionarytypes' or side.active == 'grouptypes' %}
+    <button
+      class="btn btn-link text-left side-object list-group-item{% if obj.id == side.active_obj %} active{% endif %}"
+      search="{{ obj.comment }}"
+      hx-get="{% url 'admin:empty' side.active %}{{ obj.id }}/content/"
+      hx-push-url="{% url 'admin:empty' side.active %}{{ obj.id }}/"
+      hx-target="#main"
+      hx-swap="innerHTML"
+      hx-on::after-request="if (event.detail.successful) { this.parentElement.querySelector('.active')?.classList.remove('active'); this.classList.add('active'); }"
+    >
+      {{ obj.name|default:"Namnlös" }}{% if obj.count >= 0 %} ({{ obj.count }}) {% endif %}
+    </button>
+    {% else %}
     <a
       class="side-object list-group-item{% ifequal obj.id side.active_obj %} active {% endifequal %}"
       href="{% url 'admin:empty' side.active %}{{ obj.id }}"
@@ -43,6 +56,7 @@
     >
       {{ obj.name|default:"Namnlös" }}{% if obj.count >= 0 %} ({{ obj.count }}) {% endif %}
     </a>
+    {% endif %}
   {% empty %}
     <span class="text-muted">Inga objekt hittades</span>
   {% endfor %}
